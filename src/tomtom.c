@@ -18,7 +18,11 @@
 #include <time.h>
 #include <unistd.h>
 #ifndef WIFEXITED
+#ifdef __FreeBSD__
+#include <sys/wait.h>
+#else
 #include <wait.h>
+#endif
 #endif
 
 #include "array-list.h"

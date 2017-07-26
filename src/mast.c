@@ -43,6 +43,10 @@
 */
 /**********************************************************************/
 
+#ifdef __FreeBSD__
+#include <sys/wait.h>
+#endif
+
 #include <assert.h>
 #include <errno.h>
 #include <getopt.h>
