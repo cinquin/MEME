@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Custom Alphabet Definition Format - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+    <style>
+    div.example {
+      border: 1px solid black;
+      padding: 5px;
+      margin-top: 0px;
+      margin-bottom: 10px;
+    }
+    span.example {
+      border: 1px solid black;
+      padding: 5px;
+      display: inline-block;
+    }
+
+    span.info {
+      font-variant: small-caps;
+      font-size: small;
+      border: 1px solid grey;
+      color: grey;
+    }
+
+    p {
+      margin: 0;
+    }
+    p + p {
+      margin-top: 10px;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <h2>Custom Alphabet Definition Format</h2>
+
+    <h3>Description</h3>
+    <div class="indent">
+      <p>Almost all MEME Suite programs make use of alphabets to understand the
+      meaning of sequences or motifs. The MEME Suite programs support
+      three standard alphabets: the <a href="alphabets.html#dna">DNA</a>,
+      <a href="alphabets.html#rna">RNA</a> and
+      <a href="alphabets.html#protein">protein</a> alphabets. 
+      The MEME Suite also allows you to define a custom
+      alphabet to allow you to explore motifs containing, for example
+      modified nucleotides (e.g., methylcytosines) or modified amino acids
+      (e.g., phosphorylated serines and tyrosines).</p> 
+      <p>This document describes how you can specify an alphabet of your 
+      own design for use with the MEME Suite programs that support custom alphabets.
+      When you specify a custom alphabet, you can define the symbols
+      that represent each nucleotide or amino acid, their names, their colors
+      and their complements (in the case of alphabets like DNA that have complentary
+      residues).  You also can also define "ambiguous" symbols that represent
+      more than one symbol in your custom alphabet (e.g., "R" to represent purines
+      in a DNA-based alphabet.) You then provide your
+      custom alphabet definition as a text file to the MEME Suite programs
+      to inform them that sequences you provide use this non-standard alphabet.
+      </p>
+    </div>
+
+    <h3>Quick Overview</h3>
+    <p>You can look at some examples of alphabet definitions to
+    get a quick idea of how they look.  The first two examples
+    define the standard DNA and protein alphabets supported by
+    the MEME Suite. Note that everything after the "#" character anywhere
+    on the line is treated as a comment (ignored) by the MEME Suite.</p>
+    <ol>
+      <li><a href="#standard_DNA">Standard DNA alphabet</a></li>
+      <li><a href="#standard_RNA">Standard RNA alphabet</a>
+      <li><a href="#standard_protein">Standard protein alphabet</a></li>
+      <li><a href="#custom_DNA">DNA with covalent modifications alphabet</a>
+    </ol>
+
+    <h3>Format Specification</h3>
+    <div class="indent">
+      <p>The alphabet definition contains the following sections:</p>
+      <ol>
+        <li><a href="#spec_header">Header</a></li>
+        <li><a href="#spec_core">Core Symbols</a></li>
+        <li><a href="#spec_ambig">Ambiguous Symbols and Aliases</a></li>
+      </ol>
+
+      <h4 id="spec_header">Header</h4>
+      <div class="indent">
+        <p>The header line signals that the file is an alphabet definition,
+        gives the name of the alphabet and specifies if it is like a standard
+        alphabet.</p>
+        <div class="example">
+          ALPHABET &quot;<span class="pdat">name</span>&quot; <span class="pdat">standard</span>-LIKE
+        </div>
+        
+        <p>The &quot;<span class="pdat">name</span>&quot; is optional and gives
+        the name that is used to refer to the alphabet in outputs. It follows
+        all the rules of <a href="#qstr">quoted text</a>.
+        If the name is not given, then the alphabet will be referred to
+        by the list of its core symbols.</p>
+
+        <p>The <span class="pdat">standard</span>-LIKE is also optional and can be
+        used to specify a reference alphabet that this alphabet might be
+        sensibly compared to under most circumstances. Adding this optional flag
+        will require that the alphabet you are defining has the uppercase form of
+        all the reference alphabet's core symbols as well as their complements.
+        The possible values for <span class="pdat">standard</span> include DNA,
+        RNA and PROTEIN.</p>
+        <p>For example if you were creating an alphabet that extended the DNA
+        alphabet you might use a header like:</p>
+        <div class="example">
+          ALPHABET &quot;Extended DNA&quot; DNA-LIKE
+        </div>
+        <p>This would require that the alphabet you were defining contained A,
+        C, G and T and that A was the complement of T and C was the complement
+        of G.</p>
+      </div>
+
+
+      <h4 id="spec_core">Core Symbols</h4>
+      <div class="indent">
+        <p>The core <a href="#allowed_chars">symbols</a> of an alphabet can either 
+        be defined on their own or two per line with a '~' between them to show 
+        them as complements.</p>
+        <p>For example you can define the symbol 'A' and the symbol 'T' to be
+        complements of each other as follows:</p>
+        <div class="example">
+          A ~ T
+        </div>
+        <p>However if 'A' and 'T' do not have complements then you would define
+        them on separate lines:</p>
+        <div class="example">
+        A<br>
+        T
+        </div>
+        <p>Listing a letter like 'A' or 'T' is the simplest way to
+        define a symbol but you can also specify a
+        <a href="#spec_adv_sym">name and color</a> for each symbol.</p>
+      </div>
+
+      <h4 id="spec_ambig">Ambiguous Symbols and Aliases</h4>
+      <div class="indent">
+        <p>The ambiguous symbols of an alphabet are listed after all the core
+        symbols have been defined. An ambiguous symbol will have the symbol
+        definition on the left, followed by an equals '=' and a list of
+        core symbols on the right.</p>
+        <p>For example you can defined the symbol 'N' to represent 'A', 'C', 'G'
+        or 'T' as follows:</p>
+        <div class="example">
+          N = ACGT
+        </div>
+        <p>If there is a <b>single</b> core symbol on the right of
+	an ambigous symbol definition, the symbol is considered to be an <b>alias</b>
+	for the core symbol on the left.
+        <p>For example you can defined the symbol 'U' to be an alias for 'T'
+        as follows:</p>
+        <div class="example">
+          U = T		# (U is an alias for T)
+        </div>
+        <p>As with the core symbols you can also specify a
+        <a href="#spec_adv_sym">name and color</a> for each ambiguous and alias symbol.</p>
+        <p>How ambiguous symbols and aliases are handled differs for each
+        of the programs in the MEME Suite.  See the specific documentation
+        for each program for how they treat ambiguous symbols.</p>
+      </div>
+
+    </div>
+
+    <h3 id="additional">Additional Information</h3>
+    <div class="indent">
+
+      <h4 id="allowed_chars">Allowed Symbol Characters</h4>
+      <div class="indent">
+        <p>Each <span class="pdat">symbol</span> is a single letter, number or
+        one of the characters '.', '-', '*' or '?'.  Letters may be either
+        upper- or lowercase (see <a href="#one_case>Letter Case">Letter Case</a>
+        below on the interpretation of case by MEME Suite programs).
+        The '?' is a special <a href="#spec_wildcard">wildcard</a> character,
+        and if you use it you must define it to match all core symbols
+        (see <a href="#spec_wildcard">Wildcard Symbol</a>, below).</p>
+      </div>
+
+      <h4 id="one_case">Letter Case</h4>
+      <div class="indent">
+        <p>If all the letters you define as symbols are in a single case, 
+        (al upper case or all lower case), the programs in the MEME Suite will 
+        ignore case when reading sequences.
+        However, if you include both upper- and lowercase letters in your
+        alphabet definition, then upper- and lowercase letters will
+        be treated as distinct symbols.</p>
+      </div>
+
+      <h4 id="ordering">Core Symbol Ordering</h4>
+      <div class="indent">
+        <p>MEME Suite programs internally order core symbols
+        so that the uppercase letters A-Z come first, followed by the 
+        lowercase letters a-z, then by the numbers 0-9 and finally by 
+        the symbols '*', '-' and '.' in that order.  
+        (Note that '?' is not included in this list because it is never
+        allowed to be a core symbol.)
+        This ordering is used to determine the order of the columns in 
+        motifs output by MEME Suite motif discovery programs.
+        Note: The order in which you specify symbols within the
+        core symbol section of your alphabet file does not matter.</p>
+      </div>
+
+      <h4 id="spec_wildcard">Wildcard Symbol</h4>
+      <div class="indent">
+        <p>A wildcard is an ambiguous symbol that matches any core symbol.
+        To define a wildcard symbol, list all the core symbols after the equals sign. 
+        Since many programs in the MEME Suite require that alphabets have a 
+        wildcard symbol in order for them to work correctly, if you do not
+        define one the MEME Suite program will automatically define
+        the symbol '?' to be the wildcard.
+        It is strongly recommended that all custom alphabets you define
+        include a wildcard symbol.</p>
+        <p>If you wish, you may manually define the wildcard as '?'.</p>
+      </div>
+
+      <h4 id="spec_adv_sym">Advanced Symbol Definition</h4>
+      <div class="indent">
+        <p>Each symbol definition can have up to three fields as follows:</p>
+        <div class="example">
+          <span class="pdat">character</span> &quot;<span class="pdat">name</span>&quot; <span class="pdat">color</span>
+        </div>
+        <h5>character</h5>
+        <div class="indent">
+          <p>The symbol &quot;<span class="pdat">character</span>&quot; is a single
+          character chosen from the list of <a href="#allowed_chars">allowed symbol characters</a>.
+          The symbol character is required and is always the first field.
+        </div>
+        <h5>name</h5>
+        <div class="indent">
+          <p>The symbol &quot;<span class="pdat">name</span>&quot; is optional but it will
+          make any outputs generated using this alphabet easier to understand by
+          providing a reference on the meaning of the symbols used. If present, the
+          symbol name must be the second field.</p>
+          <p>The &quot;<span class="pdat">name</span>&quot; follows the rules of
+          <a href="#qstr">quoted text</a>.</p>
+        </div>
+        <h5>color</h5>
+        <div class="indent">
+          <p>The symbol <span class="pdat">color</span> is optional and
+          represented by a 6 digit hexadecimal number with
+          digits 1 &amp; 2 defining the red component, digits 3 &amp; 4 defining the
+          green component and digits 5 &amp; 6 defining the blue component.</p>
+          <p>Here are some example colors: 
+          <span style="color:#CC0000;">CC0000</span>, 
+          <span style="color:#008000;">008000</span>, 
+          <span style="color:#0000CC;">0000CC</span>, 
+          <span style="color:#FFB300;">FFB300</span>,
+          <span style="color:#FF00FF;">FF00FF</span>,
+          <span style="color:#FFCCCC;">FFCCCC</span>,
+          <span style="color:#FFFF00;">FFFF00</span> and
+          <span style="color:#33E6CC;">33E6CC</span>.
+          </p>
+          <p>Find the numerical codes for colors here:
+          <input type="color" id="colour_picker" value="#000000"> = <span id="colour_value">000000</span>.</p>
+          <script>
+          (function() {
+           var input = document.getElementById("colour_picker");
+           var output = document.getElementById("colour_value");
+           var update = function() {
+             output.textContent = input.value.substring(1).toUpperCase();
+             output.style.color = input.value;
+           };
+           update();
+           input.addEventListener((input.type == "color" ? "input" : "change"), update, false);
+           })();
+          </script>
+          <p>If you do not specify the color of one or more symbols, the MEME Suite
+          will choose evenly spaced colors for them using its own algorithm.</p>
+        </div>
+      </div>
+
+      <h4 id="qstr">Quoted Text</h4>
+      <div class="indent">
+        <p>Quoted text is used to describe things like the name
+        of a symbol or the name of the alphabet and will be displayed in outputs. 
+        They make the alphabet definition self documenting, and while they aren't,
+        required they are highly recommended.</p>
+        <p>There are a few restrictions on quoted text:</p>
+        <ul>
+          <li>Must begin and end with a double-quote character which designates the
+          bounds and is not considered part of the text</li>
+          <li>Must not contain control characters</li>
+          <li>Must not contain whitespace (ie tab, newline, ...) other than the
+          standard 'SPACE' (U+0020)</li>
+          <li>Contained double-quote characters must be escaped as \&quot;</li>
+          <li>Contained back-slash characters must be escaped as \\</li>
+          <li>Contained forward-slash characters may be optionally escaped as \/</li>
+          <li>Contained Unicode characters may be optionally escaped \u<span class="pdat">4
+            hexadecimal digits</span> although UTF-8 encoding is also fine</li>
+          <li>No other back-slash escape combinations are allowed although \b \f
+          \n \r and \t will be understood by the parser for the purpose of giving
+          a better error message.</li>
+          <li>Maximum length of 40 unicode characters (not bytes) after removing 
+          the surrounding double-quotes and converting all escape sequences</li>
+          <li>The comment character # will be ignored within quoted text</li>
+        </ul>
+      </div>
+    </div>
+
+
+    <h3>Examples</h3>
+    <div class="indent">
+      <h4 id="standard_DNA">1) Standard DNA alphabet</h4>
+      <div class="indent">
+      <textarea rows="19" cols="100" readonly>
+ALPHABET "DNA" DNA-LIKE
+
+# Core symbols
+A "Adenine" CC0000 ~ T "Thymine" 008000
+C "Cytosine" 0000CC ~ G "Guanine" FFB300
+
+# Ambiguous symbols
+U = T # alias Uracil to Thymine (permit U in input sequences)
+R = AG
+Y = CT
+K = GT
+M = AC
+S = CG
+W = AT
+B = CGT
+D = GAT
+H = ACT
+V = ACG
+N = ACGT # wildcard symbol
+X = ACGT # alias for wildcard symbol</textarea>
+    </div>
+
+    <h4 id="standard_RNA">3) Standard RNA Alphabet</h4>
+    <div class="indent">
+
+<textarea rows="21" cols="100" readonly>
+ALPHABET "RNA" RNA-LIKE
+
+# This alphabet will accept "T" in place of "U"
+# in input sequences, but logos will use "U".
+
+# Core symbols
+A "Adenine" CC0000 
+C "Cytosine" 0000CC 
+U "Uracil" 008000
+G "Guanine" FFB300
+
+# Ambiguous symbols
+T = U   # (permit T in input sequences)
+R = AG
+Y = CU
+K = GU
+M = AC
+S = CG
+W = AU
+B = CGU
+D = GAU
+H = ACU
+V = ACG
+N = ACGU # wildcard symbol</textarea>
+    </div>
+
+    <h4 id="standard_protein">2) Standard Protein alphabet</h4>
+    <div class="indent">
+<textarea rows="31" cols="100" readonly>
+ALPHABET "Protein" PROTEIN-LIKE
+
+# Core symbols
+A "Alanine" 0000CC
+R "Arginine" CC0000
+N "Asparagine" 008000
+D "Aspartic acid" FF00FF
+C "Cysteine" 0000CC
+E "Glutamic acid" FF00FF
+Q "Glutamine" 008000
+G "Glycine" FFB300
+H "Histidine" FFCCCC
+I "Isoleucine" 0000CC
+L "Leucine" 0000CC
+K "Lysine" CC0000
+M "Methionine" 0000CC
+F "Phenylalanine" 0000CC
+P "Proline" FFFF00
+S "Serine" 008000
+T "Threonine" 008000
+W "Tryptophan" 0000CC
+Y "Tyrosine" 33E6CC
+V "Valine" 0000CC
+# These are commented-out because they are not in the default MEME Suite Protein alphabet
+# U "Selenocysteine" 0000CC
+# O "Pyrrolysine" 0000CC
+
+# Ambiguous symbols
+B = ND
+Z = QE
+J = LI
+#X = ARNDCEQGHILKMFPSTWYVUO # wildcard symbol including U and O
+X = ARNDCEQGHILKMFPSTWYV # wildcard symbol omitting U and O</textarea>
+    </div>
+
+    <h4 id="custom_DNA">4) DNA with covalent modifications alphabet</h4>
+    <div class="indent">
+
+<textarea rows="28" cols="100" readonly>
+ALPHABET "DNA with covalent modifications" DNA-LIKE
+
+# Core symbols
+A "Adenine" 8510A8 ~ T "Thymine" A89610
+C "Cytosine" A50026 ~ G "Guanine" 313695
+m "5-Methylcytosine" D73027 ~ 1 "Guanine:5-Methylcytosine" 4575B4
+h "5-Hydroxymethylcytosine" F46D43 ~ 2 "Guanine:5-Hydroxymethylcytosine" 74ADD1
+f "5-Formylcytosine" FDAE61 ~ 3 "Guanine:5-Formylcytosine" ABD9E9
+c "5-Carboxylcytosine" FEE090 ~ 4 "Guanine:5-Carboxylcytosine" E0F3F8
+
+# Ambiguous symbols
+z = Cmhfc
+9 = G1234
+y = Cfc
+8 = G34
+x = mh
+7 = 12
+R = AG
+Y = CT
+K = GT
+M = AC
+S = CG
+W = AT
+B = CGT
+D = GAT
+H = ACT
+V = ACG
+N = ACGT
+? = ACGTcfhm1234 # wildcard symbol</textarea>
+    </div>
+
+  </div>
+
+  </body>
+</html>
+

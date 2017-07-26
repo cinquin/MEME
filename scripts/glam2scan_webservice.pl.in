@@ -1,0 +1,88 @@
+#!@WHICHPERL@
+=head1 NAME
+
+glam2scan_webservice - Run glam2scan in a restricted mode and create an index webpage.
+
+=head1 SYNOPSIS
+
+glam2scan_webservice [options] <glam2 alignment> <db sequences>
+
+  Options:
+    -alpha [DNA|PROTEIN]  alphabet
+    -aligns <n>           number of alignments to report
+    -up_seqs <file>       uploaded sequences
+    -revcomp              examine both strands
+    -help                 brief help message
+
+=cut
+
+use strict;
+use warnings;
+# load standard perl libraries
+use Getopt::Long qw(:config permute auto_help);
+use Pod::Usage;
+# load custom perl libraries
+use lib qw(@PERLLIBDIR@);
+use StatusPage qw(arg_checks arg_end opt_uploaded opt_db opt_integer opt_choice);
+# constants
+my $bin_dir = '@BINDIR@';
+my $fasta_db_dir = '@MEMEDB@/fasta_databases';
+# required parameters
+my $motifs;
+my $sequences;
+# option defaults
+my $alpha = 'DNA';
+my $aligns = undef;
+my $up_seqs = undef;
+my $revcomp = 0; #FALSE
+#status page
+my $status = new StatusPage('GLAM2SCAN', \@ARGV);
+$status->add_message('Parsing arguments');
+# parse options
+my @arg_errors = ();
+my $opts_ok = do {
+  local $SIG{__WARN__} = sub { my ($msg) = @_; chomp($msg); push(@arg_errors, $msg); };
+  GetOptions(
+  '<>' => arg_checks(opt_uploaded(\$motifs), opt_db(\$sequences, $fasta_db_dir, 'db'), arg_end()),
+  'up_seqs=s' => opt_uploaded(\$sequences),
+  'alpha=s' => opt_choice(\$alpha, 'DNA', 'PROTEIN'),
+  'aligns=i' => opt_integer(\$aligns, 1, 200),
+  'revcomp' => \$revcomp
+  );
+};
+# add additional error messages for missing sequences and motifs
+push(@arg_errors, "No motifs provided.") unless $motifs;
+push(@arg_errors, "No sequences provided.") unless defined $sequences;
+# display the error messages both to the status page and stdout
+foreach my $arg_error (@arg_errors) {
+  print STDERR $arg_error, "\n";
+  $status->add_message($arg_error);
+}
+$opts_ok = 0 if (scalar(@arg_errors) > 0);
+# setup status page
+$status->add_file('html', 'glam2scan.html', 'GLAM2Scan HTML output');
+$status->add_file('text', 'glam2scan.txt', 'GLAM2Scan text output');
+$status->add_file('motif', $motifs, 'GLAM2 motif');
+$status->add_file('fasta', $sequences, 'Uploaded Sequences') if ($sequences !~ m/^db\//);
+$status->add_message($opts_ok ? 'Arguments ok' : "Error parsing arguments");
+$status->update($opts_ok ? 'Starting' : 'Error');
+# exit if there was an error reading the arguments
+unless ($opts_ok) {
+  $status->write_log();
+  pod2usage(2);
+}
+# create the symlink to the databases
+symlink($fasta_db_dir, 'db');
+# ensure it will be removed on completion (when the log is written)
+$status->set_cleanup( sub { unlink('db'); } );
+# Run GLAM2Scan
+my @glam2scan_args = ('-O', '.');
+push(@glam2scan_args, '-n', $aligns) if (defined($aligns));
+push(@glam2scan_args, '-2') if ($alpha eq 'DNA' && $revcomp);
+push(@glam2scan_args, ($alpha eq 'DNA' ? 'n' : 'p'), $motifs, $sequences);
+$status->run(PROG => 'glam2scan', BIN => $bin_dir, ARGS => \@glam2scan_args);
+# done
+$status->add_message("Done");
+$status->update();
+$status->write_log();
+1;

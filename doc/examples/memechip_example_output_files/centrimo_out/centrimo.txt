@@ -1,0 +1,115 @@
+# WARNING: this file is not sorted!
+# db	id                         alt	consensus	 E-value	adj_p-value	log_adj_p-value	bin_location	bin_width	total_width	sites_in_bin	total_sites	p_success	 p-value	mult_tests
+   1	WGGGTGTGGYYS            MEME-1	WGGGTGTGGYYS	1.5e-067	   2.6e-070	        -160.24	         0.0	       99	        489	         344	        663	  0.20245	1.1e-072	       244
+   1	VWGATAAR                MEME-2	VWGATAAR	1.3e-040	   2.1e-043	         -98.26	         0.0	      183	        493	         345	        504	  0.37120	8.6e-046	       246
+   2	MCRCCCW                DREME-1	MCACCCW	7.0e-059	   1.2e-061	        -140.31	         0.0	      126	        494	         343	        587	  0.25506	4.7e-064	       246
+   2	TTATCW                 DREME-2	TTATCW	7.3e-040	   1.2e-042	         -96.51	         0.0	      175	        495	         330	        496	  0.35354	4.9e-045	       247
+   3	MA0006.1             Arnt::Ahr	YGCGTG	4.1e0000	   6.9e-003	          -4.97	         0.0	      149	        495	         227	        600	  0.30101	2.8e-005	       247
+   3	MA0027.1                   En1	DAGTDGTDBYC	5.6e-002	   9.4e-005	          -9.27	         0.0	      130	        490	         293	        854	  0.26531	3.9e-007	       244
+   3	MA0029.1                 Mecom	AAGAYAAGATAANA	7.6e-001	   1.3e-003	          -6.67	         0.0	      179	        487	          89	        165	  0.36756	5.2e-006	       243
+   3	MA0048.1                 NHLH1	NCGCAGCTGCGB	7.0e0000	   1.2e-002	          -4.45	         0.0	       89	        489	         112	        433	  0.18200	4.8e-005	       244
+   3	MA0121.1                 ARR10	AGATHYKV	7.5e-001	   1.2e-003	          -6.69	         0.0	      139	        493	         247	        684	  0.28195	5.1e-006	       246
+   3	MA0039.2                  Klf4	DGGGYGKGGC	1.9e-062	   3.2e-065	        -148.51	         0.0	      111	        491	         369	        697	  0.22607	1.3e-067	       245
+   3	MA0002.2                 RUNX1	BBYTGTGGTTT	3.7e-001	   6.2e-004	          -7.39	         0.0	      128	        490	         267	        798	  0.26122	2.5e-006	       244
+   3	MA0199.1                 Optix	TGATA	2.9e-011	   4.9e-014	         -30.64	         0.0	      156	        496	         248	        506	  0.31452	2.0e-016	       247
+   3	MA0204.1                  Six4	TGAYAC	2.0e-002	   3.4e-005	         -10.29	         0.0	      155	        495	         270	        662	  0.31313	1.4e-007	       247
+   3	MA0207.1                  achi	TGACAG	5.2e0000	   8.6e-003	          -4.75	         0.0	      151	        495	         202	        522	  0.30505	3.5e-005	       247
+   3	MA0227.1                   hth	TGACAK	6.2e0000	   1.0e-002	          -4.56	         0.0	      117	        495	         129	        397	  0.23636	4.2e-005	       247
+   3	MA0259.1           HIF1A::ARNT	VBACGTGC	6.0e0000	   1.0e-002	          -4.60	         0.0	      111	        493	         122	        390	  0.22515	4.1e-005	       246
+   3	MA0270.1                  AFT2	SACACCCB	1.3e-030	   2.2e-033	         -75.22	         0.0	      129	        493	         246	        457	  0.26166	8.8e-036	       246
+   3	MA0289.1                 DAL80	CGATAAG	3.0e-032	   5.0e-035	         -78.98	         0.0	      138	        494	         308	        578	  0.27935	2.0e-037	       246
+   3	MA0298.1                  FZF1	CTATCA	5.2e-002	   8.7e-005	          -9.35	         0.0	      183	        495	         378	        831	  0.36970	3.5e-007	       247
+   3	MA0300.1                  GAT1	YYGATAAG	3.1e-035	   5.3e-038	         -85.84	         0.0	      183	        493	         348	        529	  0.37120	2.1e-040	       246
+   3	MA0307.1                  GLN3	GATAA	9.5e-030	   1.6e-032	         -73.22	         0.0	      186	        496	         473	        801	  0.37500	6.4e-035	       247
+   3	MA0309.1                  GZF3	YGATAASR	1.4e-032	   2.3e-035	         -79.76	         0.0	      151	        493	         322	        567	  0.30629	9.4e-038	       246
+   3	MA0333.1                 MET31	RNTGTGGCG	4.8e-003	   8.1e-006	         -11.72	         0.0	       48	        492	          78	        422	  0.09756	3.3e-008	       245
+   3	MA0334.1                 MET32	MGCCACA	9.7e-006	   1.6e-008	         -17.93	         0.0	      114	        494	         264	        795	  0.23077	6.6e-011	       246
+   3	MA0403.1                  TBF1	ARCCCTAV	6.6e0000	   1.1e-002	          -4.50	         0.0	      177	        493	         343	        804	  0.35903	4.5e-005	       246
+   3	MA0425.1               YGR067C	VCCCCDCNNNNNNN	1.2e-002	   2.0e-005	         -10.82	         0.0	      109	        487	         165	        506	  0.22382	8.2e-008	       243
+   3	MA0431.1               YML081W	NCCCCDCWH	5.3e0000	   8.8e-003	          -4.73	         0.0	       84	        492	         119	        489	  0.17073	3.6e-005	       245
+   3	MA0443.1                   btd	RRGGGGCGKR	4.6e-006	   7.8e-009	         -18.67	         0.0	       95	        491	         144	        442	  0.19348	3.2e-011	       245
+   3	MA0450.1                   hkb	KGGGCGTGA	2.5e-015	   4.1e-018	         -40.03	         0.0	       96	        492	         127	        292	  0.19512	1.7e-020	       245
+   3	MA0145.2              Tcfcp2l1	CCAGYYYVADCCRG	4.9e0000	   8.3e-003	          -4.80	         0.0	      105	        487	         178	        625	  0.21561	3.4e-005	       243
+   3	MA0472.1                  EGR2	SHYMCRCCCACRCMC	1.2e-001	   1.9e-004	          -8.54	         0.0	       56	        486	          93	        487	  0.11523	8.1e-007	       242
+   3	MA0482.1                 Gata4	YCTTATCTSHB	9.3e-030	   1.6e-032	         -73.24	         0.0	      196	        490	         344	        513	  0.40000	6.4e-035	       244
+   3	MA0493.1                  Klf1	RRCCACACCCW	3.6e-078	   6.0e-081	        -184.72	         0.0	      100	        490	         356	        647	  0.20408	2.4e-083	       244
+   3	MA0499.1                 Myod1	NSCAGCTGYYNYB	2.5e0000	   4.1e-003	          -5.50	         0.0	      300	        488	         266	        370	  0.61475	1.7e-005	       243
+   3	MA0500.1                  Myog	RRCAGCTGSNV	7.0e-001	   1.2e-003	          -6.75	         0.0	      102	        490	          98	        307	  0.20816	4.8e-006	       244
+   3	MA0513.1   SMAD2::SMAD3::SMAD4	CTGTCTGDCACCT	1.2e0000	   2.1e-003	          -6.18	         0.0	      170	        488	         241	        549	  0.34836	8.6e-006	       243
+   3	MA0516.1                   SP2	GYCCCGCCYCYBSSS	5.9e-003	   9.8e-006	         -11.53	         0.0	      130	        486	         222	        603	  0.26749	4.1e-008	       242
+   3	MA0521.1                 Tcf12	RACAGCTGSNV	1.4e-001	   2.4e-004	          -8.33	         0.0	      102	        490	         109	        341	  0.20816	9.9e-007	       244
+   3	MA0522.1                  Tcf3	SMCAGCTGCHB	9.7e-001	   1.6e-003	          -6.43	         0.0	       96	        490	         117	        408	  0.19592	6.6e-006	       244
+   3	MA0525.1                  TP63	DDRCAWGYYCARRCWTGYHY	7.8e0000	   1.3e-002	          -4.34	         0.0	       55	        481	          68	        369	  0.11435	5.4e-005	       240
+   3	MA0007.2                    AR	ARGAACABWVTGTNC	3.4e0000	   5.7e-003	          -5.18	         0.0	       66	        486	         101	        498	  0.13580	2.3e-005	       242
+   3	MA0035.3                 Gata1	TYCTTATCTSY	7.9e-039	   1.3e-041	         -94.13	         0.0	      184	        490	         320	        459	  0.37551	5.4e-044	       244
+   3	MA0036.2                 GATA2	WRDTTCTTATCTSH	1.9e-043	   3.2e-046	        -104.75	         0.0	      179	        487	         339	        488	  0.36756	1.3e-048	       243
+   3	MA0037.2                 GATA3	AGATAAGA	5.8e-016	   9.6e-019	         -41.48	         0.0	      177	        493	         151	        225	  0.35903	3.9e-021	       246
+   3	MA0100.2                   Myb	BHAACTGYCA	4.2e0000	   7.0e-003	          -4.96	         0.0	       67	        491	          82	        386	  0.13646	2.9e-005	       245
+   3	MA0079.3                   SP1	GCCCCKCCCCC	3.4e-006	   5.7e-009	         -18.98	         0.0	      112	        490	         198	        561	  0.22857	2.4e-011	       244
+   3	MA0140.2           TAL1::GATA1	MTTATCWSNNNNNHVCAG	5.6e-033	   9.4e-036	         -80.66	         0.0	      145	        483	         251	        413	  0.30021	3.9e-038	       241
+   3	MA0531.1                  CTCF	CCRMYAGRTGGCGCY	3.5e-002	   5.9e-005	          -9.74	         0.0	      162	        486	         180	        394	  0.33333	2.4e-007	       242
+   3	MA0542.1                 ELT-3	TCTTATCA	8.3e-013	   1.4e-015	         -34.21	         0.0	       95	        493	          70	        132	  0.19270	5.6e-018	       246
+   3	MA0545.1                 HLH-1	SAACAGCTGNC	6.7e-003	   1.1e-005	         -11.40	         0.0	      100	        490	         125	        390	  0.20408	4.6e-008	       244
+   3	MA0575.1               AtMYB77	NADYGACRGTTAS	3.1e-001	   5.2e-004	          -7.56	         0.0	      148	        488	         131	        305	  0.30328	2.1e-006	       243
+   3	MA0599.1                  KLF5	GCCCCDCCCH	3.6e-043	   6.0e-046	        -104.12	         0.0	      105	        491	         308	        653	  0.21385	2.5e-048	       245
+##
+# Detailed descriptions of columns in this file:
+#
+# db:	The name of the database (file name) that contains the motif.
+# id:	A name for the motif that is unique in the motif database file.
+# alt:	An alternate name of the motif that may be provided
+#	in the motif database file.
+# consensus:	A consensus sequence computed from the motif.
+# E-value:	The expected number motifs that would have least one.
+#	region as enriched for best matches to the motif as the reported region.
+#	The E-value is the p-value multiplied by the number of motifs in the
+#	input database(s).
+# adj_p-value:	The probability that any tested region would be as enriched for
+#	best matches to this motif as the reported region is.
+#	By default the p-value is calculated by using the one-tailed binomial
+#	test on the number of sequences with a match to the motif 
+#	that have their best match in the reported region, corrected for
+#	the number of regions and score thresholds tested.
+#	The test assumes that the probability that the best match in a sequence
+#	falls in the region is the region width divided by the
+#	number of places a motif
+#	can align in the sequence (sequence length minus motif width plus 1).
+#	When CentriMo is run in discriminative mode with a negative
+#	set of sequences, the p-value of a region is calculated
+#	using the Fisher exact test on the 
+#	enrichment of best matches in the positive sequences relative
+#	to the negative sequences, corrected
+#	for the number of regions and score thresholds tested.
+#	The test assumes that the probability that the best match (if any)
+#	falls into a given region
+#	is the same for all positive and negative sequences.
+# log_adj_p-value:	Log of adjusted p-value.
+# bin_location:	Location of the center of the most enriched region.
+# bin_width:	The width (in sequence positions) of the most enriched region.
+#	A best match to the motif is counted as being in the region if the
+#	center of the motif falls in the region.
+# total_width:	The window maximal size which can be reached for this motif:
+#		rounded(sequence length - motif length +1)/2
+# sites_in_bin:	The number of (positive) sequences whose best match to the motif
+#	falls in the reported region.
+#	Note: This number may be less than the number of
+#	(positive) sequences that have a best match in the region.
+#	The reason for this is that a sequence may have many matches that score
+#	equally best.
+#	If n matches have the best score in a sequence, 1/n is added to the
+#	appropriate bin for each match.
+# total_sites:	The number of sequences containing a match to the motif
+#	above the score threshold.
+# p_success:	The probability of falling in the enriched window:
+#		bin width / total width
+# p-value:	The uncorrected p-value before it gets adjusted to the
+#	number of multiple tests to give the adjusted p-value.
+# mult_tests:	This is the number of multiple tests (n) done for this motif.
+#	It was used to correct the original p-value of a region for
+#	multiple tests using the formula:
+#		p' = 1 - (1-p)^n where p is the uncorrected p-value.
+#	The number of multiple tests is the number of regions
+#	considered times the number of score thresholds considered.
+#	It depends on the motif length, sequence length, and the type of
+#	optimizations being done (central enrichment, local enrichment,
+#	score optimization).

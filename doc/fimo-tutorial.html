@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>FIMO Tutorial - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+  </head>
+  <body>
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <h2>FIMO Tutorial</h2>
+    <h3>What FIMO does</h3>
+    <div class="indent">
+       <span class="tut blurb" data-id="fimo"></span>
+    </div>
+    <h3>Typical FIMO applications</h3>
+       <ul>
+         <li>Determining all the positions where a transcription factor (TF) motif matches in one or more 
+		promoter sequences.
+         <li>Predicting exactly where a TF binds in each of its ChIP-seq peaks using a known motif (from one
+		of the databases provided) or a <i>de novo</i> motif discovered by a motif discovery algorithm 
+		such as MEME or DREME.
+         <li>Determining all the positions where a protein motif matches in one or more protein sequences.
+       </ul>
+    <h3>How FIMO works</h3>
+    <p>
+	FIMO converts each input motif into a log-odds PSSM and uses each PSSM to independently scan each input
+	sequence.  It reports all positions in each sequence that match a motif with a statistically significant log-odds
+	score.  You can control the match <i>p</I>-value that is considered significant, and whether or not
+	FIMO reports matches on both strands when the sequence alphabet is complementable (e.g., DNA or RNA).
+    </p>
+    <h3>Sequence and Motif Alphabets</h3>
+    <p>
+    	FIMO supports DNA, RNA, protein and custom sequence alphabets.  The alphabet is specified in the motif file, 
+	and the sequences being searched must be compatible with that alphabet.  (DNA motifs can be used to search
+	RNA sequences and vice-versa.) 
+    </p>
+    <h3>Sequence Database</h3>
+    <p>
+	These sequences should all be in the same sequence alphabet.  Their lengths may vary.
+	They can, for example, be a set of promoters thought to be co-regulated, a set of ChIP-seq regions or
+	the proteome of an organism.
+    </p>
+    <h3>FAQ</h3>
+      <ul>
+         <li><b>When should I use FIMO rather than MAST?</b></li>
+           <p> MAST is intended for searching "short" sequences such as proteins,
+		whereas FIMO is more appropriate for sequences of any length.
+	    	Also, MAST reports a single score for each scanned sequence that
+	    	combines the best match to each of the motifs in its input.
+	    	So MAST is most useful when you need a way to rank your sequences
+	    	based on how well each sequence matches all (or many) of your motifs.
+	    	FIMO does not combine match scores in any way, and reports all
+	    	matches separately, so it is useful when you want to know exactly
+	    	where the signals your motifs describe are located in each input sequence.
+           </p>
+         <li><b>Does it make sense to scan an entire genome with transcription factor motifs using FIMO?</b></i>
+           <p>This is probably a bad idea for several reasons, and it may be preferable to
+		focus on shorter regions such as promoters, enhancers or ChIP-seq peak regions.
+		Also, if you have them, FIMO can make use additional sources of information, 
+		like DNAse hypersensitivity, to help distinguish chance matches from the 
+		biologically significant ones. More information about that is available in the 
+		FIMO documentation about using <a href=fimo.html> position specific priors</a>. 
+	   </p>
+	   <p>
+		The first problem with scanning a genome is that genomes are very large and transcription factor
+		affinities are not very specific.  Motifs typically only have 8 bases or less
+		of specificity, and all 8-mers occur many millions of times in a eukaryotic genome.
+	   </p>
+	   <p>
+		Another way of viewing this problem is that when you use FIMO to scan a eukaryotic genome you 
+		have a significant multiple testing problem. FIMO's default match <i>p</i>-value threshold is 0.0001,
+		and scanning a eukaryotic genome would apply that test billions of times. 
+		That means you are going to get hundreds of thousands of matches entirely by chance. 
+		These most likely will completely overwhelm the biologically significant matches. 
+		When scanning something like the mouse genome, for example, you would have to apply 
+		a very stringent match, threshold, 1e-10 to reduce the false positive rate to something
+		reasonable.  
+	    </p>
+	    <p>You can reduce the multiple testing problem somewhat by using the command line version of 
+		FIMO and using a <i>q</i>-value threshold rather than a <i>p</i>-value threshold.
+		The <i>q</i>-value is similar to a <i>p</i>-value but corrected for multiple testing. 
+		Like a <i>p</i>-value, a <i>q</i>-value of 0.01 or less is a reasonable
+		threshold for significance.  However, to compute <i>q</i>-values, 
+		FIMO has to hold all the matches in memory. When scanning a full genome this can
+		easily require tens of GB of memory. To avoid causing memory problems, 
+		FIMO limits the number of results it will hold in memory to 100,000. 
+		When using the command line version this can be adjusted using the 
+		<code>--max-stored-scores</code> option. Each time FIMO reaches the 
+		maximum allowed number of stored scores, it will decrease the <i>p</i>-value threshold 
+		until it has eliminated at least half the scores.
+	    </p>
+	    <p>To fix the memory problem, you can use the <code>--text</code> option. This turns off the 
+		computation of <i>q</i>-values entirely, and directs FIMO to print out each match as it occurs. 
+		You could use this to get a full list at your desired <i>p</i>-value threshold. 
+		However, this does not fix the multiple testing problem. Unless you a set a stringent 
+		<i>p</i>-value threshold the biologically significant matches are going to be overwhelmed 
+		by the matches that are statistically significant due to chance. Note that short 
+		motifs pose a particular problem, because even a perfect match may not be 
+		strongly statistically significant, so that a threshold that is stringent enough 
+		to eliminate the chance matches will end up eliminating <b>all</b> matches.
+
+	    </p>
+         <li><b>Does it make sense to scan all the promoters in a genome with transcription factor motifs using FIMO?</b></i>
+	    <p>
+		It might, but only if your definition of "promoter" is shorter than 1000bp.  
+	    </p>
+	    <p>
+		By default, FIMO uses a <i>p</i>-value threshold of 0.0001, and scans both DNA strands, so that
+		means you will expect about one "match" every five promoters <b>simply by chance</b>, which might be a tolerable
+		false-positive rate (20%), depending on what you intend to do next.  The (approximate) formula
+		is: #false-positives/promoter = (2 * promoter length) * <i>p</i>-value threshold.
+	    </p>
+	    <p>
+		If your promoters are longer than 1000bp, you would need to decrease the <i>p</i>-value threshold
+		to compensate.  For 5000bp promoters, you would need to divide the <i>p</i>-value threshold by
+		five, giving a threshold of 0.00002.  The problem is, for some transcription factor
+		motifs, the <b>best possible match</b> to the motif is <b>not significant</b> at this level.
+		Hence the advice to limit FIMO searches with TF motifs to promoter regions no longer than
+		1000bp.
+	    </p>
+<p>
+A more extensive discussion of these multiple testing issues can be found in <a href="http://www.nature.com/nbt/journal/v27/n12/full/nbt1209-1135.html">"How does multiple testing correction work"</a> by W. Noble (<i>Nature Methods</i> 27:1135-9, 2009).  The CTCF example in Figure 1 in that paper was generated using FIMO.
+</p>
+         <li><b>Should I use a background model with FIMO?</b></i>
+	    <p>
+		Yes, definitely.  
+	    </p>
+	    <p>
+		If you are using FIMO via the web and select one of the sequence databases
+		provided, FIMO will use a background model based on the base (or residue) frequencies in the sequences
+		you select.
+	    </p>
+	    <p>
+		If you run FIMO on the command line, you need to create and provide FIMO with an
+		appropriate background model background.  You can do this with the script
+		<a href=fasta-get-markov.html><code>fasta-get-markov</code></a>.  If your
+		input sequences are diverse and contain several bases/residues or more, 
+		you can simply run that script on your input sequences to create a background
+		model.  Alternatively, you can create a background model in the same way
+		from a large set of randomly selected sequence regions.  Those sequences should
+		be biologically similar to the sequences you intend to scan with FIMO.
+	    </p>
+      </ul>
+    <p>
+  </body>
+</html>
+

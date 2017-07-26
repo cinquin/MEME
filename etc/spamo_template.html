@@ -1,0 +1,858 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>SpaMo - Spaced Motif Analysis</title>
+    <script src="spamo_data.js"></script>
+    <script src="constants.js"></script>
+    <script src="utilities.js"></script>
+    <script src="eps_context.js"></script>
+    <script src="delay_draw.js"></script>
+    <script src="motif_logo_template.js"></script>
+    <script src="motif_logo.js"></script>
+    <script src="spamo_graph.js"></script>
+    <script src="spamo_template.js"></script>
+    <link rel="stylesheet" type="text/css" href="meme.css">
+    <link rel="stylesheet" type="text/css" href="spamo_template.css">
+  </head>
+  <body data-scrollpad="true">
+    <!-- {{{ help topics -->
+    <div class="pop_content" id="pop_primary_db">
+      <p>The database of the primary motif.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_primary_name">
+      <p>The ID of the primary motif followed by the alternate ID in brackets if it has one.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_primary_preview">
+      <p>The logo of the primary motif.</p>
+      <p>Sections of the motif with a gray background have been trimmed and 
+        were not used for scanning.</p>
+      <div style="float:right; bottom:0px;">[
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_primary_nsig">
+      <p>The number of secondary motifs found that had significant spacings in 
+        the tested region.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_primary_sigs">
+      <p>The list of secondary motifs found that had significant spacings in 
+        the tested region.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_seqs_name">
+      <p>The name of the sequence database.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_seqs_last_modified">
+      <p>The last modified date of the sequence database.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_seqs_loaded">
+      <p>The number of sequences in the sequence database.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_seqs_too_short">
+      <p>The number of sequences in the sequence database which were excluded 
+        because they were shorter than twice the margin plus the primary motif 
+        length.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_seqs_ambiguous">
+      <p>The number of sequences in the sequence database which were excluded 
+        because they contained large runs of ambiguous symbols (normally
+        wildcard masking) that could bias the results.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_seqs_no_primary">
+      <p>The number of sequences in the sequence database which were excluded 
+        because no match to the primary motif could be found at a distance to 
+        the edges larger than the margin.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_seqs_too_similar">
+      <p>The number of sequences in the sequence database which were excluded 
+        because they were largly identical to other sequences when aligned on
+        the primary motif site.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_seqs_used">
+      <p>The number of sequences which were scanned with the secondary 
+        motifs.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sdb_name">
+      <p>The name of the motif database derived from the file name.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sdb_last_modified">
+      <p>The date that the motif database was last modified.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sdb_num_motifs">
+      <p>The number of motifs loaded from the motif database. Some motifs may 
+        have been excluded.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sdb_sig_motifs">
+      <p>The number of motifs with significant <i>E</i>-values whose
+        significant spacings were not considered too similar to those of another motif.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sdb_redundant_motifs">
+      <p>The number of motifs that while having significant spacings were less 
+        signficant than another motif that matched
+      most of the same sites.</p>
+    <div style="float:right; bottom:0px;">[ 
+      <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_sa_lock">
+      <p>This checkbox ensures the row stays visible after a filter operation
+      that would normally hide it.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sa_id">
+      <p>The ID of the secondary motif.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sa_alt">
+      <p>The alternate name of the secondary motif.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sa_name">
+      <p>The ID of the secondary motif followed by the alternate ID in brackets if it has one.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sa_cluster">
+      <p>The name of the cluster to which this secondary motif belongs.
+        SpaMo assigns each secondary motif to a cluster, and names the
+	cluster after the motif in it with the most significant spacing.
+	SpaMo assigns two secondary motifs to the same cluster if the matches
+	in their most significant spacings (from the primary motif) overlap substantially.
+	Clustering is controlled by the -joint and -overlap options.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sa_evalue">
+      <p>The <i>E</i>-value is the lowest <i>p</i>-value of any spacing of the
+        secondary motif times the number of secondary motifs.
+        It estimates the expected number of <i>random</i> secondary motifs that
+        would have the observed minimum <i>p</i>-value or less.
+      </p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sa_gap">
+      <p>The gap between the primary and secondary motifs for the most significant spacing.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sa_orient">
+      <p>The strand and position of the secondary motif relative to the primary motif for the most significant spacing.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sa_minscore">
+      <p>The minimum score accepted as a match to either the primary or secondary motif.  This value
+        can greatly affect the results of SpaMo.  If it is too high, there will be no
+        matches to the primary motif.  If too low, sequences with non-significant matches
+        to the primary and/or secondary motif will reduce the effectiveness of the spacing analysis.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sa_margin">
+      <p> The distance either side of the primary motif site which makes up the region that 
+        can contain the secondary motif site. Additionally it is the minimum gap between 
+        the primary motif site and the edge of the sequence. These constraints mean that 
+        input sequences shorter than the trimmed length of the primary motif plus two 
+        times the margin size can not be used by SpaMo.
+      </p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sa_spacings">
+      <p>A histogram showing the counts for the orientation with the best spacing.</p>
+      <p>The significant spacings are highlighted in red.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_primary">
+      <p>The primary motif is used as the reference point for all spacing 
+        calculation.</p>
+      <p>Sections of the motif with a gray background have been trimmed and 
+        were not used for scanning.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_secondary">
+      <p>The secondary motif occurs at the spacings relative to the primary 
+        shown in the histogram below.</p>
+      <p>Sections of the motif with a gray background have been trimmed and 
+        were not used for scanning.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_inferred_secondary">
+      <p>The regions matching the secondary motif in the sequences with
+        the given spacing are used to construct a motif.  The logo
+        for this "inferred" motif is shown aligned with that of the actual
+        secondary motif.</p>
+      <p>The inferred secondary motif logo should closely resemble that
+        of the secondary motif.  If it does not, this may suggest that
+        the observed spacing may actually be due to the enrichment of a motif
+        that differs from the secondary motif.</p>
+      <p>You can download the inferred secondary motif by moving the mouse
+        cursor over the logo and clicking "Download as MEME motif". You can then
+        use this downloaded motif as an input to Tomtom to see what other known
+        motifs it may resemble.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_alignment_logos">
+      <p>These are the sequence logos created by aligning all of the
+        sequences with the significant motif spacing. Alignments
+        are centered on the match to the primary motif and done
+        separately for each of the quadrants that contribute to the
+        significant spacing.  The logos extend in both
+        directions (up to) 10 positions past the maximum region 
+        considered in the significance tests.
+
+     <p><b>Note 1:</b> If you don't
+	see the complete logo(s), you can use the scroll bar underneath
+	the Alignment window.  If you don't see a scroll bar and are
+	on a Mac, you can turn on scroll bars by clicking on the Apple Icon
+	at the top left of your terminal and clicking:
+	<code>System Preferences/General/Show scroll bars/Always</code>.</p>
+
+      <p><b>Note 2:</b>These logos are useful for detecting cases where highly
+        similar regions (such as DNA repeats) are present 
+        among the sequences with the significant motif spacing.
+        Such cases may indicate that the spacing is due
+        to recent duplication events rather than to
+        a functional biological relationship between
+        the primary and secondary motifs.  Ideally, the 
+        regions around the primary and secondary motifs should
+        have low information content and their logos in the
+        alignment should closely match their motifs.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_spacings">
+      <p>This table shows the details of the significant spacings between the primary motif
+      and the secondary motif currently selected in the "Secondaries" section, below.
+      Click on a row in this table to select a particular spacing for detailed analysis.</p>
+      <dl>
+      <dt>Gap</dt> 
+      <dd>is the space between the primary and secondary motifs where a value 
+        of zero means there is no space between them. Note that if a motif
+        has had low information content areas trimmed off this is the
+        gap to the first untrimmed position.</dd> 
+      <dt>Orientation</dt> 
+      <dd>is the combination of quadrants used. Possible values are:
+      individual quadrants (up+, up-, dn+, dn-) which are important
+      when neither motif is palindromic; the diagonally combined quadrants
+      (up+/dn-, up-/dn+) which are important when only the primary motif is
+      palindromic; the vertically combined quadrants (up+/up-, dn+/dn-) which
+      are important when only the secondary motif is palindromic; and all
+      quadrants combined together (all) which is important when both motifs are
+      palindromes.</dd> 
+      <dt>P-value</dt> 
+      <dd>is the probability of the observed number (or more) sequences
+          having the observed spacing between the primary and secondary motif,
+          adjusted for multiple tests.  The number of multiple tests is the 
+          number of spacing bins (the number of bars in one quadrant of the histogram)
+          times the number of combinations of quadrants (nine)
+          tested for significance.</dd> 
+      </dl>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_histogram">
+      <p>The histogram below shows the frequency of spacings from the primary 
+        motif to the secondary motif.</p>
+      <p>The two quadrants on the left show spacings where the secondary motif
+      is upstream of the primary motif and the two quadrants on the right show
+      spacings where the secondary motif is downstream of the primary motif.</p>
+      <p>The two quadrants on the top show spacings where the secondary motif
+      is on the same strand as the primary motif and the two quadrants on the
+      bottom show spacings where the secondary motif is on the opposite strand
+      to the primary motif.</p>
+      <p>Histogram bars highlighted pink are part of one of the listed significant
+      spacings. This feature can be disabled by unchecking the "highlight all"
+      option under the spacings.</p>
+      <p>Histogram bars highlighted red are part of the currently selected
+      significant spacing. This feature can be disabled by unchecking the
+      "highlight selected" option under the spacings.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_selected_orient">
+      <p>The selected orientation graph shows the combined quadrants from the
+      selected spacing with a zoomed view that only shows the portion of the
+      graph for which significance testing was performed.</p>
+      <p>Histogram bars highlighted pink are one of the listed significant
+      spacings for this orientation. This feature can be disabled by unchecking
+      the "highlight all" option under the spacings.</p>
+      <p>The histogram bar highlighted red is the currently selected
+      significant spacing. This feature can be disabled by unchecking the
+      "highlight selected" option under the spacings.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_seq_ids">
+      <p>This lists the FASTA sequence identifiers of the subset of sequences
+        that contain the significant motif spacing.</p>
+      <p>These identifiers can be cut-and-pasted into other 
+        programs for further analysis (e.g., Genome Ontology
+        analysis or location analysis in the case ChIP-seq peak regions).</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_secondaries">
+      <p>Click on a row in this table to select one of the significant
+      secondary motifs for detailed analysis.
+      The details of the significant spacings between the primary motif
+      and the secondary motif you select here will be displayed in the
+      table and plots above.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_filter">
+      <p>Specify which secondary motifs to display in the Secondaries table
+	by checking one or more of the tick boxes below and then entering
+        filter criteria.  Then click "Update" to refresh the view of the
+        Secondaries table.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sort">
+      <p>Specify the order in which secondary motifs are displayed in the Secondaries table
+	by selecting a sorting criteria in the menu below.
+        Then click "Update" to refresh the view of the
+        Secondaries table.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <!-- }}} -->
+
+    <!-- logo popup -->
+    <div id="logo_popup" class="pop_logo">
+      <canvas id="logo_popup_canvas" width="200" height="50"></canvas>
+      <canvas id="logo_popup_canvas_rc" width="200" height="50"></canvas>
+    </div>
+
+    <!-- page start -->
+    <div class="pad1">
+      <div class="prog_logo big">
+        <img src="spamo_icon.png" alt="SpaMo Logo"/>
+        <h1>SpaMo</h1>
+        <h2>Spaced Motif Analysis Tool</h2>
+      </div>
+      <p>
+        For further information on how to interpret these results or to get a 
+        copy of the MEME software please access 
+        <a href="http://meme.nbcr.net/">http://meme.nbcr.net</a>. 
+      </p>
+      <p>
+        If you use SpaMo in your research please cite the following paper:<br />
+        <span class="citation">
+          Tom Whitington, Martin C. Frith, James Johnson and Timothy L. Bailey,
+          "Inferring transcription factor complexes from ChIP-seq data",
+          <i>Nucleic Acids Research</i>, <b>39</b>(15):e98, 2011.
+          <a href="http://nar.oxfordjournals.org/content/39/15/e98">[full text]</a>
+        </span>
+      </p>
+    </div>
+    <!-- navigation -->
+    <div class="pad2">
+      <a class="jump" href="#primary_motifs">Primary Motif</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
+        class="jump" href="#sequence_dbs">Sequence Database</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
+        class="jump" href="#secondary_dbs">Secondary Databases</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
+        class="jump" href="#spacings">Spacing Analysis</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
+        class="jump" href="#inputs_sec">Inputs and Settings</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
+        class="jump" href="#program">Program information</a>
+    </div>
+
+    <div id="primary_motifs" class="header">
+      <h2>Primary Motifs</h2>
+      <span><a href="#sequence_dbs">Next</a> <a href="#">Top</a></span>
+    </div>
+    <div class="box">
+      <table id="pri_tbl" class="th_ul">
+        <thead>
+          <tr>
+            <th><span>Database <div class="help" data-topic="pop_primary_db"></div></span></th>
+            <th><span>Name <div class="help" data-topic="pop_primary_name"></div></span></th>
+            <th><span>Preview <div class="help" data-topic="pop_primary_preview"></div></span></th>
+            <th><span>Significant Secondaries <div class="help" data-topic="pop_primary_nsig"></div></span></th>
+            <th><span>List <div class="help" data-topic="pop_primary_sigs"></div></span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="pri_row">
+            <td class="pri_db"></td>
+            <td class="pri_name"></td>
+            <td><canvas class="pri_logo" height="50"></canvas></td>
+            <td class="pri_nlist"></td>
+            <td><div class="ml pri_list"></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <script>make_pri_table();</script>
+
+    <div id="sequence_dbs" class="header">
+      <h2>Sequence Databases</h2>
+      <span><a href="#secondary_dbs">Next</a> <a href="#primary_motifs">Previous</a> <a href="#">Top</a></span>
+    </div>
+    <div class="box">
+      <table id="seq_tbl" class="th_ul">
+        <thead>
+          <tr>
+            <th><span>Name <div class="help" data-topic="pop_seqs_name"></div></span></th>
+            <th><span>Last Modified <div class="help" data-topic="pop_seqs_last_modified"></div></span></th>
+            <th><span>Contained <div class="help" data-topic="pop_seqs_loaded"></div></span></th>
+            <th><span>Too Short <div class="help" data-topic="pop_seqs_too_short"></div></span></th>
+            <th><span>Too Masked <div class="help" data-topic="pop_seqs_ambiguous"></div></span></th>
+            <th><span>No Primary <div class="help" data-topic="pop_seqs_no_primary"></div></span></th>
+            <th><span>Too Similar <div class="help" data-topic="pop_seqs_too_similar"></div></span></th>
+            <th><span>Used <div class="help" data-topic="pop_seqs_used"></div></span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="seq_row">
+            <td class="seq_name"></td>
+            <td class="seq_last_modified"></td>
+            <td class="seq_loaded"></td>
+            <td class="seq_too_short"></td>
+            <td class="seq_ambiguous"></td>
+            <td class="seq_no_primary"></td>
+            <td class="seq_too_similar"></td>
+            <td class="seq_used"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <script>make_seq_table();</script>
+
+    <div id="secondary_dbs" class="header">
+      <h2>Secondary Motif Databases</h2>
+      <span><a href="#inputs_sec">Next</a> <a href="#sequence_dbs">Previous</a> <a href="#">Top</a></span>
+    </div>
+    <div class="box">
+      <table id="sdb_tbl" class="th_ul">
+        <thead>
+          <tr>
+            <th><span>Name <div class="help" data-topic="pop_sdb_name"></div></span></th>
+            <th><span>Last Modified <div class="help" data-topic="pop_sdb_last_modified"></div></span></th>
+            <th><span>Number of Motifs <div class="help" data-topic="pop_sdb_num_motifs"></div></span></th>
+            <th><span>Motifs Significant <div class="help" data-topic="pop_sdb_sig_motifs"></div></span></th>
+            <th><span>Motifs Redundant <div class="help" data-topic="pop_sdb_redundant_motifs"></div></span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="sdb_row">
+            <td class="sdb_name"></td>
+            <td class="sdb_last_modified"></td>
+            <td class="sdb_loaded"></td>
+            <td class="sdb_sig_motifs"></td>
+            <td class="sdb_redundant_motifs"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <script>make_sdb_table();</script>
+
+    <div id="inputs_sec" class="header">
+      <h2>Settings</h2>
+      <span><a href="#spacings">Next</a> <a href="#secondary_dbs">Previous</a> <a href="#">Top</a></span>
+    </div>
+    <div class="box">
+      <table id="tbl_settings" class="inputs hide_advanced">
+	<tr>
+	  <th>Match Score Threshold <div class="help" data-topic="pop_sa_minscore"></div> &nbsp;&nbsp;</th>
+	  <td id="opt_minscore"></td>
+	</tr>
+	<tr>
+	  <th>Margin size <div class="help" data-topic="pop_sa_margin"></div> </th>
+	  <td id="opt_margin"></td>
+	</tr>
+	<tr class="advanced">
+	  <th>Width of histogram bins</th>
+	  <td id="opt_bin"></td>
+	</tr>
+	<tr class="advanced">
+	  <th>Significance computed up to this distance &nbsp;&nbsp;</th>
+	  <td id="opt_range"></td>
+	</tr>
+	<tr class="advanced">
+	  <th>Secondary match handling</th>
+	  <td id="opt_usebestsec">
+	    <span class="sec_best">Count only the best secondary match above the score threshold</span>
+	    <span class="sec_all">Count all secondary matches above the match score threshold</span>
+	  </td>
+	</tr>
+	<tr class="advanced">
+	  <th>Maximum allowed sequence identity</th>
+	  <td id="opt_shared"></td>
+	</tr>
+	<tr class="advanced">
+	  <th>Odds ratio for redundancy heuristic</th>
+	  <td id="opt_odds"></td>
+	</tr>
+	<tr class="advanced">
+	  <th>Bin <i>p</i>-value cutoff</th>
+	  <td id="opt_cutoff"></td>
+	</tr>
+	<tr class="advanced">
+	  <th>Secondary motif <i>E</i>-value cutoff</th>
+	  <td id="opt_evalue"></td>
+	</tr>
+	<tr class="advanced">
+	  <th>Overlapping bases for redundancy check</th>
+	  <td id="opt_overlap"></td>
+	</tr>
+	<tr class="advanced">
+	  <th>Fraction of sites for redundancy check</th>
+	  <td id="opt_joint"></td>
+	</tr>
+	<tr class="advanced">
+	  <th>Pseudocount added to motifs</th>
+	  <td id="opt_pseudo"></td>
+	</tr>
+	<tr class="advanced">
+	  <th>Background model for motifs</th>
+	  <td id="opt_bgfile"></td>
+	</tr>
+	<tr class="advanced">
+	  <th>Bit threshold for trimming motif edges</th>
+	  <td id="opt_trim"></td>
+	</tr>
+	<tr class="advanced">
+	  <th>Primary and secondary motif alphabets</th>
+	  <td id="opt_xalph">
+	    <span class="xalph_true">Converting secondary alphabet to primary alphabet</span>
+	    <span class="xalph_false">Primary and secondary alphabets must match</span>
+	  </td>
+	</tr>
+	<tr class="advanced">
+	  <th>Random number seed</th>
+	  <td id="opt_numgen"></td>
+	</tr>
+	<tr>
+	  <td colspan="2" style="text-align: center">
+	    <a href="javascript:toggle_class(document.getElementById('tbl_settings'), 'hide_advanced')">
+	      <span class="show_more">Show Advanced Settings</span>
+	      <span class="show_less">Hide Advanced Settings</span>
+	    </a>
+	  </td>
+	</tr>
+      </table>
+      <script>
+      {
+	$("opt_minscore").textContent = (data.options.seq_min_hit_score >= 0)
+          ? data.options.seq_min_hit_score + " (bits)"
+          : -100 * data.options.seq_min_hit_score + "% of the maximum possible match score for the motif";
+	$("opt_margin").textContent = data.options.margin;
+	$("opt_bin").textContent = data.options.bin_size;
+	$("opt_range").textContent = data.options.bin_pvalue_calc_range;
+	$("opt_usebestsec").className = data.options.use_best_secondary ? "best" : "all";
+	$("opt_shared").textContent = data.options.seq_max_shared_fract;
+	$("opt_odds").textContent = data.options.seq_odds_ratio;
+	$("opt_cutoff").textContent = data.options.bin_pvalue_cutoff;
+	$("opt_evalue").textContent = data.options.motif_evalue_cutoff;
+	$("opt_overlap").textContent = data.options.redundant_overlap;
+	$("opt_joint").textContent = data.options.redundant_joint;
+	$("opt_pseudo").textContent = data.options.motif_pseudocount;
+	$("opt_bgfile").textContent = data.options.bgfile ? data.options.bgfile : "Computed from input sequences";
+	$("opt_trim").textContent = data.options.motif_trim;
+	$("opt_xalph").className = data.options.xalph ? "convert" : "no_convert";
+	$("opt_numgen").textContent = data.options.seed;
+      }
+      </script>
+    </div>
+
+    <div id="spacings">
+      <div id="tmpl_primary">
+        <div class="header">
+          <h2>Spacing Analysis for <span class="sa_primary_name"></span></h2>
+          <span><a href="#program">Next</a> <a href="#inputs_sec">Previous</a> <a href="#">Top</a></span>
+        </div>
+        <div class="box">
+          <div>
+            <table class="sa_summary">
+              <tr>
+                <th>Secondary Motif:</th>
+                <td><span class="sa_name"></span> <div class="help" data-topic="pop_sa_name"></div></td>
+                <th>Cluster:</th>
+                <td><span class="sa_cluster"></span> <div class="help" data-topic="pop_sa_cluster"></div></td>
+                <th>E-value:</th>
+                <td><span class="sa_evalue"></span> <div class="help" data-topic="pop_sa_evalue"></div></td>
+                <th>Best Gap:</th>
+                <td><span class="sa_gap"></span> <div class="help" data-topic="pop_sa_gap"></div></td>
+                <th>Best Orientation:</th>
+                <td><span class="sa_orient"></span> <div class="help" data-topic="pop_sa_orient"></div></td>
+              </tr>
+            </table>
+          </div>
+          <div class="sp_info">
+            <h3>Primary Motif Logo <div class="help" data-topic="pop_primary"></div></h3>
+            <div><canvas class="sa_plogo_in" height="100" width="0"></canvas></div>
+          </div>
+          <div class="sp_info">
+            <h3>Secondary Motif Logo <div class="help" data-topic="pop_secondary"></div></h3>
+            <div><canvas class="sa_slogo_in" height="100" width="0"></canvas></div>
+            <h3>Inferred Secondary Motif Logo <div class="help" data-topic="pop_inferred_secondary"></div></h3>
+            <div>
+              <div class="overlink">
+                <span class="top">
+                  <a href="#" class="sa_slogo_out_eps">Download as EPS</a>
+                </span>
+                <span class="base">
+                  <a href="#" class="sa_slogo_out_meme">Download as MEME motif</a>
+                </span>
+                <canvas class="sa_slogo_out" height="100" width="0"></canvas>
+              </div>
+            </div>
+            <div style="text-align:center"><a href="#" class="sa_slogo_eps">Download as EPS</a></div>
+          </div>
+          <div class="sp_info" style="min-width:100px;">
+            <table class="th_ul">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th><span class="th_ul">Alignment Logo<div class="help" data-topic="pop_alignment_logos"></div></span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>Up<span class="revcomp">+</span></th>
+                  <td>
+                    <div class="overlink">
+                      <span class="top"><a class="sa_align_up_pos_eps">Download as EPS</a></span>
+                      <span class="base"><a class="sa_align_up_pos_meme">Download as MEME motif</a></span>
+                      <div class="sa_scroll_up_pos">
+                        <canvas class="sa_align_up_pos" height="40"></canvas>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="revcomp">
+                  <th>Up-</th>
+                  <td>
+                    <div class="overlink">
+                      <span class="top"><a class="sa_align_up_neg_eps">Download as EPS</a></span>
+                      <span class="base"><a class="sa_align_up_neg_meme">Download as MEME motif</a></span>
+                      <div class="sa_scroll_up_neg">
+                        <canvas class="sa_align_up_neg" height="40"></canvas>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th style="white-space:nowrap">Dn<span class="revcomp">+</span></th>
+                  <td>
+                    <div class="overlink">
+                      <span class="top"><a class="sa_align_dn_pos_eps">Download as EPS</a></span>
+                      <span class="base"><a class="sa_align_dn_pos_meme">Download as MEME motif</a></span>
+                      <div class="sa_scroll_dn_pos">
+                        <canvas class="sa_align_dn_pos" height="40"></canvas>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="revcomp">
+                  <th>Dn-</th>
+                  <td>
+                    <div class="overlink">
+                      <span class="top"><a class="sa_align_dn_neg_eps">Download as EPS</a></span>
+                      <span class="base"><a class="sa_align_dn_neg_meme">Download as MEME motif</a></span>
+                      <div class="sa_scroll_dn_neg">
+                        <canvas class="sa_align_dn_neg" height="40"></canvas>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>&nbsp;</td>
+                  <td>
+                    <div class="sa_align_scrollbox">
+                      <div class="sa_align_scroll"></div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div style="text-align:center"><a href="#" class="sa_align_eps">Download as EPS</a></div>
+          </div>
+          <br>
+          <div class="sp_info">
+            <h3>Spacings <div class="help" data-topic="pop_spacings"></div></h3>
+            <div class="sa_spacings_anchor">
+              <div class="sa_spacings_scroll">
+                <table class="sa_spacings th_ul nowrap">
+                  <thead>
+                    <tr class="fixed_header">
+                      <th>
+                        Gap
+                        <div class="fill_back"></div>
+                        <div>Gap</div>
+                      </th>
+                      <th>
+                        Orientation
+                        <div>Orientation</div>
+                      </th>
+                      <th>
+                        <i>p</i>-value
+                        <div><i>p</i>-value</div>
+                      </th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+            Highlight:
+            <input type="checkbox" class="sa_hl_sel_chk" checked>
+            <label class="sa_hl_sel_lbl">Selected</label>
+            <input type="checkbox" class="sa_hl_all_chk" checked>
+            <label class="sa_hl_all_lbl">All</label>
+          </div>
+          <div class="sp_info">
+            <h3>Overview Graph <div class="help" data-topic="pop_histogram"></div></h3>
+            <canvas class="sa_overview_graph" width="350" height="300"></canvas>
+            <div style="text-align:center"><a href="#" class="sa_overview_graph_dl">Download as EPS</a></div>
+          </div>
+          <div class="sp_info">
+            <h3>Selected Orientation Graph <div class="help" data-topic="pop_selected_orient"></div></h3>
+            <canvas class="sa_selected_graph" width="400" height="300"></canvas>
+            <div style="text-align:center"><a href="#" class="sa_selected_graph_dl">Download as EPS</a></div>
+          </div>
+          <div class="sp_info">
+            <h3>Contributing Sequences (<span class="sa_contr_seq_count"></span>) <div class="help" data-topic="pop_seq_ids"></div></h3>
+            <textarea class="sa_contr_seqs" cols="30" wrap="off" readonly></textarea>
+            <br>
+            <select class="sa_contr_seqs_format">
+              <option value="0">Plain Format</option>
+              <option value="1">BED Format</option>
+            </select>
+            <a href="#" class="sa_contr_seqs_dl">Download</a>
+          </div>
+          <h3>Secondaries <div class="help" data-topic="pop_secondaries"></div></h3>
+          <div>
+            <div class="box" style="float:right">
+              <h4>Filter <div class="help" data-topic="pop_filter"></div></h4>
+              <div>
+                <input type="checkbox" class="sa_filter_chk_top">
+                <label class="sa_filter_lbl_top">Top</label>
+                <input type="number" class="sa_filter_ipt_top" size="4" value="10" min="0" step="1" disabled>
+              </div>
+              <div>
+                <input type="checkbox" class="sa_filter_chk_id">
+                <label class="sa_filter_lbl_id">ID matches</label>
+                <input type="text" class="sa_filter_ipt_id" size="12" value=".*" disabled>
+              </div>
+              <div>
+                <input type="checkbox" class="sa_filter_chk_name">
+                <label class="sa_filter_lbl_name">Name matches</label>
+                <input type="text" class="sa_filter_ipt_name" size="12" value=".*" disabled>
+              </div>
+              <div>
+                <input type="checkbox" class="sa_filter_chk_cluster">
+                <label class="sa_filter_lbl_cluster">Cluster matches</label>
+                <input type="text" class="sa_filter_ipt_cluster" size="12" value=".*" disabled>
+              </div>
+              <div>
+                <input type="checkbox" class="sa_filter_chk_ev">
+                <label class="sa_filter_lbl_ev"><i>E</i>-value &le;</label>
+                <input type="text" class="sa_filter_ipt_ev" size="4" value="1" disabled>
+              </div>
+              <div>
+                <input type="checkbox" class="sa_filter_chk_pv_gap">
+                <label class="sa_filter_lbl_gap">Gaps (ranges allowed)</label>
+                <input type="text" class="sa_filter_ipt_gap" size="4" value="0-10" disabled>
+              </div>
+
+              <h4>Sort <div class="help" data-topic="pop_sort"></div></h4>
+              <div>
+                <label class="sa_sort_lbl">Sort by</label>
+                <select class="sa_sort">
+                  <option value="0">ID</option>
+                  <option value="1">Name</option>
+                  <option value="2">Cluster</option>
+                  <option value="3" selected>E-value</option>
+                  <option value="4">Gap</option>
+                  <option value="5">Orientation</option>
+                  <option value="6">Spacing</option>
+                </select>
+              </div>
+              
+              <input type="button" class="sa_update_filter_sort" value="Update">
+            </div>
+            <table class="sa_table th_ul">
+              <thead>
+                <tr>
+                  <th><span class="th_ul">Lock <div class="help" data-topic="pop_sa_lock"></div></span></th>
+                  <th><span class="th_ul">ID <div class="help" data-topic="pop_sa_id"></div></span></th>
+                  <th><span class="th_ul">Name <div class="help" data-topic="pop_sa_alt"></div></span></th>
+                  <th><span class="th_ul">Cluster <div class="help" data-topic="pop_sa_cluster"></div></span></th>
+                  <th><span class="th_ul">E-value <div class="help" data-topic="pop_sa_evalue"></div></span></th>
+                  <th><span class="th_ul">Best Gap <div class="help" data-topic="pop_sa_gap"></div></span></th>
+                  <th><span class="th_ul">Best Orientation <div class="help" data-topic="pop_sa_orient"></div></span></th>
+                  <th><span class="th_ul">Spacings <div class="help" data-topic="pop_sa_spacings"></div></span></th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>make_spacing_analysis();</script>
+
+    <div id="program" class="bar">
+      <div style="text-align:right;"><a href="#spacings">Previous</a> <a href="#">Top</a></div>
+      <div class="subsection">
+        <h5>SpaMo version</h5>
+        <span id="version"></span> (Release date: <span id="release"></span>)
+      </div>
+      <div class="subsection">
+        <h5>Reference</h5>
+        <span class="citation">
+          Tom Whitington, Martin C. Frith, James Johnson and Timothy L. Bailey,
+          "Inferring transcription factor complexes from ChIP-seq data",
+          <i>Nucleic Acids Research</i>, <b>39</b>(15):e98, 2011.
+        </span>
+      </div>
+      <div class="subsection">
+        <h5>Command line</h5>
+        <textarea id="cmd" rows="1" style="width:100%;" readonly>asdf</textarea><br>
+        <br>Result calculation took <span id="runtime"></span> seconds<br>
+      </div>
+    </div>
+    <script>make_program_summary();</script>
+  </body>
+</html>

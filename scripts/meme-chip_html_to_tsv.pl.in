@@ -1,0 +1,246 @@
+#!@WHICHPERL@
+# AUTHOR: Timothy L. Bailey
+# CREATE DATE: 15-Feb-2017
+
+=head1 NAME
+
+meme-chip_html_to_tsv - Make a summary file in TSF format from a meme-chip HTML file
+
+=head1 SYNOPSIS
+
+meme-chip_html_to_tsv <meme-chip HTML file> <summary TSV file>
+=cut
+
+use strict;
+use warnings;
+
+use HTML::TreeBuilder 5 -weak;
+use JSON qw(decode_json);
+use Cwd qw(abs_path);
+use Fcntl qw(O_RDONLY O_WRONLY O_CREAT O_TRUNC SEEK_SET);
+use File::Basename qw(fileparse);
+use File::Spec::Functions qw(tmpdir);
+use File::Temp qw(tempfile);
+use Getopt::Long;
+use Pod::Usage;
+
+#use lib '@PERLLIBDIR@';
+
+my $etc_dir;
+my $temp_dir;
+my $scripts_dir;
+
+#
+# initialise the global constants
+# 
+sub initialise {
+  # setup etc dir
+  $etc_dir = defined($ENV{MEME_ETC_DIR}) ? $ENV{MEME_ETC_DIR} : '@APPCONFIGDIR@';
+  # setup temporary directory
+  $temp_dir = '@TMP_DIR@';
+  # use the perl default if none is supplied or the replace fails
+  $temp_dir = tmpdir() if ($temp_dir eq '' || $temp_dir =~ m/^\@TMP[_]DIR\@$/);
+
+  # find the location of the script
+  my $script_name;
+  ($script_name, $scripts_dir) = fileparse(__FILE__);
+  $scripts_dir = abs_path($scripts_dir);
+
+  # add script location to search path
+  unshift(@INC, $scripts_dir);
+}
+
+sub arguments {
+  # Set Option Defaults
+  my $options = {TSV_PATH => undef, HTML_PATH => undef};
+  # General Options
+  my $help = 0; # FALSE
+  my @errors = ();
+  my @dbs = ();
+
+  # get the options from the arguments
+  my $options_success = 0; # FALSE
+  # redirect stderr to a temp file so we can get the error message from GetOptions
+  my $olderr;
+  my $tmperr = tempfile('GetOptions_XXXXXXXXXX', DIR => $temp_dir, UNLINK => 1);
+  open($olderr, ">&STDERR") or die("Can't dup STDERR: $!");
+  open(STDERR, '>&', $tmperr) or die("Can't redirect STDERR to temp file: $!");
+  # parse options
+  $options_success = GetOptions(
+    'help|?'          => \$help,
+  );
+  ($options->{HTML_PATH}, $options->{TSV_PATH}) = @ARGV;
+  # display help
+  pod2usage(1) if $help;
+  # reset STDERR
+  open(STDERR, ">&", $olderr) or die("Can't reset STDERR: $!");
+  # read argument parsing errors
+  seek($tmperr, 0, SEEK_SET);
+  while (<$tmperr>) {chomp; push(@errors, $_);}
+  close($tmperr);
+  # check source HTML file
+  unless (defined($options->{HTML_PATH})) {
+    push(@errors, "No meme-chip HTML file specified.");
+  } elsif (not -e $options->{HTML_PATH}) {
+    push(@errors, "The meme-chip HTML file specified does not exist.");
+  }
+  unless (defined($options->{TSV_PATH})) {
+    push(@errors, "No output file specified.");
+  }
+  # print errors
+  foreach my $error (@errors) {
+    print STDERR $error, "\n";
+  }
+  pod2usage(2) if @errors;
+  # return options
+  return $options;
+}
+
+#
+# Read in a meme-chip HTML and write out a TSV file.
+#
+sub transform_data {
+  my ($opts) = @_;
+
+  # Open the files.
+  my ($infile, $outfile);
+  sysopen($infile, $opts->{HTML_PATH}, O_RDONLY) or die("Failed to open file \"$opts->{HTML_PATH}\"\n");
+  sysopen($outfile, $opts->{TSV_PATH}, O_WRONLY|O_CREAT|O_TRUNC) or die("Failed to open file \"$opts->{TSV_PATH}\"\n");
+
+  # Parse the HTML file.
+  my $tree = HTML::TreeBuilder->new; # empty tree
+  $tree->parse_file($infile);
+
+  # Get the first script tag.
+  my $script = $tree->look_down('_tag' , 'script'); 
+  my $str = $script->as_HTML;
+  unless ($str =~ /\s*var\s+data\s*=/g) {
+    print STDERR "Expected JSON object in very first script tag.\n";
+    die("Failed to write TSV output due to errors processing the HTML.\n");
+  }
+
+  # Get the stuff within outermost brackets.
+  my @array = $str =~ /( \{ (?: [^{}]* | (?0) )* \} )/xg;
+  my $json = join "\n" => @array;
+
+  # Decode the JSON object.
+  my $decoded = decode_json($json);
+
+  # Get the motif databases from the JSON.
+  my $motif_dbs = $decoded->{motif_dbs};
+
+  # Get the JSON "motifs" object.
+  my $motifs = $decoded->{motifs};
+
+  # Pre-process motifs.
+  my @df_list;
+  my @pwm_list;
+  my $index = 1;		# start motif indices at 1
+  foreach my $this_motif (@{$motifs}) {
+    $this_motif->{"key"} = "$index";
+
+    my @keys_to_use = sort keys %{$this_motif};
+    @keys_to_use = grep {$_ ne 'pwm'} @keys_to_use;
+    @keys_to_use = grep {$_ ne 'centrimo_sites'} @keys_to_use;
+    @keys_to_use = grep {$_ ne 'evalue'} @keys_to_use;
+    @keys_to_use = grep {$_ ne 'idx'} @keys_to_use;
+
+    # Get the name of the motif source and set it.
+    if (defined $this_motif->{"db"}) {
+      my $db = $this_motif->{"db"};
+      if ($db == -1) {
+        $this_motif->{"source"} = "MEME";
+      } elsif ($db == -2) {
+        $this_motif->{"source"} = "DREME";
+      } else {
+        $this_motif->{"source"} = $motif_dbs->[$db]->{"source"};
+      }
+    }
+
+    # Set program correctly even if CentriMo is in "prog" field.
+    my %db_prog = (-1 => "MEME", -2 => "DREME",);
+    my $keys_to_use = join " ", @keys_to_use;
+    if ($keys_to_use =~ /\bprog\b/) {
+      if ($this_motif->{"prog"} eq "centrimo") {
+	if ($keys_to_use =~ /\bdb\b/ && $this_motif->{"db"} < 0) {
+	  $this_motif->{"prog"} = $db_prog{$this_motif->{"db"}};
+	}
+      }
+      $this_motif->{"prog"} = uc($this_motif->{"prog"});
+    }
+    @keys_to_use = grep {$_ ne 'db'} @keys_to_use;
+
+    # "sites" is misleading for CentriMo since it is encoded in the motif
+    # so use "centrimo_total_sites" instead.
+    # FIXME: we should add "centrimo_sites_in_region" to memechip output instead
+    if ($keys_to_use =~ /\bsites\b/ && $keys_to_use =~ /\bprog\b/ 
+      && $this_motif->{"prog"} eq "CENTRIMO" && $keys_to_use =~ /\bcentrimo_total_sites\b/) {
+      $this_motif->{"sites"} = $this_motif->{"centrimo_total_sites"};
+    }
+
+    # Only print the alt and id keys for best Tomtom match, 
+    # and get the motif source for the best Tomtom match and
+    # set the motif URL to the URL of the best match.
+    if ($keys_to_use =~ /\btomtom_matches\b/) {
+      if (@{$this_motif->{"tomtom_matches"}}) {
+	$this_motif->{"best_match"} = $this_motif->{"tomtom_matches"}->[0]->{"alt"} ? 
+          $this_motif->{"tomtom_matches"}->[0]->{"id"} . " (" . $this_motif->{"tomtom_matches"}->[0]->{"alt"} . ")" :
+          $this_motif->{"tomtom_matches"}->[0]->{"id"};
+        my $source_db = $this_motif->{"tomtom_matches"}->[0]->{"db"};
+        $this_motif->{"best_match_source"} = $motif_dbs->[$source_db]->{"source"};
+        $this_motif->{"url"} = $this_motif->{"tomtom_matches"}->[0]->{"url"};
+      }
+    }
+
+    $index++;
+  }
+
+  #
+  # Output the summary file.
+  #
+  printf($outfile "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", 
+    "MOTIF_INDEX",
+    "MOTIF_SOURCE",
+    "MOTIF_ID",
+    "ALT_ID",
+    "CONSENSUS",
+    "WIDTH",
+    "SITES",
+    "E-VALUE",
+    "E-VALUE_SOURCE",
+    "MOST_SIMILAR_MOTIF_SOURCE",
+    "MOST_SIMILAR_MOTIF",
+    "URL"
+  );
+  foreach my $this_motif (@{$motifs}) {
+    printf($outfile "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", 
+      $this_motif->{"key"}, 
+      (defined $this_motif->{"source"}) ? $this_motif->{"source"} : " ", 
+      (defined $this_motif->{"id"}) ? $this_motif->{"id"} : " ", 
+      (defined $this_motif->{"alt"}) ? $this_motif->{"alt"} : " ", 
+      (defined $this_motif->{"consensus"}) ? $this_motif->{"consensus"} : " ", 
+      (defined $this_motif->{"len"}) ? $this_motif->{"len"} : " ", 
+      (defined $this_motif->{"sites"}) ? $this_motif->{"sites"} : " ", 
+      (defined $this_motif->{"sig"}) ? $this_motif->{"sig"} : " ", 
+      (defined $this_motif->{"prog"}) ? $this_motif->{"prog"} : " ", 
+      (defined $this_motif->{"best_match_source"}) ? $this_motif->{"best_match_source"} : " ", 
+      (defined $this_motif->{"best_match"}) ? $this_motif->{"best_match"} : " ", 
+      (defined $this_motif->{"url"}) ? $this_motif->{"url"} : " "
+    );
+  }
+
+  # Delete the tree.
+  $tree = $tree->delete; # Not required with weak references
+
+} # transform_data
+
+sub main {
+  &initialise();
+  # parse the command line
+  my $opts = &arguments();
+  # transform the HTML into TSV
+  &transform_data($opts);
+}
+
+&main();
+1;

@@ -1,0 +1,75 @@
+# DREME 4.12.0
+#     command: dreme -v 1 -oc memechip_example_output_files/dreme_out -png -dna -p memechip_example_output_files/seqs-centered -n memechip_example_output_files/seqs-shuffled
+#   positives: 812 from memechip_example_output_files/seqs-centered (Tue Jun 27 13:47:16 PDT 2017)
+#   negatives: 812 from memechip_example_output_files/seqs-shuffled (Tue Jun 27 13:47:16 PDT 2017)
+#        host: D-69-91-189-176.dhcp4.washington.edu
+#        when: Tue Jun 27 13:54:09 PDT 2017
+
+MEME version 4.12.0
+
+ALPHABET "DNA" DNA-LIKE
+A "Adenine" CC0000 ~ T "Thymine" 008000
+C "Cytosine" 0000CC ~ G "Guanine" FFB300
+N "Any base" = ACGT
+X = ACGT
+. = ACGT
+V "Not T" = ACG
+H "Not G" = ACT
+D "Not C" = AGT
+B "Not A" = CGT
+M "Amino" = AC
+R "Purine" = AG
+W "Weak" = AT
+S "Strong" = CG
+Y "Pyrimidine" = CT
+K "Keto" = GT
+U = T
+END ALPHABET
+
+strands: + -
+
+Background letter frequencies (from dataset):
+A 0.246 C 0.254 G 0.250 T 0.251
+
+
+MOTIF MCRCCCW DREME-1
+
+#             Word    RC Word        Pos        Neg    P-value    E-value
+# BEST     MCRCCCW    WGGGYGK        369         76   1.8e-063   5.8e-059
+#          ACACCCT    AGGGTGT         87         13   1.1e-015   3.6e-011
+#          ACACCCA    TGGGTGT         93         16   1.6e-015   5.2e-011
+#          ACGCCCT    AGGGCGT         43          1   1.5e-012   4.8e-008
+#          CCACCCA    TGGGTGG         67         16   3.0e-009   9.8e-005
+#          ACGCCCA    TGGGCGT         38          4   2.0e-008   6.5e-004
+#          CCGCCCT    AGGGCGG         31          3   3.0e-007   9.9e-003
+#          CCGCCCA    TGGGCGG         21          3   1.3e-004   4.1e+000
+#          CCACCCT    AGGGTGG         49         26   4.4e-003   1.5e+002
+
+letter-probability matrix: alength= 4 w= 7 nsites= 443 E= 5.8e-059
+0.613995 0.386005 0.000000 0.000000
+0.000000 1.000000 0.000000 0.000000
+0.697517 0.000000 0.302483 0.000000
+0.000000 1.000000 0.000000 0.000000
+0.000000 1.000000 0.000000 0.000000
+0.000000 1.000000 0.000000 0.000000
+0.503386 0.000000 0.000000 0.496614
+
+
+MOTIF TTATCW DREME-2
+
+#             Word    RC Word        Pos        Neg    P-value    E-value
+# BEST      TTATCW     WGATAA        253         42   1.8e-045   5.7e-041
+#           TTATCT     AGATAA        154         25   1.2e-026   3.7e-022
+#           TTATCA     TGATAA        114         17   1.8e-020   5.6e-016
+
+letter-probability matrix: alength= 4 w= 6 nsites= 281 E= 5.7e-041
+0.000000 0.000000 0.000000 1.000000
+0.000000 0.000000 0.000000 1.000000
+1.000000 0.000000 0.000000 0.000000
+0.000000 0.000000 0.000000 1.000000
+0.000000 1.000000 0.000000 0.000000
+0.430605 0.000000 0.000000 0.569395
+
+
+# Stopping reason: E-value threshold exceeded
+#    Running time: 21.33 seconds

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sequence Databases - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="../doc/images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="../doc/images/memesuite_icon.png">
+    <link href="../doc/css/style.css?version=4.11.1" rel="stylesheet" type="text/css" />
+    <link href="../css/show_sequence_dbs.css?version=4.11.1" rel="stylesheet" type="text/css" />
+    <script src="../doc/js/menu-path.js?version=4.11.1"></script>
+    <script src="../doc/js/menu.js?version=4.11.1"></script>
+    <script src="../doc/js/utilities.js?version=4.11.1"></script>
+    <script src="../doc/js/motif_logo.js?version=4.11.1"></script>
+    <script src="../js/site.js?version=4.11.1"></script>
+    <script src="../js/show_sequence_dbs.js?version=4.11.1"></script>
+  </head>
+  <body>
+    <div class="content_box">
+      <noscript>
+        <div class="no_script">
+          <div class="no_script_warning">
+          <h1>Javascript is disabled! &#9785;</h1>
+          <p>The MEME Suite web application requires the use of JavaScript but
+          Javascript doesn't seem to be available on your browser.</p>
+          <p>Please re-enable Javascript to use the MEME Suite.</p>
+          </div>
+        </div>
+      </noscript>
+      <div class="memesuitelogo">
+        <h1>The MEME Suite</h1>
+        <h2>Motif-based sequence analysis tools</h2>
+      </div>
+      <h1>Sequence Databases</h1>
+      <div class="subcontent" id="all_categories">
+        <input type="checkbox" value="1" id="filter_priors">
+        <label for="filter_priors">Show only sequence databases with tissue/cell-specific information available.</label>
+        <p>Click a category to show its available databases. Within a category click a database to see details.</p>
+        <!--{category}-->
+        <div class="category XXXXno_priorsXXXX" data-id="XXXXidXXXX">
+          <div class="btn" tabindex="0">
+            <h3><!--{name}-->A Category<!--{/name}--><span class="no_priors"> (<!--{count}-->Count of Databases<!--{/count}--> databases)</span></h3>
+            &ensp;
+            <span class="collapsed">...</span>
+            <span class="expanded">&#x25BC;</span>
+          </div>
+          <div class="info">Loading...</div>
+        </div>
+        <!--{/category}-->
+        <script>
+          (function() {
+            "use strict";
+            function activate_button(category) {
+              var button = category.querySelector(".btn");
+              button.addEventListener("click", function (evt) {
+                toggle_category(category, button);
+              }, false);
+              button.addEventListener("keypress", function(evt) {
+                if (evt.which == 32 || evt.keyCode == 32) {
+                  toggle_category(category, button);
+                }
+              }, false);
+            }
+            var filter = document.getElementById("filter_priors");
+            filter.addEventListener("click", function() {
+              toggle_class(document.getElementById("all_categories"), "filter_priors", filter.checked);
+              update_all_selected_dbs();
+            }, false);
+            var i; var categories = document.querySelectorAll(".category");
+            for (i = 0; i < categories.length; i++) activate_button(categories[i]);
+          })();
+        </script>
+      </div>
+    </div>
+  </body>
+</html>
+
+

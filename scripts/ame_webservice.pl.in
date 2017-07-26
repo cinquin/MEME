@@ -1,0 +1,133 @@
+#!@WHICHPERL@
+=head1 NAME
+
+ame_webservice - Run ame.
+
+=head1 SYNOPSIS
+
+ame_webservice [options] <sequences> <motifs>+
+
+  Options: 
+    -control <control sequences>  Use the specified control sequences.
+    -xalph <alphabet file>        Translate the motifs to the alphabet.
+    -method 
+    -scoring
+    -pvalue_threshold
+    -pwm_threshold
+    -pvalue_report_threshold
+    -bgformat
+    -bgfile
+    -help                         Show this brief help message.
+
+  Motif databases can be specified by prefixing the file name by "db/".
+
+=cut
+
+use strict;
+use warnings;
+# load standard perl libraries
+use Getopt::Long qw(:config permute auto_help);
+use Pod::Usage;
+# load custom perl libraries
+use lib qw(@PERLLIBDIR@);
+use Alphabet qw(rna dna protein);
+use StatusPage qw(arg_checks arg_end opt_uploaded opt_db_or_uploaded opt_choice opt_integer opt_number);
+use Globals;
+# constants
+my $bin_dir = '@BINDIR@';
+my $motif_db_dir = '@MEMEDB@/motif_databases';
+# Required parameters
+my $sequences;
+my @motifs;
+# Optional parameters
+my ($control, $xalph_file, $bgfile, $bgformat,
+  $pvalue_threshold, $pwm_threshold, $pvalue_report_threshold);
+my $method = "ranksum";
+my $scoring = "avg";
+#status page
+my $status = new StatusPage('AME', \@ARGV);
+$status->add_message('Parsing arguments');
+# parse options
+my @arg_errors = ();
+my $opts_ok = do {
+  local $SIG{__WARN__} = sub { my ($msg) = @_; chomp($msg); push(@arg_errors, $msg); };
+  GetOptions(
+  '<>' => arg_checks(
+      opt_uploaded(\$sequences),
+      opt_db_or_uploaded(\@motifs, $motif_db_dir, 'db')),
+  'control=s' => opt_uploaded(\$control),
+  'method=s' => opt_choice(\$method, 'ranksum', 'fisher'),
+  'scoring=s' => opt_choice(\$scoring, 'avg', 'max', 'sum', 'totalhits'),
+  'pvalue-threshold=f' => opt_number(\$pvalue_threshold, '>', 0, '<=', 1),
+  'pwm-threshold=f' => \$pwm_threshold,
+  'pvalue-report-threshold=f' => opt_number(\$pvalue_report_threshold, '>', 0, '<=', 1),
+  'bgformat=s' => opt_choice(\$bgformat, '0', '1', '2'),
+  'bgfile=s' => opt_uploaded(\$bgfile),
+  'xalph=s' => opt_uploaded(\$xalph_file)
+  );
+};
+# add additional error messages for missing sequences and motifs
+push(@arg_errors, "No sequences provided.") unless defined $sequences;
+push(@arg_errors, "No motifs provided.") unless @motifs;
+# display the error messages both to the status page and stdout
+foreach my $arg_error (@arg_errors) {
+  print STDERR $arg_error, "\n";
+  $status->add_message($arg_error);
+}
+$opts_ok = 0 if (scalar(@arg_errors) > 0);
+# declare some derived file names
+# setup status page
+$status->add_file('html', 'ame.html', 'AME HTML output');
+$status->add_file('text', 'ame.txt', 'AME text output');
+$status->add_file('pos', $sequences, 'Uploaded Sequences');
+$status->add_file('neg', $control, 'Uploaded Control Sequences');
+$status->add_file('alph', $xalph_file, 'Uploaded Alphabet');
+$status->add_file('bg', $bgfile, 'Uploaded Background');
+$status->add_message($opts_ok ? 'Arguments ok' : "Error parsing arguments");
+$status->update($opts_ok ? 'Starting' : 'Error');
+# exit if there was an error reading the arguments
+unless ($opts_ok) {
+  $status->write_log();
+  pod2usage(2);
+}
+# create the symlink to the databases
+symlink($motif_db_dir, 'db');
+# ensure it will be removed on completion (when the log is written)
+$status->set_cleanup( sub { unlink('db'); } );
+# if a control is not supplied then shuffle the sequences to create a control
+unless (defined($control)) {
+  # when no alphabet is provided extract one from the motifs
+  my $afile = $xalph_file;
+  unless (defined($afile)) {
+    # Run meme2alph
+    $afile = 'alphabet.txt';
+    $status->update_file('alph', FILE => $afile, DESC => 'Calculated Alphabet');
+    $status->run(PROG => 'meme2alph', BIN => $bin_dir,
+      ARGS => [$motifs[0], $afile], REASON => 'to extract alphabet');
+  }
+  # Run fasta-shuffle-letters
+  $control = 'shuffled_' . $sequences;
+  $status->update_file('neg', FILE => $control, DESC => 'Shuffled Control Sequences');
+  $status->run(PROG => 'fasta-shuffle-letters', BIN => $bin_dir,
+    ARGS => ['-alph', $afile, '-kmer', 2, '-tag', '-dinuc', '-seed', 1,
+      $sequences, $control]);
+}
+# Run AME
+my @ame_args = ('--verbose', 1, '--oc', '.', '--control', $control);
+if (defined($bgfile)) {
+  push(@ame_args, '--bgformat', 2, '--bgfile', $bgfile);
+} elsif (defined($bgformat)) {
+  push(@ame_args, '--bgformat', $bgformat);
+}
+push(@ame_args, '--scoring', $scoring, '--method', $method);
+push(@ame_args, '--pvalue-threshold', $pvalue_threshold) if defined $pvalue_threshold;
+push(@ame_args, '--pwm-threshold', $pwm_threshold) if defined $pwm_threshold;
+push(@ame_args, '--pvalue-report-threshold', $pvalue_report_threshold) if defined $pvalue_report_threshold;
+push(@ame_args, '--xalph', $xalph_file) if defined $xalph_file;
+push(@ame_args, $sequences, @motifs);
+$status->run(PROG => 'ame', BIN => $bin_dir, ARGS => \@ame_args);
+# done
+$status->add_message("Done");
+$status->update();
+$status->write_log();
+1;

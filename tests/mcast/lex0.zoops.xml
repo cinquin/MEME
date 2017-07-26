@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Begin document body -->
+<mcast version="4.11.3" release="Fri Feb 19 13:23:06 2016 -0800">
+<command-line>/Users/t.bailey/meme_hg/meme/src/mcast -oc results/mcast1 meme/meme.lex0.zoops.txt common/lex0.s</command-line>
+<sequence-data num-sequences="16" num-residues="3067" />
+<alphabet>nucleotide</alphabet>
+<motif name="WACTGTATATATATACAGTW" width="20" best-possible-match="TACTGTATATATATACAGTA"/>
+<background source="non-redundant database">
+<value letter="A">0.282</value>
+<value letter="C">0.222</value>
+<value letter="G">0.229</value>
+<value letter="T">0.267</value>
+</background>
+<cisml-file>cisml.xml</cisml-file>
+<mcast-parmaeters>
+<min-match-score>2.840</min-match-score>
+<e-thresh>10.000</e-thresh>
+<p-thresh>1.000</p-thresh>
+<q-thresh>1.000</q-thresh>
+<max-gap>50</max-gap>
+<cost-factor>1</cost-factor>
+<gap-open-cost>0.0568</gap-open-cost>
+<gap-extend-cost>0.0568</gap-extend-cost>
+</mcast-parmaeters>
+<e-value-parmaeters>
+<distribution>exponential</distribution>
+<status>Distribution estimated successfully.</status>
+<mu1>14.2</mu1>
+<mu2>13.1</mu2>
+<sigma2>5.04</sigma2>
+<c>0.0111</c>
+<num-scores-used>13</num-scores-used>
+<num-matches>14</num-matches>
+<db-length>3067</db-length>
+</e-value-parmaeters>
+</mcast>

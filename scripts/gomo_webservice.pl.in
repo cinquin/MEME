@@ -1,0 +1,127 @@
+#!@WHICHPERL@
+=head1 NAME
+
+gomo_webservice - Run gomo in a restricted mode and create an index webpage.
+
+=head1 SYNOPSIS
+
+gomo_webservice [options] <motif> <GO map> (<sequences> <background>)+
+
+  Options:
+    -shuffle_scores <times> shuffle scores
+    -t <threshold>          q-value threshold
+    -help                   brief help message
+
+  Files present in the server gomo databases can be specified by appending 'db/'
+  to the file name.
+
+=cut
+
+use strict;
+use warnings;
+# load standard perl libraries
+use File::Basename qw(fileparse);
+use File::Spec::Functions qw(catfile);
+use Getopt::Long qw(:config permute auto_help);
+use Pod::Usage;
+# load custom perl libraries
+use lib qw(@PERLLIBDIR@);
+use StatusPage qw(arg_checks opt_uploaded opt_db_or_uploaded opt_integer opt_number);
+use Globals;
+# constants
+my $bin_dir = '@BINDIR@';
+my $gomo_db_dir = '@MEMEDB@/gomo_databases';
+# required parameters
+my $motifs;
+my $gomap;
+my @db_pairs = ();
+# option defaults
+my $t = undef;
+my $shuffle_scores = undef;
+#status page
+my $status = new StatusPage('GOMO', \@ARGV);
+$status->add_message('Parsing arguments');
+# parse options
+my @arg_errors = ();
+my $opts_ok = do {
+  local $SIG{__WARN__} = sub { my ($msg) = @_; chomp($msg); push(@arg_errors, $msg); };
+  GetOptions(
+  '<>' => arg_checks(
+      opt_uploaded(\$motifs),
+      opt_db_or_uploaded(\$gomap, $gomo_db_dir, 'db'),
+      opt_db_or_uploaded(\@db_pairs, $gomo_db_dir, 'db')),
+  't=f' => opt_number(\$t, '>', 0, '<=', 0.5),
+  'shuffle_scores=i' => opt_integer(\$shuffle_scores, 0),
+  );
+};
+# add additional error messages for missing sequences and motifs
+push(@arg_errors, "No motifs provided.") unless $motifs;
+push(@arg_errors, "No Gene Ontology map provided.") unless $gomap;
+if (@db_pairs) {
+  push(@arg_errors, "Sequence file provided without background") unless (scalar(@db_pairs) % 2 == 0);
+} else {
+  push(@arg_errors, "No sequence with background provided.");
+}
+# display the error messages both to the status page and stdout
+foreach my $arg_error (@arg_errors) {
+  print STDERR $arg_error, "\n";
+  $status->add_message($arg_error);
+}
+$opts_ok = 0 if (scalar(@arg_errors) > 0);
+# declare some derived file names
+# setup status page
+$status->add_file('html', 'gomo.html', 'GOMo HTML output');
+$status->add_file('xml', 'gomo.xml', 'GOMo XML output');
+$status->add_file('text', 'gomo.txt', 'GOMo text output');
+$status->add_file('motifs', $motifs, 'Input motifs');
+$status->add_file('marker');
+$status->add_message($opts_ok ? 'Arguments ok' : "Error parsing arguments");
+$status->update($opts_ok ? 'Starting' : 'Error');
+# exit if there was an error reading the arguments
+unless ($opts_ok) {
+  $status->write_log();
+  pod2usage(2);
+}
+# create the symlink to the databases
+symlink($gomo_db_dir, 'db');
+# ensure it will be removed on completion (when the log is written)
+$status->set_cleanup( sub { unlink('db'); } );
+# look for the GO dag
+my $godag;
+if (-e catfile('db', 'go.dag')) {
+  $godag = catfile('db', 'go.dag');
+}
+# Run AMA
+my @cismls = ();
+for (my $i = 0; $i < scalar(@db_pairs); $i += 2) {
+  my $seqs = $db_pairs[$i];
+  my $bfile = $db_pairs[$i + 1];
+  my $cisml = fileparse($seqs) . '.cisml';
+  $status->run(PROG => 'ama', BIN => $bin_dir,
+    ARGS => ['--pvalues', '--verbosity', 1, $motifs, $seqs, $bfile],
+    OUT_FILE => $cisml);
+  push(@cismls, $cisml);
+}
+# Run gomo on output of AMA
+my @gomo_args = ('--nostatus', '--verbosity', 1, '--oc', '.');
+push(@gomo_args, '--t', $t) if (defined($t));
+push(@gomo_args, '--shuffle_scores', $shuffle_scores) if (defined($shuffle_scores));
+push(@gomo_args, '--dag', $godag) if (defined($godag));
+push(@gomo_args, '--motifs', $motifs, $gomap, @cismls);
+$status->run(PROG => 'gomo', BIN => $bin_dir, ARGS => \@gomo_args);
+# GZIP CISML files
+$status->add_message('Running gzip on CISML files');
+$status->update();
+for (my $i = 0; $i < scalar(@cismls); $i++) {
+  my $seqs = $db_pairs[$i * 2];
+  if (-s $cismls[$i]) {
+    $status->add_file('cisml_' . $i, $cismls[$i] . '.gz', 
+      "AMA output for $seqs as XML (gzip compressed)", BEFORE => 'marker');
+    $status->run(PROG => 'gzip', ARGS => [$cismls[$i]]); #note: gzip removes the original file
+  }
+}
+# done
+$status->add_message("Done");
+$status->update();
+$status->write_log();
+1;

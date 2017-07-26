@@ -1,0 +1,45 @@
+<appConfig xmlns="http://nbcr.sdsc.edu/opal/types" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata appName="MOMO @SERVICE_VERSION@">
+    <usage>MOMO: post-translational modification motifs</usage>
+    <info>
+    <![CDATA[
+momo [options] [-psm <psm file>
+                            [ -filter_field <encoded field name> 
+                              -filter_type lt|lteq|eq|gteq|gt 
+                              -filter_thresh <threshold> ]? ]+
+
+  PSM arguments:
+    -psm <psm file>                       Specify a PSM file for processing
+    -filter_field <encoded field name>    Specify a field of the previously
+                                           specified PSM file to filter on.
+    -filter_type lt|lteq|eq|gteq|gt       Specify the filtering type for the
+                                           previously specified PSM file as: 
+                                            lt   - less than,
+                                            le   - less than or equal,
+                                            eq   - equal,
+                                            ge   - greater than or equal, or
+                                            gt   - greater than.
+    -filter_thresh <threshold>            Specify the number used to filter the
+                                           previously specified PSM file.
+
+  Flank Sequence arguments:
+    -flank <FASTA file>                   Specify a protein FASTA file
+                                           containing flanking sequence;
+                                           any paths begining with db/ are
+                                           pre-existing databases.
+    -purge <score>                        Run purge on an uploaded flanking
+                                           sequence with the given threshold.
+  
+  Options: 
+    -occurs <num>     Set the minimum number of occurences.
+    -minw <width>     Set the minimum width of the motif.
+    -maxw <width>     Set the maximum width of the motif.
+    -single_per_mass  A single motif will be generated for each distinct
+                       modification mass.
+    -help             Show this brief help message.    
+    ]]>
+    </info>
+  </metadata>
+  <binaryLocation>@SERVICE_DIR@/momo_webservice</binaryLocation>
+  <parallel>false</parallel>
+</appConfig>

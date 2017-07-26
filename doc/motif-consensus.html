@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Consensus Construction - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+    <script src="js/simple-shared-doc.js"></script>
+  </head>
+  <body>
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <h2>Constructing a Consensus Sequence from a Motif</h2>
+
+    <h3>Description</h3>
+    <div class="indent">
+      <p>Various MEME Suite programs (including MEME) construct a <b>consensus sequence</b>
+	 to be used as a name for a motif.
+         The consensus sequence provides a convenient way to refer to the motif,
+	 but is not intended to be used as a replacement for the motif for searching
+	 for matches in sequences or other purposes.  You should use the actual
+	 motif (PSPM or PSSM representation contained in the 
+	 <a href=meme-format.html>MEME Motif Format</a>) for those purposes.
+      </p>
+      <p>
+         <b>Note:</b> DREME motif names are <b>regular expressions</b>, not consensus sequences,
+	 and are not constructed in this way.
+      </p>
+    </div>
+
+    <h3>Algorithm</h3>
+    <div class="indent" id="motif-consensus">
+      <script>print_doc("motif-consensus", "motif-consensus");</script>
+    </div>
+
+  </body>
+</html>
+

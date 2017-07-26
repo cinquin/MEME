@@ -1,0 +1,81 @@
+#
+# dreme.test
+#
+use File::Which;
+my %paths;
+
+$paths{python} = which('python');
+$paths{python3} = which('python3');
+my $have_python = defined $paths{python};
+my $have_python3 = defined $paths{python3};
+
+# xml parts to ignore in DREME output
+my $dreme_xml_ignore = [
+    '^dreme@(release|version)$', '^dreme:model:command_line#value$', 
+    '^dreme:model:(positives|negatives)@(file|last_mod_date)$',
+    '^dreme:model:host#value$', '^dreme:model:when#value$',
+    '^dreme:run_time@.*$'
+  ];  
+# Python 2 tests
+# test DREME with both strands
+if ($have_python) {
+  &test('dreme1', 'testing both strands',
+    'dreme', '',
+    ['-oc', 'results/dreme1', '-v', 1, '-p', 'common/Klf1-200-100.s', 
+     '-n', 'common/Klf1-200-100-shuffled.s'],
+    [
+      {
+        output => 'results/dreme1/dreme.xml', 
+        reference => 'dreme/basic.xml', 
+        type => 'xml', ignore => $dreme_xml_ignore
+      }
+    ], 
+    'results/dreme1', 'scripts'
+  );
+# test DREME with a single strand
+  &test('dreme2', 'testing single strand',
+    'dreme', '',
+    ['-norc', '-oc', 'results/dreme2', '-v', 1, '-p', 'common/Klf1-200-100.s',
+     '-n', 'common/Klf1-200-100-shuffled.s'],
+    [
+      {
+        output => 'results/dreme2/dreme.xml', 
+        reference => 'dreme/norc.xml', 
+        type => 'xml', ignore => $dreme_xml_ignore
+      }
+    ],
+    'results/dreme2', 'scripts'
+  );
+}
+
+# Python 3 tests
+# test DREME with both strands
+if ($have_python3) {
+  &test('dreme3', 'testing both strands',
+    'dreme-py3', '',
+    ['-oc', 'results/dreme3', '-v', 1, '-p', 'common/Klf1-200-100.s', 
+     '-n', 'common/Klf1-200-100-shuffled.s'],
+    [
+      {
+        output => 'results/dreme3/dreme.xml', 
+        reference => 'dreme/basic.xml', 
+        type => 'xml', ignore => $dreme_xml_ignore
+      }
+    ], 
+    'results/dreme3', 'scripts'
+  );
+# test DREME with a single strand
+  &test('dreme4', 'testing single strand',
+    'dreme-py3', '',
+    ['-norc', '-oc', 'results/dreme4', '-v', 1, '-p', 'common/Klf1-200-100.s',
+     '-n', 'common/Klf1-200-100-shuffled.s'],
+    [
+      {
+        output => 'results/dreme4/dreme.xml', 
+        reference => 'dreme/norc.xml', 
+        type => 'xml', ignore => $dreme_xml_ignore
+      }
+    ],
+    'results/dreme4', 'scripts'
+  );
+}

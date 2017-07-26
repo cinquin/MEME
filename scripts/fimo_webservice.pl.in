@@ -1,0 +1,144 @@
+#!@WHICHPERL@
+=head1 NAME
+
+fimo_webservice - Run fimo in a restricted mode and create an index webpage.
+
+=head1 SYNOPSIS
+
+fimo_webservice [options] <motifs> <db seqs>
+
+  Options:
+    -upseqs <file>    uploaded sequences
+    -bfile <file>     background file (0-order)
+    -psp <db>         database containing priors
+    -prior-dist <db>  database containing priors
+    -pvthresh <pv>    output p-value threshold
+    -norc             scan given strand only
+    -help             brief help message
+
+=cut
+
+use strict;
+use warnings;
+# load standard perl libraries
+use File::Basename qw(fileparse);
+use File::Copy qw(copy);
+use Getopt::Long qw(:config permute auto_help);
+use Pod::Usage;
+# load custom perl libraries
+use lib qw(@PERLLIBDIR@);
+use StatusPage qw(arg_checks opt_uploaded opt_db opt_number);
+# constants
+my $bin_dir = '@BINDIR@';
+my $fasta_db_dir = '@MEMEDB@/fasta_databases';
+# required parameters
+my $motifs;
+my $sequences;
+# option defaults
+my $bfile;
+my $psp;
+my $pdist;
+my $pvthresh;
+my $norc = 0; #FALSE
+#status page
+my $status = new StatusPage('FIMO', \@ARGV);
+$status->add_message('Parsing arguments');
+# parse options
+my @arg_errors = ();
+my $opts_ok = do {
+  local $SIG{__WARN__} = sub { my ($msg) = @_; chomp($msg); push(@arg_errors, $msg); };
+  GetOptions(
+  '<>' => arg_checks(opt_uploaded(\$motifs), opt_db(\$sequences, $fasta_db_dir, 'db')),
+  'upseqs=s' => opt_uploaded(\$sequences),
+  'bfile=s' => opt_uploaded(\$bfile),
+  'psp=s' => opt_db(\$psp, $fasta_db_dir, 'db'),
+  'prior-dist=s' => opt_db(\$pdist, $fasta_db_dir, 'db'),
+  'pvthresh=f' => opt_number(\$pvthresh, '>', 0, '<=', 1),
+  'norc' => \$norc
+  );
+};
+# add additional error messages for missing sequences and motifs
+push(@arg_errors, "No motifs provided.") unless $motifs;
+push(@arg_errors, "No sequences provided.") unless defined $sequences;
+# display the error messages both to the status page and stdout
+foreach my $arg_error (@arg_errors) {
+  print STDERR $arg_error, "\n";
+  $status->add_message($arg_error);
+}
+$opts_ok = 0 if (scalar(@arg_errors) > 0);
+# setup status page
+$status->add_file('html', 'fimo.html', 'FIMO HTML output');
+$status->add_file('xml', 'fimo.xml', 'FIMO XML output');
+$status->add_file('cisml', 'cisml.xml', 'FIMO CISML output');
+$status->add_file('gff', 'fimo.gff', 'FIMO GFF output');
+$status->add_file('text', 'fimo.txt', 'FIMO text output');
+$status->add_file('motif', $motifs, 'Input Motifs');
+$status->add_file('fasta', $sequences, 'Uploaded Sequences') if ($sequences !~ m/^db\//);
+$status->add_message($opts_ok ? 'Arguments ok' : "Error parsing arguments");
+$status->update($opts_ok ? 'Starting' : 'Error');
+# exit if there was an error reading the arguments
+unless ($opts_ok) {
+  $status->write_log();
+  pod2usage(2);
+}
+# create the symlink to the databases
+symlink($fasta_db_dir, 'db');
+# ensure it will be removed on completion (when the log is written)
+my @cleanup_files = ('db');
+$status->set_cleanup(
+  sub {
+    foreach my $file (@cleanup_files) {
+      unlink($file);
+    }
+  } 
+);
+if (($psp && $psp =~ m/\.gz$/) || ($pdist && $pdist =~ m/\.gz$/)) {
+  $status->add_message("Preparing priors for use");
+}
+# prepare psp if gziped
+if ($psp && $psp =~ m/\.gz$/) {
+  # make a local copy
+  my $local_psp = fileparse($psp);
+  copy($psp, $local_psp);
+  # unzip (note this removes the .gz extension from the file)
+  $status->run(PROG => 'gunzip', ARGS => [$local_psp]);
+  # remove gz extension from the stored file name
+  $local_psp =~ s/\.gz$//;
+  # update psp var
+  $psp = $local_psp;
+  # update the cleanup function to remove the psp
+  push(@cleanup_files, $local_psp);
+}
+# prepare pdist if gziped
+if ($pdist && $pdist =~ m/\.gz$/) {
+  # make a local copy
+  my $local_pdist = fileparse($pdist);
+  copy($pdist, $local_pdist);
+  # unzip (note this removes the .gz extension from the file)
+  $status->run(PROG => 'gunzip', ARGS => [$local_pdist]);
+  # remove gz extension from the stored file name
+  $local_pdist =~ s/\.gz$//;
+  # update pdist var
+  $pdist = $local_pdist;
+  # update the cleanup function to remove the pdist
+  push(@cleanup_files, $local_pdist);
+}
+# if it is a sequence database then get the computed background
+if ($sequences =~ m/^db\// && -e ($sequences . '.bfile') && !defined($bfile)) {
+  $bfile = $sequences. '.bfile';
+}
+
+# Run FIMO
+my @fimo_args = ('--oc', '.', '--verbosity', 1);
+push(@fimo_args, '--bgfile', $bfile) if (defined($bfile));
+push(@fimo_args, '--psp', $psp) if (defined($psp));
+push(@fimo_args, '--prior-dist', $pdist) if (defined($pdist));
+push(@fimo_args, '--thresh', $pvthresh) if (defined($pvthresh));
+push(@fimo_args, '--norc') if ($norc);
+push(@fimo_args, $motifs, $sequences);
+$status->run(PROG => 'fimo', BIN => $bin_dir, ARGS => \@fimo_args);
+# done
+$status->add_message("Done");
+$status->update();
+$status->write_log();
+1;

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>fasta-hamming-enrich - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+  </head>
+  <body>
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <h2>fasta-hamming-enrich</h2>
+    
+    <div class="usage">
+      <h3>Usage:</h3>
+      <code>fasta-hamming-enrich [options] -w &lt;word&gt; -p &lt;positives&gt; -n &lt;negatives&gt;</code>
+    </div>
+
+    <h3>Description</h3>
+    <div class="indent">
+      <p>Compute the Hamming distance from &lt;word&gt; to each FASTA sequence
+    in the positive and negative files.  Apply Fisher's Exact test to
+    each distance. &lt;word&gt; may contain ambiguous characters.</p>
+    </div>
+
+    <h3>Input</h3>
+    <div class="indent">
+      <p>A word to determine enrichment.</p>
+      <p>Positive and negative sequences in <a href="fasta-format.html">FASTA format</a>.</p>
+    </div>
+
+    <h3>Output</h3>
+    <div class="indent">
+      <p>Writes a <a href="meme-format.html">MEME motif</a> file to standard output.</p>
+    </div>
+
+    <h3>Options</h3>
+    <div class="indent">
+      <table class="options">
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Parameter</th>
+            <th>Description</th>
+            <th>Default Behaviour</th>
+          </tr>
+        </thead>
+          <tbody>
+          <tr>
+            <th colspan="4">Required</th>
+          </tr>
+          <tr>
+            <td class="popt">-w</td><td><span class="pdat">word</span></td>
+            <td>The word to determine enrichment.</td>
+            <td>Required input.</td>
+          </tr>
+          <tr>
+            <td class="popt">-p</td><td><span class="pdat">FASTA file</span></td>
+            <td>The positive sequences in <a href="fasta-format.html">FASTA format</a>.</td>
+            <td>Required input.</td>
+          </tr>
+          <tr>
+            <td class="popt">-n</td><td><span class="pdat">FASTA file</span></td>
+            <td>The negative sequences in <a href="fasta-format.html">FASTA format</a>.</td>
+            <td>Required input.</td>
+          </tr>
+          <tr>
+            <th colspan="4">General</th>
+          </tr>
+          <tr>
+            <td class="popt">-a</td><td><span class="pdat">Alphabet file</span></td>
+            <td>Specify the <a href="alphabet-format.html">alphabet definition</a>. 
+               Sequences will be verified to be in the given alphabet.</td>
+            <td>The standard DNA alphabet is assumed.</td>
+          </tr>
+          <tr>
+            <td class="popt">-r</td><td>&nbsp;</td>
+            <td>Refine the consensus by using a branching search
+              (distance 1 steps; beam size = 1).</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="popt">-h</td><td>&nbsp;</td>
+            <td>Print a help message and exit.</td>
+            <td>Runs as normal.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
+

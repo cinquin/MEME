@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Standard Alphabets - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+    <script src="js/utilities.js"></script>
+  </head>
+  <body data-scrollpad="true">
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <h2>Standard Alphabets</h2>
+    <div class="indent">
+      <p>The MEME Suite supports 3 standard alphabets:
+      <a href="#protein">protein</a>, <a href="#dna">DNA</a> and
+      <a href="#rna">RNA</a>.</p>
+      <p>If none of these alphabet are suitable you may also define
+      <a href="alphabet-format.html">custom alphabets</a>.</p>
+
+      <h3 style="margin-top:40px;" id="protein">Protein Alphabet</h3>
+      <div class="indent">
+        <style>
+          .PROT_A, .PROT_C, .PROT_F, .PROT_I, .PROT_L, .PROT_M, .PROT_V, .PROT_W  { color: rgb(0, 0, 204); }
+          .PROT_D, .PROT_E { color: rgb(255, 0, 255); }
+          .PROT_G { color: rgb(255, 179, 0); }
+          .PROT_H { color: rgb(255, 204, 204); }
+          .PROT_K, .PROT_R { color: rgb(204, 0, 0); }
+          .PROT_N, .PROT_Q, .PROT_S, .PROT_T { color: rgb(0, 128, 0); }
+          .PROT_P { color: rgb(255, 255, 0); }
+          .PROT_Y { color: rgb(51, 230, 204); }
+        </style>
+        <p>The protein alphabet contains twenty characters for amino acids
+        '<span class="PROT_A">A</span>', '<span class="PROT_C">C</span>',
+        '<span class="PROT_D">D</span>', '<span class="PROT_E">E</span>',
+        '<span class="PROT_F">F</span>', '<span class="PROT_G">G</span>',
+        '<span class="PROT_H">H</span>', '<span class="PROT_I">I</span>',
+        '<span class="PROT_K">K</span>', '<span class="PROT_L">L</span>',
+        '<span class="PROT_M">M</span>', '<span class="PROT_N">N</span>',
+        '<span class="PROT_P">P</span>', '<span class="PROT_Q">Q</span>',
+        '<span class="PROT_R">R</span>', '<span class="PROT_S">S</span>',
+        '<span class="PROT_T">T</span>', '<span class="PROT_V">V</span>',
+        '<span class="PROT_W">W</span>', '<span class="PROT_Y">Y</span>'
+        and is augmented by four more ambiguous characters 'X', 'B', 'Z' and 'J'.
+        There are two aliases for the wildcard 'X'; '*' which would normally
+        represent a stop codon and '.' which would normally represent a gap.</p>
+        <table>
+          <tbody>
+          <tr><th>Symbol(s)</th><th>Name</th><th>&nbsp;</th></tr>
+          <tr><td class="PROT_A">A</td><td>Alanine</td><td></td></tr>
+          <tr><td class="PROT_C">C</td><td>Cysteine</td><td></td></tr>
+          <tr><td class="PROT_D">D</td><td>Aspartic acid</td><td></td></tr>
+          <tr><td class="PROT_E">E</td><td>Glutamic acid</td><td></td></tr>
+          <tr><td class="PROT_F">F</td><td>Phenylalanine</td><td></td></tr>
+          <tr><td class="PROT_G">G</td><td>Glycine</td><td></td></tr>
+          <tr><td class="PROT_H">H</td><td>Histidine</td><td></td></tr>
+          <tr><td class="PROT_I">I</td><td>Isoleucine</td><td></td></tr>
+          <tr><td class="PROT_K">K</td><td>Lysine</td><td></td></tr>
+          <tr><td class="PROT_L">L</td><td>Leucine</td><td></td></tr>
+          <tr><td class="PROT_M">M</td><td>Methionine</td><td></td></tr>
+          <tr><td class="PROT_N">N</td><td>Asparagine</td><td></td></tr>
+          <tr><td class="PROT_P">P</td><td>Proline</td><td></td></tr>
+          <tr><td class="PROT_Q">Q</td><td>Glutamine</td><td></td></tr>
+          <tr><td class="PROT_R">R</td><td>Arginine</td><td></td></tr>
+          <tr><td class="PROT_S">S</td><td>Serine</td><td></td></tr>
+          <tr><td class="PROT_T">T</td><td>Threonine</td><td></td></tr>
+          <tr><td class="PROT_V">V</td><td>Valine</td><td></td></tr>
+          <tr><td class="PROT_W">W</td><td>Tryptophan</td><td></td></tr>
+          <tr><td class="PROT_Y">Y</td><td>Tyrosine</td><td></td></tr>
+          <tr><th>Symbol(s)</th><th>Name</th><th>Matches</th></tr>
+          <tr><td>X * .</td><td>Any amino acid</td><td><span class="PROT_A">A</span>
+              <span class="PROT_C">C</span> <span class="PROT_D">D</span>
+              <span class="PROT_E">E</span> <span class="PROT_F">F</span>
+              <span class="PROT_G">G</span> <span class="PROT_H">H</span>
+              <span class="PROT_I">I</span> <span class="PROT_K">K</span>
+              <span class="PROT_L">L</span> <span class="PROT_M">M</span>
+              <span class="PROT_N">N</span> <span class="PROT_P">P</span>
+              <span class="PROT_Q">Q</span> <span class="PROT_R">R</span>
+              <span class="PROT_S">S</span> <span class="PROT_T">T</span>
+              <span class="PROT_V">V</span> <span class="PROT_W">W</span>
+              <span class="PROT_Y">Y</span></td></tr>
+          <tr><td>B</td><td>Asparagine or Aspartic acid</td><td><span
+                class="PROT_D">D</span> <span class="PROT_N">N</span></td></tr>
+          <tr><td>Z</td><td>Glutamine or Glutamic acid</td><td><span
+                class="PROT_E">E</span> <span class="PROT_Q">Q</span></td></tr>
+          <tr><td>J</td><td>Leucine or Isoleucine</td><td><span
+                class="PROT_I">I</span> <span class="PROT_L">L</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin-top:50px;" id="dna">DNA Alphabet</h3>
+      <div class="indent">
+        <style>
+          .DNA_A { color: rgb(204, 0, 0); }
+          .DNA_C { color: rgb(0, 0, 204); }
+          .DNA_G { color: rgb(255, 179, 0); }
+          .DNA_T { color: rgb(0, 128, 0); }
+        </style>
+        <p>The MEME Suite uses the standard 4 symbol alphabet 
+        '<span class="DNA_A">A</span>', '<span class="DNA_C">C</span>',
+        '<span class="DNA_G">G</span>', '<span class="DNA_T">T</span>' for DNA but also
+        accepts the RNA symbol '<span class="DNA_T">U</span>' as an alias for
+        '<span class="DNA_T">T</span>'. In addition there are 11 ambiguous symbols
+        'N', 'V', 'H', 'D', 'B', 'M', 'R', 'W', 'S', 'Y', and 'K'. There are 2 aliases for the
+        wildcard 'N'; '.' as the MEME Suite does not support gaps but it is
+        sometimes necessary to ignore them and 'X' because MEME used to use it for
+        masking no matter what the sequence alphabet was.</p>
+        <table>
+          <tbody>
+          <tr><th>Symbol(s)</th><th>Name</th><th>Complement</th></tr>
+          <tr><td class="DNA_A">A</td><td>Adenine</td><td class="DNA_T">T</td></tr>
+          <tr><td class="DNA_C">C</td><td>Cytosine</td><td class="DNA_G">G</td></tr>
+          <tr><td class="DNA_G">G</td><td>Guanine</td><td class="DNA_C">C</td></tr>
+          <tr><td class="DNA_T">T U</td><td>Thymine</td><td class="DNA_A">A</td></tr>
+          <tr><th>Symbol(s)</th><th>Name</th><th>Matches</th></tr>
+          <tr><td>N . X</td><td>Any base</td><td><span class="DNA_A">A</span> <span class="DNA_C">C</span> <span class="DNA_G">G</span> <span class="DNA_T">T</span></td></tr>
+          <tr><td>V</td><td>Not T</td><td><span class="DNA_A">A</span> <span class="DNA_C">C</span> <span class="DNA_G">G</span></td></tr>
+          <tr><td>H</td><td>Not G</td><td><span class="DNA_A">A</span> <span class="DNA_C">C</span> <span class="DNA_T">T</span></td></tr>
+          <tr><td>D</td><td>Not C</td><td><span class="DNA_A">A</span> <span class="DNA_G">G</span> <span class="DNA_T">T</span></td></tr>
+          <tr><td>B</td><td>Not A</td><td><span class="DNA_C">C</span> <span class="DNA_G">G</span> <span class="DNA_T">T</span></td></tr>
+          <tr><td>M</td><td>Amino</td><td><span class="DNA_A">A</span> <span class="DNA_C">C</span></td></tr>
+          <tr><td>R</td><td>Purine</td><td><span class="DNA_A">A</span> <span class="DNA_G">G</span></td></tr>
+          <tr><td>W</td><td>Weak</td><td><span class="DNA_A">A</span> <span class="DNA_T">T</span></td></tr>
+          <tr><td>S</td><td>Strong</td><td><span class="DNA_C">C</span> <span class="DNA_G">G</span></td></tr>
+          <tr><td>Y</td><td>Pyrimidine</td><td><span class="DNA_C">C</span> <span class="DNA_T">T</span></td></tr>
+          <tr><td>K</td><td>Keto</td><td><span class="DNA_G">G</span> <span class="DNA_T">T</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin-top:50px;" id="rna">RNA Alphabet</h3>
+      <div class="indent">
+        <style>
+          .RNA_A { color: rgb(204, 0, 0); }
+          .RNA_C { color: rgb(0, 0, 204); }
+          .RNA_G { color: rgb(255, 179, 0); }
+          .RNA_U { color: rgb(0, 128, 0); }
+        </style>
+        <p>The MEME Suite uses the standard 4 symbol alphabet 
+        '<span class="RNA_A">A</span>', '<span class="RNA_C">C</span>',
+        '<span class="RNA_G">G</span>', '<span class="RNA_U">U</span>' for RNA but also
+        accepts the DNA symbol '<span class="RNA_U">T</span>' as an alias for
+        '<span class="RNA_U">U</span>'. In addition there are 11 ambiguous symbols
+        'N', 'V', 'H', 'D', 'B', 'M', 'R', 'W', 'S', 'Y', and 'K'. There are 2 aliases for the
+        wildcard 'N'; '.' as the MEME Suite does not support gaps but it is
+        sometimes necessary to ignore them and 'X' because MEME used to use it for
+        masking no matter what the sequence alphabet was.</p>
+        <table>
+          <tbody>
+          <tr><th>Symbol(s)</th><th>Name</th><th>&nbsp;</th></tr>
+          <tr><td class="RNA_A">A</td><td>Adenine</td><td></td></tr>
+          <tr><td class="RNA_C">C</td><td>Cytosine</td><td></td></tr>
+          <tr><td class="RNA_G">G</td><td>Guanine</td><td></td></tr>
+          <tr><td class="RNA_U">U T</td><td>Uracil</td><td></td></tr>
+          <tr><th>Symbol(s)</th><th>Name</th><th>Matches</th></tr>
+          <tr><td>N . X</td><td>Any base</td><td><span class="RNA_A">A</span> <span class="RNA_C">C</span> <span class="RNA_G">G</span> <span class="RNA_U">U</span></td></tr>
+          <tr><td>V</td><td>Not U</td><td><span class="RNA_A">A</span> <span class="RNA_C">C</span> <span class="RNA_G">G</span></td></tr>
+          <tr><td>H</td><td>Not G</td><td><span class="RNA_A">A</span> <span class="RNA_C">C</span> <span class="RNA_U">U</span></td></tr>
+          <tr><td>D</td><td>Not C</td><td><span class="RNA_A">A</span> <span class="RNA_G">G</span> <span class="RNA_U">U</span></td></tr>
+          <tr><td>B</td><td>Not A</td><td><span class="RNA_C">C</span> <span class="RNA_G">G</span> <span class="RNA_U">U</span></td></tr>
+          <tr><td>M</td><td>Amino</td><td><span class="RNA_A">A</span> <span class="RNA_C">C</span></td></tr>
+          <tr><td>R</td><td>Purine</td><td><span class="RNA_A">A</span> <span class="RNA_G">G</span></td></tr>
+          <tr><td>W</td><td>Weak</td><td><span class="RNA_A">A</span> <span class="RNA_U">U</span></td></tr>
+          <tr><td>S</td><td>Strong</td><td><span class="RNA_C">C</span> <span class="RNA_G">G</span></td></tr>
+          <tr><td>Y</td><td>Pyrimidine</td><td><span class="RNA_C">C</span> <span class="RNA_U">U</span></td></tr>
+          <tr><td>K</td><td>Keto</td><td><span class="RNA_G">G</span> <span class="RNA_U">U</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
+

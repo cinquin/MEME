@@ -1,0 +1,32 @@
+my @mode = ("allr", "ed", "kullback",
+  "pearson", "sandelin", "blic1", "blic5");
+
+# Test tomtom (7 distance measures, 2 scoring modes)
+my $counter = 1;
+for (my $complete = 0; $complete <= 1; $complete++) {
+  my $com = ($complete ? 'complete.' : '');
+  my @incom = ($complete ? () : ('-incomplete-scores'));
+  foreach my $score (@mode) {
+    my $dir = 'tomtom.'. $com . 'out.' . $score;
+    my $out_dir = catdir('results', 'tomtom'.$counter);
+    my @args = ('-verbosity', 1,
+      #'-dist', $score, '-text', @incom, 
+      '-dist', $score, '-oc', $out_dir, @incom, 
+      'common/sample.meme', 'common/sample.meme');
+    # test this combination of score and complete scoring
+    &test('tomtom_'.$score.($complete ? '_cs' : ''), '',
+      'tomtom', '', \@args, 
+      [
+        {
+          #output => '-', 
+          output => catfile($out_dir, 'tomtom.txt'),
+          reference => 'tomtom/' . $dir, 
+          type => 'text'
+        }
+      ],
+      #'results/' . $dir
+      $out_dir
+    );
+    $counter++
+  }
+}

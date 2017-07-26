@@ -1,0 +1,15 @@
+##gff-version 3
+recn	MCAST	transcriptional_cis_regulatory_region	71	130	6.65	.	.	ID=cluster-6;pvalue=0.216;evalue=3.03;qvalue=0.537
+cloacin-df13	MCAST	transcriptional_cis_regulatory_region	97	116	6.12	.	.	ID=cluster-1;pvalue=0.244;evalue=3.42;qvalue=0.537
+umu-operon	MCAST	transcriptional_cis_regulatory_region	91	110	5.11	.	.	ID=cluster-8;pvalue=0.308;evalue=4.31;qvalue=0.537
+lexA	MCAST	transcriptional_cis_regulatory_region	14	95	4.94	.	.	ID=cluster-13;pvalue=0.32;evalue=4.49;qvalue=0.537
+muc-operon	MCAST	transcriptional_cis_regulatory_region	49	68	4.68	.	.	ID=cluster-14;pvalue=0.341;evalue=4.77;qvalue=0.537
+reca	MCAST	transcriptional_cis_regulatory_region	71	90	3.73	.	.	ID=cluster-5;pvalue=0.423;evalue=5.92;qvalue=0.537
+uvrb	MCAST	transcriptional_cis_regulatory_region	71	90	3.6	.	.	ID=cluster-10;pvalue=0.436;evalue=6.11;qvalue=0.537
+uvrd	MCAST	transcriptional_cis_regulatory_region	102	121	3.19	.	.	ID=cluster-11;pvalue=0.479;evalue=6.71;qvalue=0.537
+colicin-a	MCAST	transcriptional_cis_regulatory_region	34	53	3.05	.	.	ID=cluster-12;pvalue=0.496;evalue=6.94;qvalue=0.537
+sula	MCAST	transcriptional_cis_regulatory_region	85	104	3.04	.	.	ID=cluster-7;pvalue=0.496;evalue=6.95;qvalue=0.537
+colicin-ia	MCAST	transcriptional_cis_regulatory_region	99	118	2.85	.	.	ID=cluster-3;pvalue=0.519;evalue=7.26;qvalue=0.537
+uvra	MCAST	transcriptional_cis_regulatory_region	60	79	2.83	.	.	ID=cluster-9;pvalue=0.521;evalue=7.29;qvalue=0.537
+colicin-ib	MCAST	transcriptional_cis_regulatory_region	99	118	2.82	.	.	ID=cluster-4;pvalue=0.522;evalue=7.31;qvalue=0.537
+colicin-e1	MCAST	transcriptional_cis_regulatory_region	97	116	2.7	.	.	ID=cluster-2;pvalue=0.537;evalue=7.52;qvalue=0.537

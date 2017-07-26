@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>AME Tutorial - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+  </head>
+  <body>
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <h2>AME Tutorial</h2>
+    <h3>What AME does</h3>
+    <div class="indent">
+       <span class="tut blurb" data-id="ame"></span>
+    </div>
+    <h3>Typical AME applications</h3>
+       <ul>
+         <li>Determining which motif(s) are enriched in a set of promoters of co-regulated genes.
+         <li>Determining which motif(s) are relatively enriched in one set of promoters compared to another set of promoters.
+         <li>Determining which motif(s) are enriched in a set of transcription factor ChIP-seq peaks (CentriMo may be
+		more appropriate for this task).
+         <li>Determining which type of kinase substrate motif is enriched in a set of proteins.
+       </ul>
+    <h3>How AME works</h3>
+    <p>
+	AME determines the (relative) enrichment of motif in its input separately and reports the significant ones.
+	The first step is to scan each primary and control sequence with the motif, computing a odds score (not log-odds)
+	for each position in each sequence.  Next, for each sequence, AME combines the scores according to the
+	chosen scoring method.  By default, the website version uses the "Average odds score", which is just
+	what it sounds like--the average odds score over all positions in the sequence where the motif fits.
+        AME then sorts all the sequences (primary and control) according to their scores, and applies a 
+	statistical test to determine if the primary sequences have significantly larger scores.  By default,
+	the website version of AME uses the "Rank sum test".
+    </p>
+    <ol>
+      <li>Scan each sequence with a motif, computing one score per sequence.
+      <li>Apply statistical test on the tendency of the primary sequences to have larger scores.
+      <li>Report motifs with significant (adjusted) <i>p</i>-values.
+    </ol>
+    <h3>Sequence and Motif Alphabets</h3>
+    <p>
+    	AME supports DNA, RNA, protein and custom sequence alphabets.  The alphabet is specified in the motif file, 
+	and the sequences being searched must be compatible with that alphabet.  (DNA motifs can be used to search
+	RNA sequences and vice-versa.)  If the motif alphabet is "complementable" (e.g., DNA-like alphabets),
+	AME scores both strands of the sequences.  If you have DNA motifs and wish to search only the given
+	strand of each sequence, you can edit the alphabet section of the motif file to contain
+	<ul><code>ALPHABET = ACGU</code></ul>
+	rather than 
+	<ul><code>ALPHABET = ACGT</code></ul>
+	You can also override the the alphabet specified in the motif file with an alphabet that contains all 
+	the core symbols specified in the motif alphabet but which may contain additional core symbols. 
+	The motifs will be expanded to match this new alphabet with 0's filling in the probabilities for the 
+	new symbols (prior to applying pseudocounts).
+    </p>
+    <h3>Primary Sequence set</h3>
+    <p>
+	These sequences should all be in the same sequence alphabet.  Their lengths may vary.
+	They can, for example, be a set of promoters thought to be co-regulated, a set of ChIP-seq regions or
+	a set of proteins thought to be phosphorylated be one or more kinases.
+    </p>
+    <h3>Control sequence set</h3>
+    <p>
+	AME detects motifs enriched in the primary sequences relative to these sequences.
+	If you don't provide a control set, the website version of AME will create one
+	copying the primary sequences and shuffling the letters within each sequence.
+	The shuffling preserves 2-mer frequencies in each sequence individually.
+	It is advisable that the primary and control sequences have similar length
+	distributions or AME's reported <i>p</i>-values may not be accurate.
+    </p>
+    <h3>FAQ</h3>
+      <ul>
+         <li><b>How big should the control sequence set be?</b></li>
+         <p>
+	    For AME it doesn't hurt at all if the control set is
+	    larger than the primary.  Intuitively,
+	    if the primary set is small, having a much larger control
+	    might allow you to find less significant motifs.
+         </p>
+         <p>
+	    Basically, AME works by sorting the sequences by some motif score.
+	    Imagine if you had just one positive sequence, the extreme case.  If it sorts to the top
+	    of N sequences, the p-value of that event is 1/(N+1).  That gets smaller
+	    as you increase N, which you can do by increasing the number of control
+	    sequences.  (But they should all be the same length as the positive sequence
+	    in that case!)
+         </p>
+         <p>
+	    For the above reason, the <code>fasta-shuffle-letters</code> script 
+	    included with the MEME Suite when you download it has the <code>-copies</code> option
+	    which lets you create N shuffled copies of each input sequence.
+         </p>
+         <p>
+	    As a rule of thumb, if your primary dataset has fewer than 500 sequences
+	    you might want to use enough control sequences to bring the total to 1000.
+         </p>
+         <li><b>I'm not finding any enriched motifs; should I use a smaller set of motifs?</b></li>
+           <p>The more motifs you have in your database the more of a multiple testing issue you face. 
+              	If you can eliminate motifs that are irrelevant to your experiment, that reduces the 
+		multiple testing problem. The enrichment of each motif is considered separately, 
+		so their is no particular advantage to scanning with motifs that you know are not relevant. 
+		Of course if you are not getting any significant enrichment (as judged by the <i>p</i>-value before
+		adjustment), the multiple testing issue is moot. However, reducing the number of 
+		motifs in the library also shortens the time needed for AME to run which may still make it advantageous! 
+            </p>
+      </ul>
+    <p>
+  </body>
+</html>
+

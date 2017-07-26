@@ -1,0 +1,31 @@
+MOTIF_INDEX	MOTIF_SOURCE	MOTIF_ID	ALT_ID	CONSENSUS	WIDTH	SITES	E-VALUE	E-VALUE_SOURCE	MOST_SIMILAR_MOTIF_SOURCE	MOST_SIMILAR_MOTIF	URL
+1	MEME	WGGGTGTGGYYS	MEME-1	WGGGTGTGGYYS	12	225	3.4e-225	MEME	JASPAR_CORE_2014.meme	MA0493.1 (Klf1)	http://jaspar.genereg.net?ID=MA0493.1&rm=present&collection=CORE
+2	JASPAR_CORE_2014.meme	MA0493.1	Klf1	RRCCACACCCW	11	647	3.6e-078	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0493.1&rm=present&collection=CORE
+3	JASPAR_CORE_2014.meme	MA0039.2	Klf4	DGGGYGKGGC	10	697	1.9e-062	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0039.2&rm=present&collection=CORE
+4	DREME	MCRCCCW	DREME-1	MCRCCCW	7	443	5.8e-059	DREME	JASPAR_CORE_2014.meme	MA0493.1 (Klf1)	http://jaspar.genereg.net?ID=MA0493.1&rm=present&collection=CORE
+5	JASPAR_CORE_2014.meme	MA0036.2	GATA2	WRDTTCTTATCTSH	14	488	1.9e-043	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0036.2&rm=present&collection=CORE
+6	JASPAR_CORE_2014.meme	MA0599.1	KLF5	GCCCCDCCCH	10	653	3.6e-043	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0599.1&rm=present&collection=CORE
+7	DREME	TTATCW	DREME-2	TTATCW	6	281	5.7e-041	DREME	JASPAR_CORE_2014.meme	MA0140.2 (TAL1::GATA1)	http://jaspar.genereg.net?ID=MA0140.2&rm=present&collection=CORE
+8	MEME	VWGATAAR	MEME-2	VWGATAAR	8	176	1.3e-040	MEME	JASPAR_CORE_2014.meme	MA0036.2 (GATA2)	http://jaspar.genereg.net?ID=MA0036.2&rm=present&collection=CORE
+9	JASPAR_CORE_2014.meme	MA0035.3	Gata1	TYCTTATCTSY	11	459	7.9e-039	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0035.3&rm=present&collection=CORE
+10	JASPAR_CORE_2014.meme	MA0300.1	GAT1	YYGATAAG	8	529	3.1e-035	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0300.1&rm=present&collection=CORE
+11	JASPAR_CORE_2014.meme	MA0140.2	TAL1::GATA1	MTTATCWSNNNNNHVCAG	18	413	5.6e-033	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0140.2&rm=present&collection=CORE
+12	JASPAR_CORE_2014.meme	MA0309.1	GZF3	YGATAASR	8	567	1.4e-032	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0309.1&rm=present&collection=CORE
+13	JASPAR_CORE_2014.meme	MA0289.1	DAL80	CGATAAG	7	578	3.0e-032	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0289.1&rm=present&collection=CORE
+14	JASPAR_CORE_2014.meme	MA0270.1	AFT2	SACACCCB	8	457	1.3e-030	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0270.1&rm=present&collection=CORE
+15	JASPAR_CORE_2014.meme	MA0482.1	Gata4	YCTTATCTSHB	11	513	9.3e-030	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0482.1&rm=present&collection=CORE
+16	JASPAR_CORE_2014.meme	MA0307.1	GLN3	GATAA	5	801	9.5e-030	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0307.1&rm=present&collection=CORE
+17	JASPAR_CORE_2014.meme	MA0037.2	GATA3	AGATAAGA	8	225	5.8e-016	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0037.2&rm=present&collection=CORE
+18	JASPAR_CORE_2014.meme	MA0450.1	hkb	KGGGCGTGA	9	292	2.5e-015	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0450.1&rm=present&collection=CORE
+19	JASPAR_CORE_2014.meme	MA0542.1	ELT-3	TCTTATCA	8	132	8.3e-013	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0542.1&rm=present&collection=CORE
+20	JASPAR_CORE_2014.meme	MA0199.1	Optix	TGATA	5	506	2.9e-011	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0199.1&rm=present&collection=CORE
+21	MEME	GCAGTTAGGTGTGTCYTGAAGAGAWGCAG	MEME-3	GCAGTTAGGTGTGTCYTGAAGAGAWGCAG	29	6	2.3e-006	MEME	 	 	 
+22	JASPAR_CORE_2014.meme	MA0079.3	SP1	GCCCCKCCCCC	11	561	3.4e-006	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0079.3&rm=present&collection=CORE
+23	JASPAR_CORE_2014.meme	MA0443.1	btd	RRGGGGCGKR	10	442	4.6e-006	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0443.1&rm=present&collection=CORE
+24	JASPAR_CORE_2014.meme	MA0334.1	MET32	MGCCACA	7	795	9.7e-006	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0334.1&rm=present&collection=CORE
+25	JASPAR_CORE_2014.meme	MA0333.1	MET31	RNTGTGGCG	9	422	4.8e-003	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0333.1&rm=present&collection=CORE
+26	JASPAR_CORE_2014.meme	MA0516.1	SP2	GYCCCGCCYCYBSSS	15	603	5.9e-003	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0516.1&rm=present&collection=CORE
+27	JASPAR_CORE_2014.meme	MA0545.1	HLH-1	SAACAGCTGNC	11	390	6.7e-003	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0545.1&rm=present&collection=CORE
+28	JASPAR_CORE_2014.meme	MA0425.1	YGR067C	VCCCCDCNNNNNNN	14	506	1.2e-002	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0425.1&rm=present&collection=CORE
+29	JASPAR_CORE_2014.meme	MA0204.1	Six4	TGAYAC	6	662	2.0e-002	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0204.1&rm=present&collection=CORE
+30	JASPAR_CORE_2014.meme	MA0531.1	CTCF	CCRMYAGRTGGCGCY	15	394	3.5e-002	CENTRIMO	 	 	http://jaspar.genereg.net?ID=MA0531.1&rm=present&collection=CORE

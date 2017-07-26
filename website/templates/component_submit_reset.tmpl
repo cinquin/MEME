@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Submit/Reset Button Template</title>
+    <link href="../doc/css/style.css?version=4.11.1" rel="stylesheet" type="text/css">
+    <style>
+      div.test_box {
+        margin-left: 50px;
+        width: 60%;
+        border: 1px solid black;
+      }
+    </style>
+  </head>
+  <body>
+    <!--{help}-->
+    <!--{/help}-->
+    <div class="test_box">
+    <!--{component}-->
+          <p id="submit_limit_warn" class="submit_limit_warn"><b>Warning:</b>
+          Your maximum job quota has been reached! You will need to wait until
+          one of your jobs completes or <span id="submit_wait">1 second has</span>
+          elapsed before submitting another job.<br>
+          <br>
+          This server has the job quota set to <span id="quota_count">10 unfinished jobs</span>
+          every <span id="quota_duration">1 hour</span>.</p>
+          <p class="submit_limit_note">Note: if the combined form inputs exceed 80MB the job will be rejected.</p>
+          <!-- Search and clear buttons -->
+          <div class="submit_buttons">
+            <input id="submit_btn" type="submit" name="search" value="${submit_title}" data-wait="${submit_wait}" data-count="${quota_count}" data-duration="${quota_duration}">
+            &nbsp;&nbsp;&nbsp;
+            <input type="reset" value="${reset_title}" >
+          </div>
+          <script>
+            //
+            // delayText
+            // Write out a delay (measured in seconds) as a time made up of
+            // days, hours, minutes and seconds.
+            //
+            function delayText(delay) {
+              // convert the delay (measured in seconds)
+              // into seconds, minutes, hours and days
+              var seconds = delay;
+              var minutes = Math.floor(seconds / 60);
+              seconds -= minutes * 60;
+              var hours = Math.floor(minutes / 60);
+              minutes -= hours * 60;
+              var days = Math.floor(hours / 24);
+              hours -= days * 24;
+              // put the times and their units into an array for easier processing
+              var counts = [days, hours, minutes, seconds];
+              var units = ["day", "hour", "minute", "second"];
+              // determine if the collective time should be treated as a plural
+              var plural = (
+                counts.filter(function(value){return value > 0;}).length > 1 ||
+                counts.filter(function(value){return value > 1;}).length > 0);
+              // determine the smallest non-zero unit
+              var last;
+              for (last = counts.length -1; last >= 0; last--) {
+                if (counts[last] > 0) break;
+              }
+              // now build up the text representation
+              var text = "";
+              var first = true;
+              if (last > 0) {
+                var i;
+                for (i = 0; i < last; i++) {
+                  if (counts[i] > 0) {
+                    // separate items with commas
+                    if (!first) text += ", ";
+                    first = false;
+                    // write out the count, unit and 's' (when plural)
+                    text += counts[i] + " " + units[i] + (counts[i] > 1 ? "s" : "");
+                  }
+                }
+                // separate last item from the previous items with 'and'
+                if (!first) text += " and ";
+                // write out the count, unit and 's' (when plural) of the last non-zero item
+                // also write out 'have' or 'has' depending on if the whole
+                // group is a collective plural
+                text += counts[last] + " " + units[last] + (counts[last] > 1 ? "s" : "");
+              } else {
+                // none of the units were larger than zero so use a default text
+                text = "1 second";
+              }
+              return {"text": text, "plural": plural};
+            }
+            var submit_limit_timer = null;
+            function set_submit_limit_timer(wait) {
+              "use strict";
+              var btn = $("submit_btn");
+              var msg = $("submit_limit_warn");
+              var counter = $("submit_wait");
+              var quotaCount = parseInt(btn.getAttribute("data-count"), 10);
+              $("quota_count").textContent = "" + quotaCount + " unfinished " + (quotaCount > 1 ? "jobs" : "job");
+              $("quota_duration").textContent = delayText(parseInt(btn.getAttribute("data-duration"), 10)).text;
+              if (typeof wait == "number") {
+                btn.setAttribute("data-wait", wait);
+              } else {
+                wait = parseInt(btn.getAttribute("data-wait"), 10);
+              }
+              if (submit_limit_timer != null) {
+                clearInterval(submit_limit_timer);
+                submit_limit_timer = null;
+              }
+              if (wait > 0) {
+                var timeText = delayText(wait);
+                counter.textContent = timeText.text + (timeText.plural ? " have" : " has");
+                toggle_class(msg, "active", true);
+                submit_limit_timer = setInterval(function() {
+                  wait--;
+                  var timeText = delayText(wait);
+                  counter.textContent = timeText.text + (timeText.plural ? " have" : " has");
+                  if (wait <= 0) {
+                    clearInterval(submit_limit_timer);
+                    toggle_class(msg, "active", false);
+                  }
+                }, 1000);
+              } else {
+                toggle_class(msg, "active", false);
+              }
+            }
+            function submit_limit_pageshow(evt) {
+              set_submit_limit_timer();
+              if (evt.persisted) {
+                // the page is cached so the timer value may be wrong, try to update it.
+                var url = location.pathname.substring(location.pathname.lastIndexOf("/") + 1) + "?wait";
+                var request = new XMLHttpRequest();
+                request.addEventListener("load", function(evt2) {
+                  set_submit_limit_timer(parseInt(request.responseText));
+                }, false);
+                request.open("GET", url, true);
+                request.send();
+              }
+            }
+            addEventListener("pageshow", submit_limit_pageshow, false);
+          </script>
+    <!--{/component}-->
+    </div>
+  </body>
+</html>
+

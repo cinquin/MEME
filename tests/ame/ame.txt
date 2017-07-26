@@ -1,0 +1,9 @@
+Not in partition maximization mode. Fixing partition at the number of primary sequences (169).
+
+Threshold p-value for reporting results: 0.05
+Motif p-values are corrected by #Motifs * #ThresholdsTested - (12 * 1 = 12)
+
+1. Fisher's exact test p-value of motif MA0039.2 Klf4 (DGGGYGKGGC) top 169 seqs: 3.06e-09 (Corrected p-value: 3.672e-08)
+2. Fisher's exact test p-value of motif MA0140.1 Tal1::Gata1 (CUGBNNNNNDSAGAUAAG) top 169 seqs: 7.343e-08 (Corrected p-value: 8.811e-07)
+3. Fisher's exact test p-value of motif MA0035.2 Gata1 (DSAGAUAAGVV) top 169 seqs: 1.245e-05 (Corrected p-value: 0.0001493)
+4. Fisher's exact test p-value of motif MA0300.1 GAT1 (YYGAUAAG) top 169 seqs: 0.0007454 (Corrected p-value: 0.008908)

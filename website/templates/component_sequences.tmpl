@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Sequence Input Template</title>
+    <link href="../doc/css/style.css?version=4.11.1" rel="stylesheet" type="text/css">
+    <link href="../css/component_sequences.css?version=4.11.1" rel="stylesheet" type="text/css">
+    <script src="../doc/js/utilities.js?version=4.11.1"></script>
+    <script src="../doc/js/motif_logo.js?version=4.11.1"></script>
+    <script src="../js/site.js?version=4.11.1"></script>
+    <script src="../js/alphabet_parser.js?version=4.11.1"></script>
+    <script src="../js/fasta-debug.js?version=4.11.1"></script>
+    <script src="../js/component_sequences.js?version=4.11.1"></script>
+    <script>
+      var XXXXoptionsXXXX = {
+        "file_max": (1<<20) * 20, // 20 MB
+        "alph_type": "ANY_ALPHABET",
+        "short": false,
+        "weights": true,
+        "mask": true,
+        "ambigs": true,
+        "gaps": false,
+        "uppercase": false,
+        "max_name_len": 50,
+        "max_desc_len": 500,
+        "min_seq_len": 8,
+        "max_seq_len": null,
+        "max_seq_count": 1000,
+        "max_seq_total": 60000 
+      };
+
+      var XXXXoptions2XXXX = {
+        "alph_type": "ANY_ALPHABET"
+      };
+
+      var alphabet_input = null;
+      var sequence_input = null;
+
+      function pass_alphabet_to_sequences(e) {
+        if (sequence_input != null) {
+          sequence_input.set_custom_alphabet(e.detail.has_custom, e.detail.alphabet);
+        }
+      }
+
+      function XXXXregister_componentXXXX(id, element, controler) {
+        if (id == "${prefix2}") {
+          alphabet_input = controler;
+          element.addEventListener("alphabet_changed", pass_alphabet_to_sequences, false);
+        } else if (id == "${prefix}") {
+          sequence_input = controler;
+        }
+        if (alphabet_input != null && sequence_input != null) {
+          sequence_input.set_custom_alphabet(alphabet_input.has_custom_alphabet(), alphabet_input.get_custom_alphabet());
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="pop_content" id="pop_${prefix}">
+      <p>Information about the sequences field would be displayed here.</p>
+      <div class="pop_close">[ <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <!--{alphabet_selector_help}-->
+    <div class="pop_content" id="pop_custom_alphabet">
+      <p>If your sequences are not in a standard alphabet (<a href="../doc/alphabets.html#dna">DNA</a>,
+      <a href="../doc/alphabets.html#rna">RNA</a> or
+      <a href="../doc/alphabets.html#protein">protein</a>), you must input a
+      <a href="../doc/alphabet-format.html">custom alphabet file</a>.</p>
+      <div class="pop_close">[ <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <!--{/alphabet_selector_help}-->
+    <!--{help}-->
+    <div class="pop_content" id="pop_input_sequences">
+      <b>Click on the menu at the left to see which of the following sequence input methods are available.</b>
+      <dl>
+        <dt><b>Type in sequences</b></dt>
+        <dd>When this option is available you may directly input multiple
+        sequences by typing them. Sequences must be input in
+        <a href="../doc/fasta-format.html">FASTA format</a>.</dd>
+        <dt><b>Upload sequences</b></dt>
+        <dd>When this option is available you may upload a file containing
+        sequences in <a href="../doc/fasta-format.html">FASTA format</a>.</dd>
+        <dt><b>Databases (select category)</b></dt>
+        <dd>When this option is available you may first select a category of 
+        sequence database from the list below it. Two additional menus will then appear 
+        where you can select the particular database and version desired, respectively.
+        The full list of available sequence databases and their descriptions 
+        can be viewed <a href="../db/sequences">here</a>.</dd>
+        <dt><b>Submitted sequences</b></dt>
+        <dd>This option is only available when you have invoked the current
+        program by clicking on a button in the output report of a different MEME Suite program.
+        By selecting this option you will input the sequences sent by that program.</dd>
+      </dl>
+      <div class="pop_close">[ <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sequence_databases">
+      <p>Select an available sequence database from this menu.</p>
+      <div class="pop_close">[ <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sequence_database_versions">
+      <p>Select an available version of the sequence database from this menu.</p>
+      <div class="pop_close">[ <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sequence_database_priors">
+      <p>Select an available tissue/cell-specificity from this menu.</p>
+      <div class="pop_close">[ <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sequence_database_prior_filter">
+      <p>Selecting this option will filter the sequence menu to only contain
+      databases that have additional information that is specific to a tissue 
+      or cell line.</p>  
+      <p>This option causes MEME Suite to use tissue/cell-specific information
+	(typically from DNase I or histone modification ChIP-seq data) encoded
+	as a <a href="../doc/psp-format.html">position specific prior</a> that
+        has been created by the MEME Suite <a href="../doc/create-priors.html">create-priors</a>
+        utility.  You can see a description of the sequence databases
+	for which we provide tissue/cell-specific priors 
+        <a href="../doc/fasta-format.html">here</a>.</p>
+      <p><b>Note that you cannot upload or type in your own sequences
+      when tissue/cell-specific scanning is selected.</b></p>
+      <div class="pop_close">[ <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <!--{/help}-->
+    <!--{alphabet_selector}-->
+    <h2 class="meme"><!--{title}-->Select the sequence alphabet<!--{/title}--></h2>
+    <div class="subcontent">
+      <h4 class="meme"><!--{subtitle}-->Use sequences with a standard alphabet or specify a custom alphabet.<!--{/subtitle}-->
+        <div class="help" data-topic="pop_custom_alphabet"></div></h4>
+      <div id="${prefix2}" class="alphabet_input">
+        <input type="radio" name="${prefix2}_custom" id="${prefix2}_custom_off" value="0" checked>
+        <label for="${prefix2}_custom_off">DNA, RNA or Protein</label>
+        <input type="radio" name="${prefix2}_custom" id="${prefix2}_custom_on" value="1">
+        <label for="${prefix2}_custom_on">Custom</label>
+        <span class="custom_alphabet fasta_debug">
+          <span class="background"></span>
+          <span class="indicator" style="width: 100%"></span>
+          <input type="file" class="meme" name="${prefix2}_file"/>
+          <div class="popup"></div>
+        </span>
+        <span class="alphabet_info"></span>
+      </div>
+    </div>
+    <script>
+    (function () {
+      var options = XXXXoptions2XXXX;
+      var element = document.getElementById("${prefix2}");
+      var controler = new AlphabetInput(element);
+      XXXXregister_componentXXXX("${prefix2}", element, controler);
+    })();
+    </script>
+    <!--{/alphabet_selector}-->
+    <!--{component}-->
+          <h2 class="meme"><!--{title}-->Input the sequences<!--{/title}--></h2>
+          <div class="subcontent">
+            <h4 class="meme"><!--{subtitle}-->Enter sequences or select the <a href="../db/sequences">database</a> you want to scan for matches to motifs.<!--{/subtitle}-->
+            <div class="help" data-topic="pop_${prefix}"></div></h4>
+            <div class="sequence_input" id="${prefix}">
+              <!--{priors_section_1}-->
+              <div class="prior_filter_section"><label>
+              <input type="checkbox" class="prior_filter" value="1"> Enable
+              tissue/cell-specific scanning</label>
+              <div class="help" data-topic="pop_sequence_database_prior_filter"></div></div>
+              <!--{/priors_section_1}-->
+              <div>
+              <select class="sequence_source meme" name="${prefix}_source">
+                  <!--{noseq_option}-->
+                  <optgroup class = "no_priors" label="Skip input">
+                    <option value="noseq" XXXXselectedXXXX>No sequences</option>
+                  </optgroup>
+                  <!--{/noseq_option}-->
+                <optgroup class="no_priors" label="User supplied">
+                  <!--{text_option}-->
+                  <option class="no_priors" value="text" XXXXselectedXXXX>Type in sequences</option>
+                  <!--{/text_option}-->
+                  <!--{file_option}-->
+                  <option class="no_priors" value="file" XXXXselectedXXXX>Upload sequences</option>
+                  <!--{/file_option}-->
+                  <!--{embed_option}-->
+                  <option class="no_priors" value="embed" XXXXselectedXXXX>Submitted sequences</option>
+                  <!--{/embed_option}-->
+                </optgroup>
+                <!--{cat_options}-->
+                <optgroup class="db_options" label="Databases (select category)">
+                  <!--{cat_option}-->
+                  <option class="XXXXno_priorsXXXX" value="${id}" XXXXselectedXXXX>${name}</option>
+                  <!--{/cat_option}-->
+                </optgroup>
+                <!--{/cat_options}-->
+              </select>
+              <span class="sequence_file fasta_debug">
+                <span class="background"></span>
+                <span class="indicator"></span>
+                <input type="file" class="meme" name="${prefix}_file"/>
+                <div class="popup"></div>
+              </span>
+              <span class="sequence_alphabet_info"></span>
+              <div class="help" data-topic="pop_input_sequences"></div>
+              </div>
+              <div class="sequence_text fasta_debug">
+                <span class="background"></span>
+                <span class="indicator"></span>
+                <div class="editor">
+                  <div>
+                    <pre><span></span><br></pre>
+                    <textarea name="${prefix}_text" spellcheck="false"></textarea>
+                  </div>
+                </div>
+                <div class="popup"></div>
+              </div>
+              <!--{db_section}-->
+              <div>
+              <select class="sequence_db listing meme" name="${prefix}_db_listing" disabled>
+                <optgroup label="Databases">
+                <option value="">...</option>
+                </optgroup>
+              </select>
+              <div class="help sequence_db" data-topic="pop_sequence_databases"></div>
+              </div>
+              <div>
+              <select class="sequence_db version meme" name="${prefix}_db_version" disabled>
+                <optgroup label="Versions">
+                  <option value="">...</option>
+                </optgroup>
+              </select>
+              <div class="help sequence_db" data-topic="pop_sequence_database_versions"></div>
+              </div>
+              <!--{priors_section_2}-->
+              <div>
+              <select class="sequence_db priors meme" name="${prefix}_db_priors">
+                <optgroup label="Priors">
+                  <option value="">Not Using Priors</option>
+                </optgroup>
+              </select>
+              <div class="help sequence_db priors" data-topic="pop_sequence_database_priors"></div>
+              </div>
+              <!--{/priors_section_2}-->
+              <!--{/db_section}-->
+              <!--{embed_section}-->
+              <span class="sequence_embed">
+                <input type="hidden" class="name" name="${prefix}_name" value="${name}">
+                <input type="hidden" class="data" name="${prefix}_embed" value="${data}">
+              </span>
+              <!--{/embed_section}-->
+              <script>
+                (function() {
+                  "use strict";
+                  var options = XXXXoptionsXXXX;
+                  var element = document.getElementById("${prefix}");
+                  var controler = new SequenceInput(element, options);
+                  XXXXregister_componentXXXX("${prefix}", element, controler);
+                })();
+              </script>
+            </div>
+          </div>
+    <!--{/component}-->
+  </body>
+</html>
+

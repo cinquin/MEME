@@ -1,0 +1,121 @@
+#!@WHICHPERL@
+=head1 NAME
+
+glam2_webservice - Run glam2 in a restricted mode and create an index webpage.
+
+=head1 SYNOPSIS
+
+glam2_webservice [options] <sequences>
+
+  Options:
+    -alpha [DNA|PROTEIN]  Alphabet; default DNA
+    -min_seqs <n>         Minimum number of sequences in an alignment (-z)
+    -min_cols <n>         Minimum number of aligned columns (-a)
+    -max_cols <n>         Maximum number of aligned columns (-b)
+    -initial_cols <n>     Initial number of aligned columns (-w)
+    -runs <n>             Number of alignment replicates (-r)
+    -run_no_impr <n>      Number of iterations without improvement (-n)
+    -del_pseudo <n>       Deletion pseudocount (-D)
+    -no_del_pseudo <n>    No-deletion pseudocount (-E)
+    -ins_pseudo <n>       Insertion pseudocount (-I)
+    -no_ins_pseudo <n>    No-insertion pseudocount (-J)
+    -rev_comp             Check both strands (-2)
+    -embed                Embed the sequences (-M)
+    -help                 brief help message
+
+=cut
+
+use strict;
+use warnings;
+# load standard perl libraries
+use Getopt::Long qw(:config permute auto_help);
+use Pod::Usage;
+# load custom perl libraries
+use lib qw(@PERLLIBDIR@);
+use Alphabet qw(rna dna protein);
+use StatusPage qw(arg_checks arg_end opt_uploaded opt_choice opt_integer opt_number);
+use Globals;
+# constants
+my $bin_dir = '@BINDIR@';
+# required parameters
+my $sequences;
+# option defaults
+my $alpha = 'DNA';
+my ($min_seqs, $min_cols, $max_cols, $initial_cols, $runs, $run_no_impr,
+    $del_pseudo, $no_del_pseudo, $ins_pseudo, $no_ins_pseudo);
+my ($rev_comp, $embed) = (0, 0); #FALSE
+#status page
+my $status = new StatusPage('GLAM2', \@ARGV);
+$status->add_message('Parsing arguments');
+# parse options
+my @arg_errors = ();
+my $opts_ok = do {
+  local $SIG{__WARN__} = sub { push(@arg_errors, chomp($_[0])); };
+  GetOptions(
+  '<>' => arg_checks(opt_uploaded(\$sequences), arg_end()),
+  'alpha=s' => opt_choice(\$alpha, 'DNA', 'PROTEIN'),
+  'min_seqs=i' => opt_integer(\$min_seqs, 2),
+  'min_cols=i' => opt_integer(\$min_cols, 2, 300),
+  'max_cols=i' => opt_integer(\$max_cols, 2, 300),
+  'initial_cols=i' => opt_integer(\$initial_cols, 2, 300),
+  'runs=i' => opt_integer(\$runs, 1, 100),
+  'run_no_impr=i' => opt_integer(\$run_no_impr, 1, 1000000),
+  'del_pseudo=f' => opt_number(\$del_pseudo, '>', 0),
+  'no_del_pseudo=f' => opt_number(\$no_del_pseudo, '>', 0),
+  'ins_pseudo=f' => opt_number(\$ins_pseudo, '>', 0),
+  'no_ins_pseudo=f' => opt_number(\$no_ins_pseudo, '>', 0),
+  'rev_comp' => \$rev_comp,
+  'embed' => \$embed,
+  );
+};
+# add additional error messages
+if (defined($min_cols) && defined($max_cols) && $min_cols > $max_cols) {
+  push(@arg_errors, "Value of option min_cols ($min_cols) must be <= value of option max_cols ($max_cols)");
+}
+if (defined($initial_cols)) {
+  if (defined($min_cols) && $initial_cols < $min_cols) {
+    push(@arg_errors, "Value of option initial_cols ($initial_cols) must be >= value of option min_cols ($min_cols)") ;
+  } elsif (defined($max_cols) && $initial_cols > $max_cols) {
+    push(@arg_errors, "Value of option initial_cols ($initial_cols) must be <= value of option max_cols ($max_cols)");
+  }
+}
+push(@arg_errors, "No sequences provided.") unless defined $sequences;
+# display the error messages both to the status page and stdout
+foreach my $arg_error (@arg_errors) {
+  print STDERR $arg_error, "\n";
+  $status->add_message($arg_error);
+}
+$opts_ok = 0 if (scalar(@arg_errors) > 0);
+# setup status page
+$status->add_file('html', 'glam2.html', 'GLAM2 HTML output');
+$status->add_file('text', 'glam2.txt', 'GLAM2 text output');
+$status->add_file('meme', 'glam2.meme', 'GLAM2 output as MEME text format');
+$status->add_file('seqs', $sequences, 'Input sequences');
+$status->add_message($opts_ok ? 'Arguments ok' : "Error parsing arguments");
+$status->update($opts_ok ? 'Starting' : 'Error');
+# exit if there was an error reading the arguments
+unless ($opts_ok) {
+  $status->write_log();
+  pod2usage(2);
+}
+# Run GLAM2
+my @glam2_args = ('-Q', '-O', '.');
+push(@glam2_args, '-M') if $embed;
+push(@glam2_args, '-2') if ($alpha eq 'DNA' && $rev_comp);
+push(@glam2_args, '-z', $min_seqs) if (defined($min_seqs));
+push(@glam2_args, '-a', $min_cols) if (defined($min_cols));
+push(@glam2_args, '-b', $max_cols) if (defined($max_cols));
+push(@glam2_args, '-w', $initial_cols) if (defined($initial_cols));
+push(@glam2_args, '-r', $runs) if (defined($runs));
+push(@glam2_args, '-n', $run_no_impr) if (defined($run_no_impr));
+push(@glam2_args, '-D', $del_pseudo) if (defined($del_pseudo));
+push(@glam2_args, '-E', $no_del_pseudo) if (defined($no_del_pseudo));
+push(@glam2_args, '-I', $ins_pseudo) if (defined($ins_pseudo));
+push(@glam2_args, '-J', $no_ins_pseudo) if (defined($no_ins_pseudo));
+push(@glam2_args, ($alpha eq 'DNA' ? 'n' : 'p'), $sequences);
+$status->run(PROG => 'glam2', BIN => $bin_dir, ARGS => \@glam2_args);
+# done
+$status->add_message("Done");
+$status->update();
+$status->write_log();
+1;

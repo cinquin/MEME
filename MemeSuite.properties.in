@@ -1,0 +1,23 @@
+#Auto generated file
+catalina.home = @catalina.home@
+version = @version@
+site.url = @site.url@
+site.services = @site.services@
+site.DN = @site.DN@
+site.contact = @site.contact@
+developer.contact = @developer.contact@
+expiry = @expiry@
+etc.dir = @etc.dir@
+bin.dir = @bin.dir@
+lib.dir = @lib.dir@
+db.dir = @db.dir@
+sendmail = @sendmail@
+# Limits on website submissions per unique user.
+# If a value is specified then it must match the pattern COUNT/TIME
+# where both COUNT and TIME are integers.
+# COUNT is the maximum number of uncompleted job submissions.
+# TIME is the maximum tracking time in seconds for a job submission.
+# If either COUNT or TIME is zero then there is no limit.
+# For example, 4 unfinished jobs per hour is written as:
+# quota = 4/3600
+quota = @quota@

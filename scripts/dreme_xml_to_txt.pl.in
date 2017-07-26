@@ -1,0 +1,322 @@
+#!@WHICHPERL@
+=head1 NAME
+
+dreme_xml_to_html - Make a DREME HTML output from a DREME XML output.
+
+=head1 SYNOPSIS
+
+dreme_xml_to_html <DREME XML file> <DREME HTML file>
+=cut
+
+use strict;
+use warnings;
+
+use Cwd qw(abs_path);
+use Fcntl qw(O_CREAT O_RDONLY O_WRONLY O_TRUNC SEEK_SET);
+use File::Basename qw(fileparse);
+use File::Spec::Functions qw(tmpdir);
+use File::Temp qw(tempfile);
+use Getopt::Long;
+use Pod::Usage;
+use XML::Parser::Expat;
+
+use lib '@PERLLIBDIR@';
+
+my $etc_dir;
+my $temp_dir;
+my $scripts_dir;
+
+#
+# initialise the global constants
+# 
+sub initialise {
+  # setup etc dir
+  $etc_dir = defined($ENV{MEME_ETC_DIR}) ? $ENV{MEME_ETC_DIR} : '@APPCONFIGDIR@';
+  # setup temporary directory
+  $temp_dir = '@TMP_DIR@';
+  # use the perl default if none is supplied or the replace fails
+  $temp_dir = tmpdir() if ($temp_dir eq '' || $temp_dir =~ m/^\@TMP[_]DIR\@$/);
+
+  # find the location of the script
+  my $script_name;
+  ($script_name, $scripts_dir) = fileparse(__FILE__);
+  $scripts_dir = abs_path($scripts_dir);
+
+  # add script location to search path
+  unshift(@INC, $scripts_dir);
+
+  require Alphabet;
+  require DremeSAX;
+}
+
+sub arguments {
+  # Set Option Defaults
+  my $options = {XML_PATH => undef, TXT_PATH => undef};
+  # General Options
+  my $help = 0; # FALSE
+  my @errors = ();
+  my @dbs = ();
+
+  # get the options from the arguments
+  my $options_success = 0; # FALSE
+  # redirect stderr to a temp file so we can get the error message from GetOptions
+  my $olderr;
+  my $tmperr = tempfile('GetOptions_XXXXXXXXXX', DIR => $temp_dir, UNLINK => 1);
+  open($olderr, ">&STDERR") or die("Can't dup STDERR: $!");
+  open(STDERR, '>&', $tmperr) or die("Can't redirect STDERR to temp file: $!");
+  # parse options
+  $options_success = GetOptions(
+    'help|?'          => \$help,
+  );
+  ($options->{XML_PATH}, $options->{TXT_PATH}) = @ARGV;
+  # display help
+  pod2usage(1) if $help;
+  # reset STDERR
+  open(STDERR, ">&", $olderr) or die("Can't reset STDERR: $!");
+  # read argument parsing errors
+  seek($tmperr, 0, SEEK_SET);
+  while (<$tmperr>) {chomp; push(@errors, $_);}
+  close($tmperr);
+  # check source XML file
+  unless (defined($options->{XML_PATH})) {
+    push(@errors, "No DREME XML file specified");
+  } elsif (not -e $options->{XML_PATH}) {
+    push(@errors, "The DREME XML file specified does not exist");
+  }
+  unless (defined($options->{TXT_PATH})) {
+    push(@errors, "No output file specified");
+  }
+  # print errors
+  foreach my $error (@errors) {
+    print STDERR $error, "\n";
+  }
+  pod2usage(2) if @errors;
+  # return options
+  return $options;
+}
+
+sub start_dreme {
+  my ($info, $vmajor, $vminor, $vpatch, $release_date) = @_;
+  $info->{version} = "$vmajor.$vminor.$vpatch";
+  my $fh = $info->{fh};
+  print $fh "# DREME ", $info->{version}, "\n";
+}
+
+sub end_dreme {
+  my ($info) = @_;
+}
+
+sub start_model {
+  my ($info) = @_;
+  $info->{model} = {};
+}
+
+sub end_model {
+  my ($info) = @_;
+}
+
+sub handle_command_line {
+  my ($info, $command_line) = @_;
+  my $fh = $info->{fh};
+  print $fh "#     command: $command_line\n";
+}
+
+sub handle_positives {
+  my ($info, $name, $count, $file, $last_mod_date) = @_;
+  my $fh = $info->{fh};
+  print $fh "#   positives: $count from $file ($last_mod_date)\n";
+}
+
+sub handle_negatives {
+  my ($info, $name, $count, $from, $file, $last_mod_date) = @_;
+  my $fh = $info->{fh};
+  print $fh "#   negatives: $count from ";
+  if ($from eq 'shuffled') {
+    print $fh "shuffled positives\n";
+  } else {
+    print $fh "$file ($last_mod_date)\n";
+  }
+}
+
+sub handle_alphabet {
+  my ($info, $alphabet) = @_;
+  $info->{alph} = $alphabet;
+}
+
+sub handle_strands {
+  my ($info, $strands) = @_;
+  $info->{model}->{strands} = $strands;
+}
+
+sub handle_background {
+  my ($info, @probs) = @_;
+  $info->{model}->{background} = [@probs];
+}
+
+sub handle_stop {
+  my ($info, $evalue, $count, $time) = @_;
+}
+
+sub handle_ngen {
+  my ($info, $ngen) = @_;
+}
+
+sub handle_add_pv_thresh {
+  my ($info, $pv_thresh) = @_;
+}
+
+sub handle_seed {
+  my ($info, $seed) = @_;
+}
+
+sub handle_host {
+  my ($info, $host) = @_;
+  my $fh = $info->{fh};
+  print $fh "#        host: $host\n";
+}
+
+sub handle_when {
+  my ($info, $when) = @_;
+  my $fh = $info->{fh};
+  print $fh "#        when: $when\n";
+}
+
+sub handle_description {
+  my ($info, $description) = @_;
+  my $fh = $info->{fh};
+  print $fh "# description: ", join("\n#            : ", split(/\n/, $description)), "\n";
+}
+
+sub start_motifs {
+  my ($info) = @_;
+  my $fh = $info->{fh};
+  print $fh "\nMEME version ", $info->{version}, "\n\n";
+  my $alph = $info->{alph};
+  print $fh $alph->to_text();
+  if ($alph->has_complement()) {
+    if ($info->{model}->{strands} eq 'both') {
+      print $fh "\nstrands: + -\n";
+    } else {
+      print $fh "\nstrands: +\n";
+    }
+  }
+  print $fh "\nBackground letter frequencies (from dataset):\n";
+  my $i;
+  for ($i = 0; $i < $alph->size_core(); $i++) {
+    print $fh ' ' unless $i == 0;
+    print $fh $alph->char($i), ' ', $info->{model}->{background}->[$i];
+  }
+  print $fh "\n";
+}
+
+sub end_motifs {
+  my ($info) = @_;
+}
+
+sub start_motif {
+  my ($info, $id, $alt, $seq, $len, $nsites, $p, $n, $pvalue, $evalue, $unerased_evalue) = @_;
+  my $fh = $info->{fh};
+  print $fh "\n\nMOTIF $seq $alt\n\n";
+  my $alen = $info->{alph}->size_core();
+  $info->{pssm} = "letter-probability matrix: alength= $alen w= $len nsites= $nsites E= $evalue\n";
+  if ($info->{alph}->has_complement()) {
+    $info->{words} = "#             Word    RC Word        Pos        Neg    P-value    E-value\n";
+    $info->{words} .= sprintf("# BEST  %10s %10s %10s %10s %10s %10s\n", $seq, $info->{alph}->rc_seq($seq), $p, $n, $pvalue, $evalue);
+  } else {
+    $info->{words} = "#             Word        Pos        Neg    P-value    E-value\n";
+    $info->{words} .= sprintf("# BEST  %10s %10s %10s %10s %10s\n", $seq, $p, $n, $pvalue, $evalue);
+  }
+}
+
+sub end_motif {
+  my ($info) = @_;
+  my $fh = $info->{fh};
+  print $fh $info->{words}, "\n";
+  print $fh $info->{pssm};
+}
+
+sub handle_pos {
+  my ($info, @probs) = @_;
+  $info->{pssm} .= join(" ", @probs) . "\n";
+}
+
+sub handle_match {
+  my ($info, $seq, $p, $n, $pvalue, $evalue) = @_;
+  if ($info->{alph}->has_complement()) {
+    $info->{words} .= sprintf("#       %10s %10s %10s %10s %10s %10s\n", $seq, $info->{alph}->rc_seq($seq), $p, $n, $pvalue, $evalue);
+  } else {
+    $info->{words} .= sprintf("#       %10s %10s %10s %10s %10s\n", $seq, $p, $n, $pvalue, $evalue);
+  }
+}
+
+sub handle_run_time {
+  my ($info, $cpu, $real, $stop) = @_;
+  my $fh = $info->{fh};
+  print $fh "\n\n# Stopping reason: ";
+  if ($stop eq 'evalue') {
+    print $fh "E-value threshold exceeded\n";
+  } elsif ($stop eq 'count') {
+    print $fh "target motif count reached\n";
+  } elsif ($stop eq 'time') {
+    print $fh "maximum running time reached\n";
+  }
+  print $fh "#    Running time: $real seconds\n";
+}
+
+sub transform_data {
+  my ($opts, $out_fh) = @_;
+  my $info = {fh => $out_fh};
+
+  my $sax = new DremeSAX($info,
+    start_dreme => \&start_dreme,
+    end_dreme=> \&end_dreme,
+    start_model => \&start_model,
+    end_model => \&end_model,
+    handle_command_line => \&handle_command_line,
+    handle_positives => \&handle_positives,
+    handle_negatives => \&handle_negatives,
+    handle_alphabet => \&handle_alphabet,
+    handle_strands => \&handle_strands,
+    handle_background => \&handle_background,
+    handle_stop => \&handle_stop,
+    handle_ngen => \&handle_ngen,
+    handle_add_pv_thresh => \&handle_add_pv_thresh,
+    handle_seed => \&handle_seed,
+    handle_host => \&handle_host,
+    handle_when => \&handle_when,
+    handle_description => \&handle_description,
+    start_motifs => \&start_motifs,
+    end_motifs => \&end_motifs,
+    start_motif => \&start_motif,
+    end_motif => \&end_motif,
+    handle_pos => \&handle_pos,
+    handle_match => \&handle_match,
+    handle_run_time => \&handle_run_time
+  );
+  my $fh;
+  sysopen($fh, $opts->{XML_PATH}, O_RDONLY) or die("Failed to open file \"$opts->{XML_PATH}\"\n");
+  while (<$fh>) {
+    $sax->parse_more($_);
+    if ($sax->has_errors()) {
+      die("Failed to write HTML output due to errors processing the XML:\n" . join("\n", $sax->get_errors()));
+    }
+  }
+  $sax->parse_done();
+  if ($sax->has_errors()) {
+    die("Failed to write HTML output due to errors processing the XML:\n" . join("\n", $sax->get_errors()));
+  }  
+}
+
+sub main {
+  &initialise();
+  my $opts = &arguments();
+  # open the output file
+  my $fh;
+  sysopen($fh, $opts->{TXT_PATH}, O_WRONLY | O_CREAT | O_TRUNC) or die("Failed to open file \"$opts->{TXT_PATH}\" for writing\n");
+  # transform the XML into text
+  &transform_data($opts, $fh);
+}
+
+&main();
+1;
+

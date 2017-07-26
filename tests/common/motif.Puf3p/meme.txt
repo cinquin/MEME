@@ -1,0 +1,1105 @@
+********************************************************************************
+MEME - Motif discovery tool
+********************************************************************************
+MEME version 4.10.2 (Release date: Thu Sep 03 15:00:54 2015 -0700)
+
+For further information on how to interpret these results or to get
+a copy of the MEME software please access http://meme-suite.org .
+
+This file may be used as input to the MAST algorithm for searching
+sequence databases for matches to groups of motifs.  MAST is available
+for interactive use and downloading at http://meme-suite.org .
+********************************************************************************
+
+
+********************************************************************************
+REFERENCE
+********************************************************************************
+If you use this program in your research, please cite:
+
+Timothy L. Bailey and Charles Elkan,
+"Fitting a mixture model by expectation maximization to discover
+motifs in biopolymers", Proceedings of the Second International
+Conference on Intelligent Systems for Molecular Biology, pp. 28-36,
+AAAI Press, Menlo Park, California, 1994.
+********************************************************************************
+
+
+********************************************************************************
+TRAINING SET
+********************************************************************************
+DATAFILE= Puf3p-200.s
+ALPHABET= ACGU
+Sequence name            Weight Length  Sequence name            Weight Length  
+-------------            ------ ------  -------------            ------ ------  
+sacCer3_chrI_48232_48332 1.0000    100  sacCer3_chrI_71777_71877 1.0000    100  
+sacCer3_chrI_72016_72116 1.0000    100  sacCer3_chrI_73291_73391 1.0000    100  
+sacCer3_chrI_73321_73421 1.0000    100  sacCer3_chrI_73356_73456 1.0000    100  
+sacCer3_chrI_79455_79555 1.0000    100  sacCer3_chrI_93336_93436 1.0000    100  
+sacCer3_chrI_120749_1208 1.0000    100  sacCer3_chrI_142343_1424 1.0000    100  
+sacCer3_chrI_142963_1430 1.0000    100  sacCer3_chrI_143283_1433 1.0000    100  
+sacCer3_chrI_56912_57012 1.0000    100  sacCer3_chrI_74949_75049 1.0000    100  
+sacCer3_chrI_90825_90925 1.0000    100  sacCer3_chrI_106130_1062 1.0000    100  
+sacCer3_chrI_139363_1394 1.0000    100  sacCer3_chrI_139577_1396 1.0000    100  
+sacCer3_chrI_141262_1413 1.0000    100  sacCer3_chrI_150820_1509 1.0000    100  
+sacCer3_chrII_38816_3891 1.0000    100  sacCer3_chrII_93391_9349 1.0000    100  
+sacCer3_chrII_111177_111 1.0000    100  sacCer3_chrII_146864_146 1.0000    100  
+sacCer3_chrII_169390_169 1.0000    100  sacCer3_chrII_174563_174 1.0000    100  
+sacCer3_chrII_236818_236 1.0000    100  sacCer3_chrII_236884_236 1.0000    100  
+sacCer3_chrII_236995_237 1.0000    100  sacCer3_chrII_244253_244 1.0000    100  
+sacCer3_chrII_256804_256 1.0000    100  sacCer3_chrII_256827_256 1.0000    100  
+sacCer3_chrII_260488_260 1.0000    100  sacCer3_chrII_284345_284 1.0000    100  
+sacCer3_chrII_316594_316 1.0000    100  sacCer3_chrII_333867_333 1.0000    100  
+sacCer3_chrII_349356_349 1.0000    100  sacCer3_chrII_394835_394 1.0000    100  
+sacCer3_chrII_409627_409 1.0000    100  sacCer3_chrII_436701_436 1.0000    100  
+sacCer3_chrII_452695_452 1.0000    100  sacCer3_chrII_452727_452 1.0000    100  
+sacCer3_chrII_453200_453 1.0000    100  sacCer3_chrII_479032_479 1.0000    100  
+sacCer3_chrII_516288_516 1.0000    100  sacCer3_chrII_517185_517 1.0000    100  
+sacCer3_chrII_528764_528 1.0000    100  sacCer3_chrII_536187_536 1.0000    100  
+sacCer3_chrII_536233_536 1.0000    100  sacCer3_chrII_556313_556 1.0000    100  
+sacCer3_chrII_556418_556 1.0000    100  sacCer3_chrII_556467_556 1.0000    100  
+sacCer3_chrII_557902_558 1.0000    100  sacCer3_chrII_559558_559 1.0000    100  
+sacCer3_chrII_596022_596 1.0000    100  sacCer3_chrII_605497_605 1.0000    100  
+sacCer3_chrII_608754_608 1.0000    100  sacCer3_chrII_608929_609 1.0000    100  
+sacCer3_chrII_608966_609 1.0000    100  sacCer3_chrII_623426_623 1.0000    100  
+sacCer3_chrII_634861_634 1.0000    100  sacCer3_chrII_722332_722 1.0000    100  
+sacCer3_chrII_731484_731 1.0000    100  sacCer3_chrII_741602_741 1.0000    100  
+sacCer3_chrII_768644_768 1.0000    100  sacCer3_chrII_768698_768 1.0000    100  
+sacCer3_chrII_781978_782 1.0000    100  sacCer3_chrII_10213_1031 1.0000    100  
+sacCer3_chrII_88407_8850 1.0000    100  sacCer3_chrII_109955_110 1.0000    100  
+sacCer3_chrII_110023_110 1.0000    100  sacCer3_chrII_110433_110 1.0000    100  
+sacCer3_chrII_134063_134 1.0000    100  sacCer3_chrII_164029_164 1.0000    100  
+sacCer3_chrII_177781_177 1.0000    100  sacCer3_chrII_186759_186 1.0000    100  
+sacCer3_chrII_187866_187 1.0000    100  sacCer3_chrII_272689_272 1.0000    100  
+sacCer3_chrII_296238_296 1.0000    100  sacCer3_chrII_338654_338 1.0000    100  
+sacCer3_chrII_370786_370 1.0000    100  sacCer3_chrII_372002_372 1.0000    100  
+sacCer3_chrII_376509_376 1.0000    100  sacCer3_chrII_395306_395 1.0000    100  
+sacCer3_chrII_406476_406 1.0000    100  sacCer3_chrII_414085_414 1.0000    100  
+sacCer3_chrII_418571_418 1.0000    100  sacCer3_chrII_419076_419 1.0000    100  
+sacCer3_chrII_488771_488 1.0000    100  sacCer3_chrII_492162_492 1.0000    100  
+sacCer3_chrII_502316_502 1.0000    100  sacCer3_chrII_531780_531 1.0000    100  
+sacCer3_chrII_564432_564 1.0000    100  sacCer3_chrII_586486_586 1.0000    100  
+sacCer3_chrII_591631_591 1.0000    100  sacCer3_chrII_598991_599 1.0000    100  
+sacCer3_chrII_612086_612 1.0000    100  sacCer3_chrII_613283_613 1.0000    100  
+sacCer3_chrII_617922_618 1.0000    100  sacCer3_chrII_664908_665 1.0000    100  
+sacCer3_chrII_668411_668 1.0000    100  sacCer3_chrII_680669_680 1.0000    100  
+sacCer3_chrII_681031_681 1.0000    100  sacCer3_chrII_681797_681 1.0000    100  
+sacCer3_chrII_729667_729 1.0000    100  sacCer3_chrII_735628_735 1.0000    100  
+sacCer3_chrII_735654_735 1.0000    100  sacCer3_chrII_743545_743 1.0000    100  
+sacCer3_chrII_770259_770 1.0000    100  sacCer3_chrII_784956_785 1.0000    100  
+sacCer3_chrIII_35863_359 1.0000    100  sacCer3_chrIII_52356_524 1.0000    100  
+sacCer3_chrIII_60704_608 1.0000    100  sacCer3_chrIII_60735_608 1.0000    100  
+sacCer3_chrIII_119154_11 1.0000    100  sacCer3_chrIII_139045_13 1.0000    100  
+sacCer3_chrIII_240011_24 1.0000    100  sacCer3_chrIII_23904_240 1.0000    100  
+sacCer3_chrIII_120853_12 1.0000    100  sacCer3_chrIII_141395_14 1.0000    100  
+sacCer3_chrIII_158886_15 1.0000    100  sacCer3_chrIII_159033_15 1.0000    100  
+sacCer3_chrIII_162837_16 1.0000    100  sacCer3_chrIII_163262_16 1.0000    100  
+sacCer3_chrIII_172827_17 1.0000    100  sacCer3_chrIII_194342_19 1.0000    100  
+sacCer3_chrIII_209832_20 1.0000    100  sacCer3_chrIII_250281_25 1.0000    100  
+sacCer3_chrIII_261063_26 1.0000    100  sacCer3_chrIV_38771_3887 1.0000    100  
+sacCer3_chrIV_45894_4599 1.0000    100  sacCer3_chrIV_45938_4603 1.0000    100  
+sacCer3_chrIV_90803_9090 1.0000    100  sacCer3_chrIV_99241_9934 1.0000    100  
+sacCer3_chrIV_109508_109 1.0000    100  sacCer3_chrIV_111058_111 1.0000    100  
+sacCer3_chrIV_118555_118 1.0000    100  sacCer3_chrIV_130013_130 1.0000    100  
+sacCer3_chrIV_133443_133 1.0000    100  sacCer3_chrIV_184968_185 1.0000    100  
+sacCer3_chrIV_192324_192 1.0000    100  sacCer3_chrIV_233877_233 1.0000    100  
+sacCer3_chrIV_246005_246 1.0000    100  sacCer3_chrIV_258889_258 1.0000    100  
+sacCer3_chrIV_270000_270 1.0000    100  sacCer3_chrIV_293292_293 1.0000    100  
+sacCer3_chrIV_309383_309 1.0000    100  sacCer3_chrIV_309415_309 1.0000    100  
+sacCer3_chrIV_322970_323 1.0000    100  sacCer3_chrIV_336193_336 1.0000    100  
+sacCer3_chrIV_371860_371 1.0000    100  sacCer3_chrIV_372547_372 1.0000    100  
+sacCer3_chrIV_412985_413 1.0000    100  sacCer3_chrIV_413013_413 1.0000    100  
+sacCer3_chrIV_428446_428 1.0000    100  sacCer3_chrIV_428482_428 1.0000    100  
+sacCer3_chrIV_439325_439 1.0000    100  sacCer3_chrIV_449243_449 1.0000    100  
+sacCer3_chrIV_453676_453 1.0000    100  sacCer3_chrIV_453710_453 1.0000    100  
+sacCer3_chrIV_472669_472 1.0000    100  sacCer3_chrIV_490901_491 1.0000    100  
+sacCer3_chrIV_503889_503 1.0000    100  sacCer3_chrIV_508734_508 1.0000    100  
+sacCer3_chrIV_509148_509 1.0000    100  sacCer3_chrIV_509285_509 1.0000    100  
+sacCer3_chrIV_509454_509 1.0000    100  sacCer3_chrIV_540425_540 1.0000    100  
+sacCer3_chrIV_540508_540 1.0000    100  sacCer3_chrIV_552956_553 1.0000    100  
+sacCer3_chrIV_564798_564 1.0000    100  sacCer3_chrIV_576910_577 1.0000    100  
+sacCer3_chrIV_580425_580 1.0000    100  sacCer3_chrIV_592860_592 1.0000    100  
+sacCer3_chrIV_600891_600 1.0000    100  sacCer3_chrIV_602048_602 1.0000    100  
+sacCer3_chrIV_603412_603 1.0000    100  sacCer3_chrIV_632011_632 1.0000    100  
+sacCer3_chrIV_632874_632 1.0000    100  sacCer3_chrIV_682181_682 1.0000    100  
+sacCer3_chrIV_695255_695 1.0000    100  sacCer3_chrIV_704944_705 1.0000    100  
+sacCer3_chrIV_705300_705 1.0000    100  sacCer3_chrIV_762742_762 1.0000    100  
+sacCer3_chrIV_773623_773 1.0000    100  sacCer3_chrIV_840392_840 1.0000    100  
+sacCer3_chrIV_893923_894 1.0000    100  sacCer3_chrIV_911306_911 1.0000    100  
+sacCer3_chrIV_915932_916 1.0000    100  sacCer3_chrIV_915979_916 1.0000    100  
+sacCer3_chrIV_917163_917 1.0000    100  sacCer3_chrIV_924868_924 1.0000    100  
+sacCer3_chrIV_927369_927 1.0000    100  sacCer3_chrIV_929172_929 1.0000    100  
+sacCer3_chrIV_937531_937 1.0000    100  sacCer3_chrIV_961374_961 1.0000    100  
+sacCer3_chrIV_1055284_10 1.0000    100  sacCer3_chrIV_1068362_10 1.0000    100  
+sacCer3_chrIV_1093820_10 1.0000    100  sacCer3_chrIV_1111675_11 1.0000    100  
+********************************************************************************
+
+********************************************************************************
+COMMAND LINE SUMMARY
+********************************************************************************
+This information can also be useful in the event you wish to report a
+problem with the MEME software.
+
+command: meme -rna -nmotifs 3 -oc motif.Puf3p Puf3p-200.s 
+
+model:  mod=         zoops    nmotifs=         3    evt=           inf
+object function=  E-value of product of p-values
+width:  minw=            8    maxw=           50
+width:  wg=             11    ws=              1    endgaps=       yes
+nsites: minsites=        2    maxsites=      200    wnsites=       0.8
+theta:  spmap=         uni    spfuzz=        0.5
+global: substring=     yes    branching=      no    wbranch=        no
+em:     prior=   dirichlet    b=            0.01    maxiter=        50
+        distance=    1e-05
+data:   n=           20000    N=             200    shuffle=        -1
+
+sample: seed=            0    ctfrac=         -1    maxwords=       -1
+Letter frequencies in dataset:
+A 0.323 C 0.170 G 0.142 U 0.365 
+Background letter frequencies (from dataset with add-one prior applied):
+A 0.323 C 0.170 G 0.142 U 0.365 
+********************************************************************************
+
+
+********************************************************************************
+MOTIF  1 MEME	width =  10  sites =  64  llr = 539  E-value = 3.7e-031
+********************************************************************************
+--------------------------------------------------------------------------------
+	Motif 1 Description
+--------------------------------------------------------------------------------
+Simplified        A  23:::a5a:a
+pos.-specific     C  63::2:1:::
+probability       G  :1:a::::::
+matrix            U  23a:8:3:a:
+
+         bits    2.8    *      
+                 2.5    *      
+                 2.3    *      
+                 2.0    *      
+Relative         1.7    *      
+Entropy          1.4   ** * ***
+(12.2 bits)      1.1   **** ***
+                 0.8 * **** ***
+                 0.6 * **** ***
+                 0.3 * ********
+                 0.0 ----------
+
+Multilevel           CUUGUAAAUA
+consensus            UC    U   
+sequence              A        
+                               
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+	Motif 1 sites sorted by position p-value
+--------------------------------------------------------------------------------
+Sequence name             Start   P-value               Site 
+-------------             ----- ---------            ----------
+sacCer3_chrIV_632874_632     37  2.17e-06 CAGAAAUGAG CCUGUAAAUA UCAAUAACUU
+sacCer3_chrIII_60735_608     12  2.17e-06 CGAUUUUUUU CCUGUAAAUA CAAACACAUG
+sacCer3_chrIII_60704_608     43  2.17e-06 CGAUUUUUUU CCUGUAAAUA CAAACACAUG
+sacCer3_chrIII_35863_359     47  2.17e-06 AGAGCCAAAU CCUGUAAAUA CUUUGUCUAC
+sacCer3_chrII_722332_722     49  2.17e-06 AAUAAUAAUA CCUGUAAAUA UCUCAACAUA
+sacCer3_chrII_536187_536     46  2.17e-06 GUUCGUUAUU CCUGUAAAUA AAGUUAUAUG
+sacCer3_chrII_768698_768      9  3.99e-06   UCAAUAUG CGUGUAAAUA CUAGUUUUCG
+sacCer3_chrII_768644_768     63  3.99e-06 CUUCAAUAUG CGUGUAAAUA CUAGUUUUCG
+sacCer3_chrIV_937531_937     42  1.28e-05 UCCCAUUCGU CAUGUAAAUA UAUAAACUGU
+sacCer3_chrIV_540425_540     46  1.28e-05 AGAUUUCGUA CUUGUAAAUA AAAUAGGUGA
+sacCer3_chrIV_270000_270     38  1.28e-05 AUAACGCGAG CUUGUAAAUA UCUAUAUACC
+sacCer3_chrII_784956_785     27  1.28e-05 CCGUUUCGUU CAUGUAAAUA UUCAAAUAUA
+sacCer3_chrII_586486_586     46  1.28e-05 AUUAGAUAUU CUUGUAAAUA UAUGAGGUCU
+sacCer3_chrII_110023_110     49  1.28e-05 CUCAAUAUCC CUUGUAAAUA AAAGGCAGAG
+sacCer3_chrII_741602_741     45  1.28e-05 GUUUGGUAUC CUUGUAAAUA AAUAUGUGUG
+sacCer3_chrII_608966_609     45  1.28e-05 UCCUUUUAUA CUUGUAAAUA UUUUUACCAG
+sacCer3_chrII_608929_609     82  1.28e-05 UCCUUUUAUA CUUGUAAAUA UUUUUACCA 
+sacCer3_chrIV_1111675_11     44  1.64e-05 AUUAUAGUAU CCUGUACAUA UAAAAUAACG
+sacCer3_chrIII_209832_20     50  1.64e-05 CCACCCAUCU CCUGUAUAUA AGAAAAAUAG
+sacCer3_chrIII_119154_11     61  1.64e-05 UAAACUUAAG CCUGUAUAUA GAAACUUAAU
+sacCer3_chrIV_603412_603     57  4.05e-05 AUUAUUCUAA CAUGUACAUA CCUGUAUAGU
+sacCer3_chrIV_372547_372     42  4.05e-05 AAGUCAUGGC CUUGUAUAUA CAAAUUAAAU
+sacCer3_chrIV_99241_9934     35  4.05e-05 ACUAUUCAAU CAUGUACAUA CAUCAUCAAA
+sacCer3_chrIII_158886_15     44  4.05e-05 CUGUCGUCUA CUUGUACAUA AUCACAGGGA
+sacCer3_chrII_735654_735     72  4.05e-05 CGAACAUCCU CAUGUAUAUA ACCUAUUGUA
+sacCer3_chrII_735628_735     46  4.05e-05 CGAACAUCCU CAUGUAUAUA ACCUAUUGUA
+sacCer3_chrII_598991_599      6  4.05e-05      GAACA UCUGUAAAUA GCCAUUGCUU
+sacCer3_chrII_177781_177     46  4.05e-05 GUUUAAACAU UCUGUAAAUA UUUAAACAUA
+sacCer3_chrII_146864_146     45  4.05e-05 ACCAUGUAUA CAUGUAUAUA ACUAUUGAAA
+sacCer3_chrIV_449243_449     44  4.96e-05 GCCUUUUGAU CAUGCAAAUA UAUUACGGUA
+sacCer3_chrIV_246005_246     44  4.96e-05 AAAGAAUCAU ACUGUAAAUA CUUUUCAGAA
+sacCer3_chrIV_90803_9090     39  4.96e-05 AAAAACUGUA CUUGCAAAUA AUCAUAUCAC
+sacCer3_chrIV_552956_553     39  7.93e-05 AAUAUACGUU UAUGUAAAUA AUAUCUUUUU
+sacCer3_chrII_596022_596     47  7.93e-05 CAGAGAUUAA UUUGUAAAUA AAAGCAGAAA
+sacCer3_chrII_244253_244     56  7.93e-05 CUAUAUUCUA UAUGUAAAUA GUUUUUAUAU
+sacCer3_chrII_111177_111     57  7.93e-05 AAUUCAUCUC UUUGUAAAUA GUGUUAUACC
+sacCer3_chrIV_924868_924     52  1.09e-04 AUUUUACCCA AUUGUAAAUA GUAAAAGACC
+sacCer3_chrIV_704944_705     44  1.09e-04 AAAAUUUGUC CUUGUAGAUA UUAAAUGGCU
+sacCer3_chrIV_453710_453      3  1.09e-04         AG CGUGCAUAUA UAUUUUUAUC
+sacCer3_chrIV_453676_453     37  1.09e-04 UCCUUUACAG CGUGCAUAUA UAUUUUUAUC
+sacCer3_chrIV_133443_133     48  1.09e-04 CUAUCUUUCU AAUGUAAAUA AUUUCCAGUU
+sacCer3_chrII_729667_729     49  1.09e-04 UCUUACUAAU UCUGUAUAUA AUAUAGCAUA
+sacCer3_chrIV_258889_258     45  1.25e-04 GGUGCUCUCA UCUGCAAAUA UUUACCACGC
+sacCer3_chrII_668411_668     45  1.25e-04 UUCAAGAUUA ACUGUAUAUA AAUAGAGAUG
+sacCer3_chrII_134063_134     43  1.25e-04 AUAUAUUUUC CAUGCACAUA AAAUAGAAAU
+sacCer3_chrII_664908_665     24  1.27e-04 UAGAUAUAUA ACUGCAAAUA CACACAUACA
+sacCer3_chrI_56912_57012      7  1.28e-04     AAAGCU CGUGUAAGUA UCACUUUUAG
+sacCer3_chrII_284345_284     47  1.32e-04 CAUAUAUCAA CUUGUAAGUA UCACAGUAAA
+sacCer3_chrII_395306_395     81  1.40e-04 UAUAAGAGUA UGUGUACAUA AUAACAAUUU
+sacCer3_chrIV_1068362_10     46  1.79e-04 AAUUUAAAAA UUUGUAUAUA AAAAAAUAUA
+sacCer3_chrIII_23904_240     45  1.79e-04 UUCCGCUCUA UAUGUAUAUA UUUACGUAAC
+sacCer3_chrIII_52356_524     74  1.79e-04 GUAUAUUUUC AGUGUAUAUA CAUACAUUCU
+sacCer3_chrIV_503889_503     37  2.20e-04 AUUAUAUAUU CCUGUGAAUA UUUUUUAACU
+sacCer3_chrIV_45938_4603      5  2.20e-04       UUAU AUUGUAUAUA AAUUUUGUUU
+sacCer3_chrIV_45894_4599     49  2.20e-04 UAUUACUUAU AUUGUAUAUA AAUUUUGUUU
+sacCer3_chrII_236995_237     34  2.20e-04 GAGUUGUAUA AAUGUAUAUA UAUAACUUUA
+sacCer3_chrI_79455_79555     45  2.20e-04 UAAAUAGGUA AUUGUAUAUA AAAAUGUGAA
+sacCer3_chrII_536233_536     57  2.39e-04 UCUUCUACUU ACUGCACAUA AUACUUCAUC
+sacCer3_chrIV_293292_293     33  2.55e-04 UGCAUAAAGU UGUGUAGAUA UAAAUUUAAC
+sacCer3_chrII_394835_394     15  2.73e-04 CUGAAUUUUA UAUGUAGAUA AAAUUUUAGU
+sacCer3_chrIV_192324_192     38  2.99e-04 UAAAAUUAUC UAUGCAUAUA UAUAACUCAA
+sacCer3_chrII_414085_414     77  2.99e-04 AAUACGUAUG UAUGCACAUA UACCUACAUA
+sacCer3_chrII_528764_528     48  3.16e-04 UGAUAUUUCU CCUGUAAAUU UACCUGAAUG
+sacCer3_chrII_110433_110     26  3.41e-04 GAACGUUUUC AUUGUAAGUA UCCAGAUUUU
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+	Motif 1 block diagrams
+--------------------------------------------------------------------------------
+SEQUENCE NAME            POSITION P-VALUE  MOTIF DIAGRAM
+-------------            ----------------  -------------
+sacCer3_chrIV_632874_632          2.2e-06  36_[1]_54
+sacCer3_chrIII_60735_608          2.2e-06  11_[1]_79
+sacCer3_chrIII_60704_608          2.2e-06  42_[1]_48
+sacCer3_chrIII_35863_359          2.2e-06  46_[1]_44
+sacCer3_chrII_722332_722          2.2e-06  48_[1]_42
+sacCer3_chrII_536187_536          2.2e-06  45_[1]_45
+sacCer3_chrII_768698_768            4e-06  8_[1]_82
+sacCer3_chrII_768644_768            4e-06  62_[1]_28
+sacCer3_chrIV_937531_937          1.3e-05  41_[1]_49
+sacCer3_chrIV_540425_540          1.3e-05  45_[1]_45
+sacCer3_chrIV_270000_270          1.3e-05  37_[1]_53
+sacCer3_chrII_784956_785          1.3e-05  26_[1]_64
+sacCer3_chrII_586486_586          1.3e-05  45_[1]_45
+sacCer3_chrII_110023_110          1.3e-05  48_[1]_42
+sacCer3_chrII_741602_741          1.3e-05  44_[1]_46
+sacCer3_chrII_608966_609          1.3e-05  44_[1]_46
+sacCer3_chrII_608929_609          1.3e-05  81_[1]_9
+sacCer3_chrIV_1111675_11          1.6e-05  43_[1]_47
+sacCer3_chrIII_209832_20          1.6e-05  49_[1]_41
+sacCer3_chrIII_119154_11          1.6e-05  60_[1]_30
+sacCer3_chrIV_603412_603            4e-05  56_[1]_34
+sacCer3_chrIV_372547_372            4e-05  41_[1]_49
+sacCer3_chrIV_99241_9934            4e-05  34_[1]_56
+sacCer3_chrIII_158886_15            4e-05  43_[1]_47
+sacCer3_chrII_735654_735            4e-05  71_[1]_19
+sacCer3_chrII_735628_735            4e-05  45_[1]_45
+sacCer3_chrII_598991_599            4e-05  5_[1]_85
+sacCer3_chrII_177781_177            4e-05  45_[1]_45
+sacCer3_chrII_146864_146            4e-05  44_[1]_46
+sacCer3_chrIV_449243_449            5e-05  43_[1]_47
+sacCer3_chrIV_246005_246            5e-05  43_[1]_47
+sacCer3_chrIV_90803_9090            5e-05  38_[1]_52
+sacCer3_chrIV_552956_553          7.9e-05  38_[1]_52
+sacCer3_chrII_596022_596          7.9e-05  46_[1]_44
+sacCer3_chrII_244253_244          7.9e-05  55_[1]_35
+sacCer3_chrII_111177_111          7.9e-05  56_[1]_34
+sacCer3_chrIV_924868_924          0.00011  51_[1]_39
+sacCer3_chrIV_704944_705          0.00011  43_[1]_47
+sacCer3_chrIV_453710_453          0.00011  2_[1]_88
+sacCer3_chrIV_453676_453          0.00011  36_[1]_54
+sacCer3_chrIV_133443_133          0.00011  47_[1]_43
+sacCer3_chrII_729667_729          0.00011  48_[1]_42
+sacCer3_chrIV_258889_258          0.00012  44_[1]_46
+sacCer3_chrII_668411_668          0.00012  44_[1]_46
+sacCer3_chrII_134063_134          0.00012  42_[1]_48
+sacCer3_chrII_664908_665          0.00013  23_[1]_67
+sacCer3_chrI_56912_57012          0.00013  6_[1]_84
+sacCer3_chrII_284345_284          0.00013  46_[1]_44
+sacCer3_chrII_395306_395          0.00014  80_[1]_10
+sacCer3_chrIV_1068362_10          0.00018  45_[1]_45
+sacCer3_chrIII_23904_240          0.00018  44_[1]_46
+sacCer3_chrIII_52356_524          0.00018  73_[1]_17
+sacCer3_chrIV_503889_503          0.00022  36_[1]_54
+sacCer3_chrIV_45938_4603          0.00022  4_[1]_86
+sacCer3_chrIV_45894_4599          0.00022  48_[1]_42
+sacCer3_chrII_236995_237          0.00022  33_[1]_57
+sacCer3_chrI_79455_79555          0.00022  44_[1]_46
+sacCer3_chrII_536233_536          0.00024  56_[1]_34
+sacCer3_chrIV_293292_293          0.00026  32_[1]_58
+sacCer3_chrII_394835_394          0.00027  14_[1]_76
+sacCer3_chrIV_192324_192           0.0003  37_[1]_53
+sacCer3_chrII_414085_414           0.0003  76_[1]_14
+sacCer3_chrII_528764_528          0.00032  47_[1]_43
+sacCer3_chrII_110433_110          0.00034  25_[1]_65
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+	Motif 1 in BLOCKS format
+--------------------------------------------------------------------------------
+BL   MOTIF 1 width=10 seqs=64
+sacCer3_chrIV_632874_632 (   37) CCUGUAAAUA  1 
+sacCer3_chrIII_60735_608 (   12) CCUGUAAAUA  1 
+sacCer3_chrIII_60704_608 (   43) CCUGUAAAUA  1 
+sacCer3_chrIII_35863_359 (   47) CCUGUAAAUA  1 
+sacCer3_chrII_722332_722 (   49) CCUGUAAAUA  1 
+sacCer3_chrII_536187_536 (   46) CCUGUAAAUA  1 
+sacCer3_chrII_768698_768 (    9) CGUGUAAAUA  1 
+sacCer3_chrII_768644_768 (   63) CGUGUAAAUA  1 
+sacCer3_chrIV_937531_937 (   42) CAUGUAAAUA  1 
+sacCer3_chrIV_540425_540 (   46) CUUGUAAAUA  1 
+sacCer3_chrIV_270000_270 (   38) CUUGUAAAUA  1 
+sacCer3_chrII_784956_785 (   27) CAUGUAAAUA  1 
+sacCer3_chrII_586486_586 (   46) CUUGUAAAUA  1 
+sacCer3_chrII_110023_110 (   49) CUUGUAAAUA  1 
+sacCer3_chrII_741602_741 (   45) CUUGUAAAUA  1 
+sacCer3_chrII_608966_609 (   45) CUUGUAAAUA  1 
+sacCer3_chrII_608929_609 (   82) CUUGUAAAUA  1 
+sacCer3_chrIV_1111675_11 (   44) CCUGUACAUA  1 
+sacCer3_chrIII_209832_20 (   50) CCUGUAUAUA  1 
+sacCer3_chrIII_119154_11 (   61) CCUGUAUAUA  1 
+sacCer3_chrIV_603412_603 (   57) CAUGUACAUA  1 
+sacCer3_chrIV_372547_372 (   42) CUUGUAUAUA  1 
+sacCer3_chrIV_99241_9934 (   35) CAUGUACAUA  1 
+sacCer3_chrIII_158886_15 (   44) CUUGUACAUA  1 
+sacCer3_chrII_735654_735 (   72) CAUGUAUAUA  1 
+sacCer3_chrII_735628_735 (   46) CAUGUAUAUA  1 
+sacCer3_chrII_598991_599 (    6) UCUGUAAAUA  1 
+sacCer3_chrII_177781_177 (   46) UCUGUAAAUA  1 
+sacCer3_chrII_146864_146 (   45) CAUGUAUAUA  1 
+sacCer3_chrIV_449243_449 (   44) CAUGCAAAUA  1 
+sacCer3_chrIV_246005_246 (   44) ACUGUAAAUA  1 
+sacCer3_chrIV_90803_9090 (   39) CUUGCAAAUA  1 
+sacCer3_chrIV_552956_553 (   39) UAUGUAAAUA  1 
+sacCer3_chrII_596022_596 (   47) UUUGUAAAUA  1 
+sacCer3_chrII_244253_244 (   56) UAUGUAAAUA  1 
+sacCer3_chrII_111177_111 (   57) UUUGUAAAUA  1 
+sacCer3_chrIV_924868_924 (   52) AUUGUAAAUA  1 
+sacCer3_chrIV_704944_705 (   44) CUUGUAGAUA  1 
+sacCer3_chrIV_453710_453 (    3) CGUGCAUAUA  1 
+sacCer3_chrIV_453676_453 (   37) CGUGCAUAUA  1 
+sacCer3_chrIV_133443_133 (   48) AAUGUAAAUA  1 
+sacCer3_chrII_729667_729 (   49) UCUGUAUAUA  1 
+sacCer3_chrIV_258889_258 (   45) UCUGCAAAUA  1 
+sacCer3_chrII_668411_668 (   45) ACUGUAUAUA  1 
+sacCer3_chrII_134063_134 (   43) CAUGCACAUA  1 
+sacCer3_chrII_664908_665 (   24) ACUGCAAAUA  1 
+sacCer3_chrI_56912_57012 (    7) CGUGUAAGUA  1 
+sacCer3_chrII_284345_284 (   47) CUUGUAAGUA  1 
+sacCer3_chrII_395306_395 (   81) UGUGUACAUA  1 
+sacCer3_chrIV_1068362_10 (   46) UUUGUAUAUA  1 
+sacCer3_chrIII_23904_240 (   45) UAUGUAUAUA  1 
+sacCer3_chrIII_52356_524 (   74) AGUGUAUAUA  1 
+sacCer3_chrIV_503889_503 (   37) CCUGUGAAUA  1 
+sacCer3_chrIV_45938_4603 (    5) AUUGUAUAUA  1 
+sacCer3_chrIV_45894_4599 (   49) AUUGUAUAUA  1 
+sacCer3_chrII_236995_237 (   34) AAUGUAUAUA  1 
+sacCer3_chrI_79455_79555 (   45) AUUGUAUAUA  1 
+sacCer3_chrII_536233_536 (   57) ACUGCACAUA  1 
+sacCer3_chrIV_293292_293 (   33) UGUGUAGAUA  1 
+sacCer3_chrII_394835_394 (   15) UAUGUAGAUA  1 
+sacCer3_chrIV_192324_192 (   38) UAUGCAUAUA  1 
+sacCer3_chrII_414085_414 (   77) UAUGCACAUA  1 
+sacCer3_chrII_528764_528 (   48) CCUGUAAAUU  1 
+sacCer3_chrII_110433_110 (   26) AUUGUAAGUA  1 
+//
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+	Motif 1 position-specific scoring matrix
+--------------------------------------------------------------------------------
+log-odds matrix: alength= 4 w= 10 n= 18200 bayes= 9.88709 E= 3.7e-031 
+   -79    177  -1264    -64 
+   -28     80    -18    -22 
+ -1264  -1264  -1264    145 
+ -1264  -1264    282  -1264 
+ -1264    -12  -1264    121 
+   161  -1264   -318  -1264 
+    76    -44   -159    -38 
+   156  -1264   -159  -1264 
+ -1264  -1264  -1264    145 
+   161  -1264  -1264   -454 
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+	Motif 1 position-specific probability matrix
+--------------------------------------------------------------------------------
+letter-probability matrix: alength= 4 w= 10 nsites= 64 E= 3.7e-031 
+ 0.187500  0.578125  0.000000  0.234375 
+ 0.265625  0.296875  0.125000  0.312500 
+ 0.000000  0.000000  0.000000  1.000000 
+ 0.000000  0.000000  1.000000  0.000000 
+ 0.000000  0.156250  0.000000  0.843750 
+ 0.984375  0.000000  0.015625  0.000000 
+ 0.546875  0.125000  0.046875  0.281250 
+ 0.953125  0.000000  0.046875  0.000000 
+ 0.000000  0.000000  0.000000  1.000000 
+ 0.984375  0.000000  0.000000  0.015625 
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+	Motif 1 regular expression
+--------------------------------------------------------------------------------
+[CU][UCA]UGUA[AU]AUA
+--------------------------------------------------------------------------------
+
+
+
+
+Time 41.78 secs.
+
+********************************************************************************
+
+
+********************************************************************************
+MOTIF  2 MEME	width =  41  sites =  33  llr = 420  E-value = 2.0e-004
+********************************************************************************
+--------------------------------------------------------------------------------
+	Motif 2 Description
+--------------------------------------------------------------------------------
+Simplified        A  112:12:2:::2:34121343244427:617:622:32522
+pos.-specific     C  :2:1212422255221222311221112::::2222132::
+probability       G  32:1:1:::31:2111::::1:::2111:::::13:1::13
+matrix            U  6688868585723548765357542728493a262854485
+
+         bits    2.8                                          
+                 2.5                                          
+                 2.3                                          
+                 2.0                                          
+Relative         1.7                                          
+Entropy          1.4                                *         
+(18.3 bits)      1.1                                *         
+                 0.8    *  * *   *              * * *   *     
+                 0.6 * *** *******  **          *****   *   * 
+                 0.3 *************  ***** *** *********** ****
+                 0.0 -----------------------------------------
+
+Multilevel           UUUUUUUUUUUCCUAUUUUAUUUAAUAUAUAUAUGUUUAUU
+consensus            G      C G AUAU  CAUAAAUG   U U C C ACU G
+sequence                        U      CC   CU         U  A   
+                                                       A      
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+	Motif 2 sites sorted by position p-value
+--------------------------------------------------------------------------------
+Sequence name             Start   P-value                              Site                 
+-------------             ----- ---------            -----------------------------------------
+sacCer3_chrIV_336193_336     21  3.78e-10 UACUUUUUUU UUUUUUUUUUUACUGUUAUCAUAAAUAUAUAUACCUUAUUG UUGUUUGCAA
+sacCer3_chrIV_309415_309     28  3.80e-09 UUUUCCUUCU UUUUUAUCUGUUCAAUUUCAUAAAUAAUAUAUAUGUACAAU GUAUAAACGG
+sacCer3_chrIV_309383_309     60  3.80e-09 UUUUCCUUCU UUUUUAUCUGUUCAAUUUCAUAAAUAAUAUAUAUGUACAAU           
+sacCer3_chrIV_915979_916     30  4.95e-09 CUAUUAGACC UUUCUGUUUUUCCUUUUUAUUUUUCUAUAUAUAAUUUAUUG GGUAUAUAAU
+sacCer3_chrIII_162837_16     14  1.21e-08 GCGAGCCAUU UUAUUUCCUGUCCCCUUCAUCUUUGUUUAUAUCCAUUCUAG AACAUGAAUU
+sacCer3_chrI_73356_73456      3  2.51e-08         AU GGUUUUUCUUUUCAACUCAAAUAAAGAUUUAUAAGUUACUU AAAUAACAUA
+sacCer3_chrI_73321_73421     38  2.51e-08 AUAAAGACAU GGUUUUUCUUUUCAACUCAAAUAAAGAUUUAUAAGUUACUU AAAUAACAUA
+sacCer3_chrIV_130013_130     28  3.18e-08 AUUUGUUAGA UGUCUUUUCUUCGUAUUUCAAAAAAUUUAUAUAGGCGUAUG UUAAUAAGAU
+sacCer3_chrIII_52356_524     30  4.00e-08 ACCGUACUUA CCAUCUUCUCUCCUUUAUAUAUAUAUAUAUAUAUGUAUAUU UUCAGUGUAU
+sacCer3_chrII_479032_479     59  4.00e-08 AUAUACCUCU UAUUUUUAUGUAUUAGUUAAUUAAGUAUUUUUAUCUAUCUG C         
+sacCer3_chrII_681031_681     40  1.20e-07 GUCUUUUACU AUAUUUUUUUUCCCAGUUUAUUUUGUGCUUAUUUUCUCAUU GAGGAGAAGG
+sacCer3_chrIV_929172_929      1  1.48e-07          . UUUUUUUUUUCAUUUUUUUUUUUUAUUCUUAUUUAUGUAUG AUACUUUAUU
+sacCer3_chrII_488771_488      9  2.45e-07   CUGGUCCG GUUUUCUCUGCCCUCUCUUCUAUUCACUUUUUUUAUACUUU AUAUAAAAUU
+sacCer3_chrII_453200_453     45  2.45e-07 AGCGAAGUAU UUUUUUUUCCUAGUUUUUAUGUAAAAAUAUAUUCAUUUUUU UCUCUACGCA
+sacCer3_chrI_139363_1394     23  2.45e-07 GUAUAAUGAG GAAUUUUCCGAACGUUUUUACUUUAUAUAUAUAUAUACAUG UAACAUAUAU
+sacCer3_chrII_88407_8850      7  3.30e-07     UACCAA UUUUUUCUUCUCUUCUCCUCAUCUCUUCAUAUAGUCUUAUA UAUCAUAUAU
+sacCer3_chrII_556313_556     60  4.00e-07 AUCAUAUCAU UUUUUUCUCUGUUUAUUUCUUCUAGAACUUAUACCUGUCUU           
+sacCer3_chrII_680669_680     53  7.65e-07 UUGGUCGCUU GAUGUUUCUCUCGUCUUCCCGUUCGCUCUUUUAUUUUUUUA UUUUUUU   
+sacCer3_chrIV_509454_509     24  1.09e-06 UUAGAAACGA GCUUUUUUAUGCCCAUCGUCAUCUAUAUAUAUAUUUGUAUC ACUUUAAUAG
+sacCer3_chrIV_911306_911     25  1.41e-06 CACAUGAAAU UCGUUUUUUGUCCUUUUUUUUCUCUUCUUUUUCUCUCCUGU UUCUUCUACC
+sacCer3_chrI_56912_57012     33  1.41e-06 UUAGUUUACU UUUGCUUCCCUCUGUGUAUAUUCUUUAUAUAUGUAUUUAUU AUUUUAAUUG
+sacCer3_chrIV_508734_508     14  1.54e-06 AACGAUAUCA GGUUGACAUUCCUUGUUUUCUUCAGCAUUAUUAUGUUCUUG UGGAUUAUUG
+sacCer3_chrII_110023_110      4  1.54e-06        AGC UUUUUUUCUGUCGCUACUUCAUUCACACAAAUCAUCUCAAU AUCCCUUGUA
+sacCer3_chrIV_439325_439     36  1.67e-06 AUACUUGUGA UGUGCCCAUUUACAUUUUUCUAUAAUAGAUUUACGUAUAUA AGUAAUGCUU
+sacCer3_chrII_38816_3891     22  1.82e-06 UAUCUUAGAA UUUUUUUAUUUUGAUUAUUAUAUAUUAUUAUUAUUCUUAUG GUAAAUAAUG
+sacCer3_chrIII_120853_12     44  1.98e-06 CCUCUGCAUA UUUUUCUUUCCUCAUGACCAUUUAGUAUUUAGCACUUAUUU AAUACAAUAA
+sacCer3_chrIII_163262_16     21  2.15e-06 GCAAUUUAUU GUUUCUCUUGUAAUCUUAACUUCCCUUUUUUUCUCUUAUUG CGUCUUAUCU
+sacCer3_chrIV_490901_491     29  3.20e-06 AUAUAUGUUG UUUCUGUUCUGCCAAUCUUUUUUAAUAUAUUUCUCAUGAUA GCUCCAUAAU
+sacCer3_chrIII_261063_26     17  3.20e-06 AAACCUGAAC ACUUCGUCUUCCCCAUCAUCCGACUUGUAUAUCCGUUCAGU GUGUUUUUCU
+sacCer3_chrII_370786_370     51  5.89e-06 UAUCUUUUAU AUAUUAUCUGGCCUAAAUUUUUACAUAUAAAUAUUUAUCAU AUUAUGACA 
+sacCer3_chrII_591631_591     36  7.32e-06 UCUUGGACCU GCAUAAUUUUUAUACUUUUUCCUUUUAGAUAUAUGUACUUU UGGCUUAAUU
+sacCer3_chrIII_139045_13     37  9.71e-06 UAUUUUAUUU UUUGAAUAUUUUUUAUUUAUAUACGUAUAUAUAGACUAUUA UUUAUCUUUU
+sacCer3_chrII_333867_333     42  1.19e-05 UAUUAGGCUC UUUUUCUUUUUCUUUUACCAGACUUGGUUUUUUUCUCUCUU UAGUAAUUGU
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+	Motif 2 block diagrams
+--------------------------------------------------------------------------------
+SEQUENCE NAME            POSITION P-VALUE  MOTIF DIAGRAM
+-------------            ----------------  -------------
+sacCer3_chrIV_336193_336          3.8e-10  20_[2]_39
+sacCer3_chrIV_309415_309          3.8e-09  27_[2]_32
+sacCer3_chrIV_309383_309          3.8e-09  59_[2]
+sacCer3_chrIV_915979_916            5e-09  29_[2]_30
+sacCer3_chrIII_162837_16          1.2e-08  13_[2]_46
+sacCer3_chrI_73356_73456          2.5e-08  2_[2]_57
+sacCer3_chrI_73321_73421          2.5e-08  37_[2]_22
+sacCer3_chrIV_130013_130          3.2e-08  27_[2]_32
+sacCer3_chrIII_52356_524            4e-08  29_[2]_30
+sacCer3_chrII_479032_479            4e-08  58_[2]_1
+sacCer3_chrII_681031_681          1.2e-07  39_[2]_20
+sacCer3_chrIV_929172_929          1.5e-07  [2]_59
+sacCer3_chrII_488771_488          2.5e-07  8_[2]_51
+sacCer3_chrII_453200_453          2.5e-07  44_[2]_15
+sacCer3_chrI_139363_1394          2.5e-07  22_[2]_37
+sacCer3_chrII_88407_8850          3.3e-07  6_[2]_53
+sacCer3_chrII_556313_556            4e-07  59_[2]
+sacCer3_chrII_680669_680          7.7e-07  52_[2]_7
+sacCer3_chrIV_509454_509          1.1e-06  23_[2]_36
+sacCer3_chrIV_911306_911          1.4e-06  24_[2]_35
+sacCer3_chrI_56912_57012          1.4e-06  32_[2]_27
+sacCer3_chrIV_508734_508          1.5e-06  13_[2]_46
+sacCer3_chrII_110023_110          1.5e-06  3_[2]_56
+sacCer3_chrIV_439325_439          1.7e-06  35_[2]_24
+sacCer3_chrII_38816_3891          1.8e-06  21_[2]_38
+sacCer3_chrIII_120853_12            2e-06  43_[2]_16
+sacCer3_chrIII_163262_16          2.1e-06  20_[2]_39
+sacCer3_chrIV_490901_491          3.2e-06  28_[2]_31
+sacCer3_chrIII_261063_26          3.2e-06  16_[2]_43
+sacCer3_chrII_370786_370          5.9e-06  50_[2]_9
+sacCer3_chrII_591631_591          7.3e-06  35_[2]_24
+sacCer3_chrIII_139045_13          9.7e-06  36_[2]_23
+sacCer3_chrII_333867_333          1.2e-05  41_[2]_18
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+	Motif 2 in BLOCKS format
+--------------------------------------------------------------------------------
+BL   MOTIF 2 width=41 seqs=33
+sacCer3_chrIV_336193_336 (   21) UUUUUUUUUUUACUGUUAUCAUAAAUAUAUAUACCUUAUUG  1 
+sacCer3_chrIV_309415_309 (   28) UUUUUAUCUGUUCAAUUUCAUAAAUAAUAUAUAUGUACAAU  1 
+sacCer3_chrIV_309383_309 (   60) UUUUUAUCUGUUCAAUUUCAUAAAUAAUAUAUAUGUACAAU  1 
+sacCer3_chrIV_915979_916 (   30) UUUCUGUUUUUCCUUUUUAUUUUUCUAUAUAUAAUUUAUUG  1 
+sacCer3_chrIII_162837_16 (   14) UUAUUUCCUGUCCCCUUCAUCUUUGUUUAUAUCCAUUCUAG  1 
+sacCer3_chrI_73356_73456 (    3) GGUUUUUCUUUUCAACUCAAAUAAAGAUUUAUAAGUUACUU  1 
+sacCer3_chrI_73321_73421 (   38) GGUUUUUCUUUUCAACUCAAAUAAAGAUUUAUAAGUUACUU  1 
+sacCer3_chrIV_130013_130 (   28) UGUCUUUUCUUCGUAUUUCAAAAAAUUUAUAUAGGCGUAUG  1 
+sacCer3_chrIII_52356_524 (   30) CCAUCUUCUCUCCUUUAUAUAUAUAUAUAUAUAUGUAUAUU  1 
+sacCer3_chrII_479032_479 (   59) UAUUUUUAUGUAUUAGUUAAUUAAGUAUUUUUAUCUAUCUG  1 
+sacCer3_chrII_681031_681 (   40) AUAUUUUUUUUCCCAGUUUAUUUUGUGCUUAUUUUCUCAUU  1 
+sacCer3_chrIV_929172_929 (    1) UUUUUUUUUUCAUUUUUUUUUUUUAUUCUUAUUUAUGUAUG  1 
+sacCer3_chrII_488771_488 (    9) GUUUUCUCUGCCCUCUCUUCUAUUCACUUUUUUUAUACUUU  1 
+sacCer3_chrII_453200_453 (   45) UUUUUUUUCCUAGUUUUUAUGUAAAAAUAUAUUCAUUUUUU  1 
+sacCer3_chrI_139363_1394 (   23) GAAUUUUCCGAACGUUUUUACUUUAUAUAUAUAUAUACAUG  1 
+sacCer3_chrII_88407_8850 (    7) UUUUUUCUUCUCUUCUCCUCAUCUCUUCAUAUAGUCUUAUA  1 
+sacCer3_chrII_556313_556 (   60) UUUUUUCUCUGUUUAUUUCUUCUAGAACUUAUACCUGUCUU  1 
+sacCer3_chrII_680669_680 (   53) GAUGUUUCUCUCGUCUUCCCGUUCGCUCUUUUAUUUUUUUA  1 
+sacCer3_chrIV_509454_509 (   24) GCUUUUUUAUGCCCAUCGUCAUCUAUAUAUAUAUUUGUAUC  1 
+sacCer3_chrIV_911306_911 (   25) UCGUUUUUUGUCCUUUUUUUUCUCUUCUUUUUCUCUCCUGU  1 
+sacCer3_chrI_56912_57012 (   33) UUUGCUUCCCUCUGUGUAUAUUCUUUAUAUAUGUAUUUAUU  1 
+sacCer3_chrIV_508734_508 (   14) GGUUGACAUUCCUUGUUUUCUUCAGCAUUAUUAUGUUCUUG  1 
+sacCer3_chrII_110023_110 (    4) UUUUUUUCUGUCGCUACUUCAUUCACACAAAUCAUCUCAAU  1 
+sacCer3_chrIV_439325_439 (   36) UGUGCCCAUUUACAUUUUUCUAUAAUAGAUUUACGUAUAUA  1 
+sacCer3_chrII_38816_3891 (   22) UUUUUUUAUUUUGAUUAUUAUAUAUUAUUAUUAUUCUUAUG  1 
+sacCer3_chrIII_120853_12 (   44) UUUUUCUUUCCUCAUGACCAUUUAGUAUUUAGCACUUAUUU  1 
+sacCer3_chrIII_163262_16 (   21) GUUUCUCUUGUAAUCUUAACUUCCCUUUUUUUCUCUUAUUG  1 
+sacCer3_chrIV_490901_491 (   29) UUUCUGUUCUGCCAAUCUUUUUUAAUAUAUUUCUCAUGAUA  1 
+sacCer3_chrIII_261063_26 (   17) ACUUCGUCUUCCCCAUCAUCCGACUUGUAUAUCCGUUCAGU  1 
+sacCer3_chrII_370786_370 (   51) AUAUUAUCUGGCCUAAAUUUUUACAUAUAAAUAUUUAUCAU  1 
+sacCer3_chrII_591631_591 (   36) GCAUAAUUUUUAUACUUUUUCCUUUUAGAUAUAUGUACUUU  1 
+sacCer3_chrIII_139045_13 (   37) UUUGAAUAUUUUUUAUUUAUAUACGUAUAUAUAGACUAUUA  1 
+sacCer3_chrII_333867_333 (   42) UUUUUCUUUUUCUUUUACCAGACUUGGUUUUUUUCUCUCUU  1 
+//
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+	Motif 2 position-specific scoring matrix
+--------------------------------------------------------------------------------
+log-odds matrix: alength= 4 w= 41 n= 12000 bayes= 9.27043 E= 2.0e-004 
+  -183   -249     95     73 
+  -183    -17     10     73 
+   -83  -1169   -222    111 
+ -1169    -90    -22    111 
+  -241    -17   -222    105 
+   -83    -49    -64     73 
+ -1169     10  -1169    116 
+  -109    121  -1169     32 
+  -341     10  -1169    111 
+ -1169     10    110     50 
+  -341    -17    -22     93 
+   -42    160  -1169    -59 
+  -341    168     10    -42 
+   -25    -17   -122     50 
+    28     10   -122     -1 
+  -241   -149    -22    105 
+  -109     10  -1169     87 
+  -141     32   -222     80 
+   -25     32  -1169     50 
+    17     83  -1169    -13 
+   -25    -49    -64     50 
+   -61    -90   -222     87 
+    17     10  -1169     32 
+    39     32  -1169     -1 
+    28    -49     78    -59 
+  -109    -90    -64     87 
+   104   -149    -64   -101 
+ -1169     10   -122    105 
+    83  -1169  -1169     22 
+  -141  -1169  -1169    127 
+   111  -1169  -1169    -27 
+ -1169  -1169   -222    141 
+    91     32   -222   -127 
+  -109     10    -64     66 
+   -61     51    110    -59 
+  -341     10  -1169    111 
+   -25   -149    -22     58 
+   -61     97   -222     22 
+    49     10  -1169     -1 
+  -109  -1169   -122    111 
+  -109   -249    110     50 
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+	Motif 2 position-specific probability matrix
+--------------------------------------------------------------------------------
+letter-probability matrix: alength= 4 w= 41 nsites= 33 E= 2.0e-004 
+ 0.090909  0.030303  0.272727  0.606061 
+ 0.090909  0.151515  0.151515  0.606061 
+ 0.181818  0.000000  0.030303  0.787879 
+ 0.000000  0.090909  0.121212  0.787879 
+ 0.060606  0.151515  0.030303  0.757576 
+ 0.181818  0.121212  0.090909  0.606061 
+ 0.000000  0.181818  0.000000  0.818182 
+ 0.151515  0.393939  0.000000  0.454545 
+ 0.030303  0.181818  0.000000  0.787879 
+ 0.000000  0.181818  0.303030  0.515152 
+ 0.030303  0.151515  0.121212  0.696970 
+ 0.242424  0.515152  0.000000  0.242424 
+ 0.030303  0.545455  0.151515  0.272727 
+ 0.272727  0.151515  0.060606  0.515152 
+ 0.393939  0.181818  0.060606  0.363636 
+ 0.060606  0.060606  0.121212  0.757576 
+ 0.151515  0.181818  0.000000  0.666667 
+ 0.121212  0.212121  0.030303  0.636364 
+ 0.272727  0.212121  0.000000  0.515152 
+ 0.363636  0.303030  0.000000  0.333333 
+ 0.272727  0.121212  0.090909  0.515152 
+ 0.212121  0.090909  0.030303  0.666667 
+ 0.363636  0.181818  0.000000  0.454545 
+ 0.424242  0.212121  0.000000  0.363636 
+ 0.393939  0.121212  0.242424  0.242424 
+ 0.151515  0.090909  0.090909  0.666667 
+ 0.666667  0.060606  0.090909  0.181818 
+ 0.000000  0.181818  0.060606  0.757576 
+ 0.575758  0.000000  0.000000  0.424242 
+ 0.121212  0.000000  0.000000  0.878788 
+ 0.696970  0.000000  0.000000  0.303030 
+ 0.000000  0.000000  0.030303  0.969697 
+ 0.606061  0.212121  0.030303  0.151515 
+ 0.151515  0.181818  0.090909  0.575758 
+ 0.212121  0.242424  0.303030  0.242424 
+ 0.030303  0.181818  0.000000  0.787879 
+ 0.272727  0.060606  0.121212  0.545455 
+ 0.212121  0.333333  0.030303  0.424242 
+ 0.454545  0.181818  0.000000  0.363636 
+ 0.151515  0.000000  0.060606  0.787879 
+ 0.151515  0.030303  0.303030  0.515152 
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+	Motif 2 regular expression
+--------------------------------------------------------------------------------
+[UG]UUUUUU[UC]U[UG]U[CAU][CU][UA][AU]UU[UC][UAC][AUC][UA][UA][UA][AUC][AGU]UAU[AU]U[AU]U[AC]U[GCUA]U[UA][UCA][AU]U[UG]
+--------------------------------------------------------------------------------
+
+
+
+
+Time 73.85 secs.
+
+********************************************************************************
+
+
+********************************************************************************
+MOTIF  3 MEME	width =  41  sites =   5  llr = 173  E-value = 3.1e-003
+********************************************************************************
+--------------------------------------------------------------------------------
+	Motif 3 Description
+--------------------------------------------------------------------------------
+Simplified        A  :4::824aaa8:6:4::22::aa26a4868aa86a:2:::4
+pos.-specific     C  :2:::4::::2::::6:4:::::::::::2::2::4:4::6
+probability       G  :4:6:44::::4::646:::2::::::::::::::686:::
+matrix            U  a:a42:2::::64a::448a8::84:624::::4::::aa:
+
+         bits    2.8                                          
+                 2.5                                          
+                 2.3                                          
+                 2.0                                     *    
+Relative         1.7        ***     *     **  *    **  ****   
+Entropy          1.4 * **   ***   ****  * **  *    **  ****** 
+(49.8 bits)      1.1 * **   ***** ****  ****  *   **** *******
+                 0.8 ****** ***** **** ****** * * **** *******
+                 0.6 ***************** ***********************
+                 0.3 *****************************************
+                 0.0 -----------------------------------------
+
+Multilevel           UAUGACAAAAAUAUGCGCUUUAAUAAUAAAAAAAAGGGUUC
+consensus             G UUGG   CGU AGUUA G  AU AUUC  CU CAC  A
+sequence              C   AU          A                       
+                                                              
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+	Motif 3 sites sorted by position p-value
+--------------------------------------------------------------------------------
+Sequence name             Start   P-value                              Site                 
+-------------             ----- ---------            -----------------------------------------
+sacCer3_chrIV_453710_453     26  3.32e-18 UUUUAUCUAC UGUGAGGAAAAGUUGCUCUUUAAUUAUAUAAAAAACGCUUA UGUAGCAUUG
+sacCer3_chrIV_453676_453     60  3.32e-18 UUUUAUCUAC UGUGAGGAAAAGUUGCUCUUUAAUUAUAUAAAAAACGCUUA           
+sacCer3_chrII_256827_256     25  3.19e-17 AGUUAUUUUU UAUUACAAAAAUAUAGGUUUUAAUAAAAAAAAAUAGGGUUC UAUUUGUUUU
+sacCer3_chrII_256804_256     48  3.19e-17 AGUUAUUUUU UAUUACAAAAAUAUAGGUUUUAAUAAAAAAAAAUAGGGUUC UAUUUGUUUU
+sacCer3_chrI_90825_90925     46  4.93e-14 UUCGAACAAU UCUGUAUAAACUAUGCGAAUGAAAAAUUACAACAAGAGUUC AACCAGCACG
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+	Motif 3 block diagrams
+--------------------------------------------------------------------------------
+SEQUENCE NAME            POSITION P-VALUE  MOTIF DIAGRAM
+-------------            ----------------  -------------
+sacCer3_chrIV_453710_453          3.3e-18  25_[3]_34
+sacCer3_chrIV_453676_453          3.3e-18  59_[3]
+sacCer3_chrII_256827_256          3.2e-17  24_[3]_35
+sacCer3_chrII_256804_256          3.2e-17  47_[3]_12
+sacCer3_chrI_90825_90925          4.9e-14  45_[3]_14
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+	Motif 3 in BLOCKS format
+--------------------------------------------------------------------------------
+BL   MOTIF 3 width=41 seqs=5
+sacCer3_chrIV_453710_453 (   26) UGUGAGGAAAAGUUGCUCUUUAAUUAUAUAAAAAACGCUUA  1 
+sacCer3_chrIV_453676_453 (   60) UGUGAGGAAAAGUUGCUCUUUAAUUAUAUAAAAAACGCUUA  1 
+sacCer3_chrII_256827_256 (   25) UAUUACAAAAAUAUAGGUUUUAAUAAAAAAAAAUAGGGUUC  1 
+sacCer3_chrII_256804_256 (   48) UAUUACAAAAAUAUAGGUUUUAAUAAAAAAAAAUAGGGUUC  1 
+sacCer3_chrI_90825_90925 (   46) UCUGUAUAAACUAUGCGAAUGAAAAAUUACAACAAGAGUUC  1 
+//
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+	Motif 3 position-specific scoring matrix
+--------------------------------------------------------------------------------
+log-odds matrix: alength= 4 w= 41 n= 12000 bayes= 11.4799 E= 3.1e-003 
+  -897   -897   -897    145 
+    31     23    150   -897 
+  -897   -897   -897    145 
+  -897   -897    208     13 
+   131   -897   -897    -87 
+   -69    123    150   -897 
+    31   -897    150    -87 
+   163   -897   -897   -897 
+   163   -897   -897   -897 
+   163   -897   -897   -897 
+   131     23   -897   -897 
+  -897   -897    150     72 
+    89   -897   -897     13 
+  -897   -897   -897    145 
+    31   -897    208   -897 
+  -897    182    150   -897 
+  -897   -897    208     13 
+   -69    123   -897     13 
+   -69   -897   -897    113 
+  -897   -897   -897    145 
+  -897   -897     50    113 
+   163   -897   -897   -897 
+   163   -897   -897   -897 
+   -69   -897   -897    113 
+    89   -897   -897     13 
+   163   -897   -897   -897 
+    31   -897   -897     72 
+   131   -897   -897    -87 
+    89   -897   -897     13 
+   131     23   -897   -897 
+   163   -897   -897   -897 
+   163   -897   -897   -897 
+   131     23   -897   -897 
+    89   -897   -897     13 
+   163   -897   -897   -897 
+  -897    123    208   -897 
+   -69   -897    250   -897 
+  -897    123    208   -897 
+  -897   -897   -897    145 
+  -897   -897   -897    145 
+    31    182   -897   -897 
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+	Motif 3 position-specific probability matrix
+--------------------------------------------------------------------------------
+letter-probability matrix: alength= 4 w= 41 nsites= 5 E= 3.1e-003 
+ 0.000000  0.000000  0.000000  1.000000 
+ 0.400000  0.200000  0.400000  0.000000 
+ 0.000000  0.000000  0.000000  1.000000 
+ 0.000000  0.000000  0.600000  0.400000 
+ 0.800000  0.000000  0.000000  0.200000 
+ 0.200000  0.400000  0.400000  0.000000 
+ 0.400000  0.000000  0.400000  0.200000 
+ 1.000000  0.000000  0.000000  0.000000 
+ 1.000000  0.000000  0.000000  0.000000 
+ 1.000000  0.000000  0.000000  0.000000 
+ 0.800000  0.200000  0.000000  0.000000 
+ 0.000000  0.000000  0.400000  0.600000 
+ 0.600000  0.000000  0.000000  0.400000 
+ 0.000000  0.000000  0.000000  1.000000 
+ 0.400000  0.000000  0.600000  0.000000 
+ 0.000000  0.600000  0.400000  0.000000 
+ 0.000000  0.000000  0.600000  0.400000 
+ 0.200000  0.400000  0.000000  0.400000 
+ 0.200000  0.000000  0.000000  0.800000 
+ 0.000000  0.000000  0.000000  1.000000 
+ 0.000000  0.000000  0.200000  0.800000 
+ 1.000000  0.000000  0.000000  0.000000 
+ 1.000000  0.000000  0.000000  0.000000 
+ 0.200000  0.000000  0.000000  0.800000 
+ 0.600000  0.000000  0.000000  0.400000 
+ 1.000000  0.000000  0.000000  0.000000 
+ 0.400000  0.000000  0.000000  0.600000 
+ 0.800000  0.000000  0.000000  0.200000 
+ 0.600000  0.000000  0.000000  0.400000 
+ 0.800000  0.200000  0.000000  0.000000 
+ 1.000000  0.000000  0.000000  0.000000 
+ 1.000000  0.000000  0.000000  0.000000 
+ 0.800000  0.200000  0.000000  0.000000 
+ 0.600000  0.000000  0.000000  0.400000 
+ 1.000000  0.000000  0.000000  0.000000 
+ 0.000000  0.400000  0.600000  0.000000 
+ 0.200000  0.000000  0.800000  0.000000 
+ 0.000000  0.400000  0.600000  0.000000 
+ 0.000000  0.000000  0.000000  1.000000 
+ 0.000000  0.000000  0.000000  1.000000 
+ 0.400000  0.600000  0.000000  0.000000 
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+	Motif 3 regular expression
+--------------------------------------------------------------------------------
+U[AGC]U[GU][AU][CGA][AGU]AAA[AC][UG][AU]U[GA][CG][GU][CUA][UA]U[UG]AA[UA][AU]A[UA][AU][AU][AC]AA[AC][AU]A[GC][GA][GC]UU[CA]
+--------------------------------------------------------------------------------
+
+
+
+
+Time 103.17 secs.
+
+********************************************************************************
+
+
+********************************************************************************
+SUMMARY OF MOTIFS
+********************************************************************************
+
+--------------------------------------------------------------------------------
+	Combined block diagrams: non-overlapping sites with p-value < 0.0001
+--------------------------------------------------------------------------------
+SEQUENCE NAME            COMBINED P-VALUE  MOTIF DIAGRAM
+-------------            ----------------  -------------
+sacCer3_chrI_48232_48332         3.92e-01  100
+sacCer3_chrI_71777_71877         9.96e-01  100
+sacCer3_chrI_72016_72116         1.00e+00  100
+sacCer3_chrI_73291_73391         1.55e-02  100
+sacCer3_chrI_73321_73421         2.93e-06  37_[2(2.51e-08)]_22
+sacCer3_chrI_73356_73456         5.36e-06  2_[2(2.51e-08)]_57
+sacCer3_chrI_79455_79555         5.99e-02  100
+sacCer3_chrI_93336_93436         9.68e-01  100
+sacCer3_chrI_120749_1208         8.23e-01  100
+sacCer3_chrI_142343_1424         3.67e-01  100
+sacCer3_chrI_142963_1430         9.41e-01  100
+sacCer3_chrI_143283_1433         3.88e-01  100
+sacCer3_chrI_56912_57012         4.60e-05  32_[2(1.41e-06)]_27
+sacCer3_chrI_74949_75049         6.35e-02  100
+sacCer3_chrI_90825_90925         1.76e-10  45_[3(4.93e-14)]_14
+sacCer3_chrI_106130_1062         9.40e-01  100
+sacCer3_chrI_139363_1394         1.56e-04  22_[2(2.45e-07)]_37
+sacCer3_chrI_139577_1396         9.96e-01  100
+sacCer3_chrI_141262_1413         8.83e-01  100
+sacCer3_chrI_150820_1509         9.99e-01  100
+sacCer3_chrII_38816_3891         1.73e-04  21_[2(1.82e-06)]_38
+sacCer3_chrII_93391_9349         6.92e-01  100
+sacCer3_chrII_111177_111         1.13e-01  56_[1(7.93e-05)]_34
+sacCer3_chrII_146864_146         6.24e-02  44_[1(4.05e-05)]_46
+sacCer3_chrII_169390_169         3.16e-01  100
+sacCer3_chrII_174563_174         9.94e-02  100
+sacCer3_chrII_236818_236         6.21e-01  100
+sacCer3_chrII_236884_236         4.19e-01  100
+sacCer3_chrII_236995_237         6.71e-03  100
+sacCer3_chrII_244253_244         1.62e-02  55_[1(7.93e-05)]_35
+sacCer3_chrII_256804_256         3.71e-13  47_[3(3.19e-17)]_12
+sacCer3_chrII_256827_256         3.62e-13  24_[3(3.19e-17)]_35
+sacCer3_chrII_260488_260         7.33e-01  100
+sacCer3_chrII_284345_284         1.28e-01  100
+sacCer3_chrII_316594_316         4.86e-01  100
+sacCer3_chrII_333867_333         8.52e-03  41_[2(1.19e-05)]_18
+sacCer3_chrII_349356_349         4.03e-01  100
+sacCer3_chrII_394835_394         4.19e-02  100
+sacCer3_chrII_409627_409         1.97e-01  100
+sacCer3_chrII_436701_436         9.04e-01  100
+sacCer3_chrII_452695_452         3.72e-01  100
+sacCer3_chrII_452727_452         3.53e-01  100
+sacCer3_chrII_453200_453         1.32e-04  44_[2(2.45e-07)]_15
+sacCer3_chrII_479032_479         5.74e-05  58_[2(4.00e-08)]_1
+sacCer3_chrII_516288_516         6.90e-01  100
+sacCer3_chrII_517185_517         4.90e-01  100
+sacCer3_chrII_528764_528         2.57e-01  100
+sacCer3_chrII_536187_536         4.48e-03  45_[1(2.17e-06)]_45
+sacCer3_chrII_536233_536         7.46e-02  100
+sacCer3_chrII_556313_556         1.56e-06  5_[3(2.69e-05)]_13_[2(4.00e-07)]
+sacCer3_chrII_556418_556         7.51e-01  100
+sacCer3_chrII_556467_556         3.08e-02  100
+sacCer3_chrII_557902_558         5.73e-01  100
+sacCer3_chrII_559558_559         7.27e-01  100
+sacCer3_chrII_596022_596         1.92e-02  46_[1(7.93e-05)]_44
+sacCer3_chrII_605497_605         2.15e-01  100
+sacCer3_chrII_608754_608         9.45e-01  100
+sacCer3_chrII_608929_609         4.71e-03  81_[1(1.28e-05)]_9
+sacCer3_chrII_608966_609         5.08e-03  44_[1(1.28e-05)]_46
+sacCer3_chrII_623426_623         9.29e-01  100
+sacCer3_chrII_634861_634         4.89e-01  100
+sacCer3_chrII_722332_722         2.70e-03  48_[1(2.17e-06)]_42
+sacCer3_chrII_731484_731         5.67e-01  100
+sacCer3_chrII_741602_741         2.22e-02  44_[1(1.28e-05)]_46
+sacCer3_chrII_768644_768         3.10e-03  62_[1(3.99e-06)]_28
+sacCer3_chrII_768698_768         4.99e-03  8_[1(3.99e-06)]_82
+sacCer3_chrII_781978_782         8.83e-01  100
+sacCer3_chrII_10213_1031         4.37e-01  100
+sacCer3_chrII_88407_8850         4.58e-04  6_[2(3.30e-07)]_53
+sacCer3_chrII_109955_110         2.23e-01  100
+sacCer3_chrII_110023_110         1.13e-05  3_[2(1.54e-06)]_4_[1(1.28e-05)]_42
+sacCer3_chrII_110433_110         1.36e-01  100
+sacCer3_chrII_134063_134         1.08e-01  100
+sacCer3_chrII_164029_164         7.79e-01  100
+sacCer3_chrII_177781_177         2.77e-02  45_[1(4.05e-05)]_45
+sacCer3_chrII_186759_186         6.78e-01  100
+sacCer3_chrII_187866_187         6.79e-01  100
+sacCer3_chrII_272689_272         1.87e-01  100
+sacCer3_chrII_296238_296         2.73e-02  100
+sacCer3_chrII_338654_338         6.56e-01  100
+sacCer3_chrII_370786_370         2.61e-03  50_[2(5.89e-06)]_9
+sacCer3_chrII_372002_372         3.64e-01  100
+sacCer3_chrII_376509_376         1.00e+00  100
+sacCer3_chrII_395306_395         1.49e-01  100
+sacCer3_chrII_406476_406         4.77e-02  100
+sacCer3_chrII_414085_414         9.30e-02  100
+sacCer3_chrII_418571_418         9.06e-02  100
+sacCer3_chrII_419076_419         9.52e-01  100
+sacCer3_chrII_488771_488         2.02e-04  8_[2(2.45e-07)]_51
+sacCer3_chrII_492162_492         6.07e-01  100
+sacCer3_chrII_502316_502         9.15e-01  100
+sacCer3_chrII_531780_531         9.98e-01  100
+sacCer3_chrII_564432_564         8.03e-01  100
+sacCer3_chrII_586486_586         1.09e-02  45_[1(1.28e-05)]_45
+sacCer3_chrII_591631_591         1.12e-03  35_[2(7.32e-06)]_24
+sacCer3_chrII_598991_599         9.91e-03  5_[1(4.05e-05)]_85
+sacCer3_chrII_612086_612         1.78e-02  100
+sacCer3_chrII_613283_613         9.95e-01  100
+sacCer3_chrII_617922_618         1.55e-01  100
+sacCer3_chrII_664908_665         5.71e-02  100
+sacCer3_chrII_668411_668         2.93e-02  100
+sacCer3_chrII_680669_680         2.24e-03  52_[2(7.65e-07)]_7
+sacCer3_chrII_681031_681         3.61e-04  39_[2(1.20e-07)]_20
+sacCer3_chrII_681797_681         9.43e-01  100
+sacCer3_chrII_729667_729         1.14e-02  100
+sacCer3_chrII_735628_735         2.31e-02  45_[1(4.05e-05)]_45
+sacCer3_chrII_735654_735         1.35e-02  71_[1(4.05e-05)]_19
+sacCer3_chrII_743545_743         1.97e-01  100
+sacCer3_chrII_770259_770         6.36e-01  100
+sacCer3_chrII_784956_785         2.36e-05  26_[1(1.28e-05)]_64
+sacCer3_chrIII_35863_359         8.88e-03  46_[1(2.17e-06)]_44
+sacCer3_chrIII_52356_524         5.73e-06  29_[2(4.00e-08)]_30
+sacCer3_chrIII_60704_608         1.87e-04  42_[1(2.17e-06)]_48
+sacCer3_chrIII_60735_608         1.87e-04  11_[1(2.17e-06)]_79
+sacCer3_chrIII_119154_11         1.27e-02  60_[1(1.64e-05)]_30
+sacCer3_chrIII_139045_13         2.83e-03  36_[2(9.71e-06)]_23
+sacCer3_chrIII_240011_24         3.88e-01  100
+sacCer3_chrIII_23904_240         9.86e-03  100
+sacCer3_chrIII_120853_12         4.78e-04  43_[2(1.98e-06)]_16
+sacCer3_chrIII_141395_14         6.67e-01  100
+sacCer3_chrIII_158886_15         4.82e-02  43_[1(4.05e-05)]_47
+sacCer3_chrIII_159033_15         9.43e-01  100
+sacCer3_chrIII_162837_16         2.71e-05  13_[2(1.21e-08)]_46
+sacCer3_chrIII_163262_16         5.60e-03  20_[2(2.15e-06)]_39
+sacCer3_chrIII_172827_17         1.15e-01  100
+sacCer3_chrIII_194342_19         2.53e-01  100
+sacCer3_chrIII_209832_20         4.61e-03  49_[1(1.64e-05)]_41
+sacCer3_chrIII_250281_25         8.93e-01  100
+sacCer3_chrIII_261063_26         1.83e-03  16_[2(3.20e-06)]_43
+sacCer3_chrIV_38771_3887         1.43e-02  100
+sacCer3_chrIV_45894_4599         2.75e-02  100
+sacCer3_chrIV_45938_4603         2.83e-02  100
+sacCer3_chrIV_90803_9090         6.73e-04  1_[3(3.25e-05)]_58
+sacCer3_chrIV_99241_9934         4.20e-02  34_[1(4.05e-05)]_56
+sacCer3_chrIV_109508_109         9.63e-01  100
+sacCer3_chrIV_111058_111         3.49e-02  100
+sacCer3_chrIV_118555_118         2.82e-01  100
+sacCer3_chrIV_130013_130         2.38e-06  27_[2(3.18e-08)]_32
+sacCer3_chrIV_133443_133         1.28e-01  100
+sacCer3_chrIV_184968_185         9.66e-01  100
+sacCer3_chrIV_192324_192         9.75e-02  100
+sacCer3_chrIV_233877_233         1.43e-01  100
+sacCer3_chrIV_246005_246         3.74e-02  43_[1(4.96e-05)]_47
+sacCer3_chrIV_258889_258         2.19e-02  100
+sacCer3_chrIV_270000_270         2.48e-02  37_[1(1.28e-05)]_53
+sacCer3_chrIV_293292_293         9.72e-03  100
+sacCer3_chrIV_309383_309         4.82e-06  59_[2(3.80e-09)]
+sacCer3_chrIV_309415_309         2.73e-06  27_[2(3.80e-09)]_32
+sacCer3_chrIV_322970_323         2.59e-01  100
+sacCer3_chrIV_336193_336         1.47e-06  20_[2(3.78e-10)]_39
+sacCer3_chrIV_371860_371         7.19e-01  100
+sacCer3_chrIV_372547_372         1.42e-02  41_[1(4.05e-05)]_49
+sacCer3_chrIV_412985_413         5.20e-01  100
+sacCer3_chrIV_413013_413         6.54e-01  100
+sacCer3_chrIV_428446_428         1.84e-01  100
+sacCer3_chrIV_428482_428         1.89e-01  100
+sacCer3_chrIV_439325_439         6.45e-04  35_[2(1.67e-06)]_24
+sacCer3_chrIV_449243_449         3.89e-02  43_[1(4.96e-05)]_47
+sacCer3_chrIV_453676_453         5.77e-16  59_[3(3.32e-18)]
+sacCer3_chrIV_453710_453         2.89e-16  25_[3(3.32e-18)]_34
+sacCer3_chrIV_472669_472         9.58e-01  100
+sacCer3_chrIV_490901_491         1.54e-03  28_[2(3.20e-06)]_31
+sacCer3_chrIV_503889_503         3.39e-02  100
+sacCer3_chrIV_508734_508         7.05e-04  13_[2(1.54e-06)]_46
+sacCer3_chrIV_509148_509         6.54e-01  100
+sacCer3_chrIV_509285_509         6.01e-01  100
+sacCer3_chrIV_509454_509         8.74e-04  23_[2(1.09e-06)]_36
+sacCer3_chrIV_540425_540         1.50e-02  45_[1(1.28e-05)]_45
+sacCer3_chrIV_540508_540         6.46e-02  100
+sacCer3_chrIV_552956_553         1.43e-02  38_[1(7.93e-05)]_52
+sacCer3_chrIV_564798_564         4.84e-01  100
+sacCer3_chrIV_576910_577         7.62e-01  100
+sacCer3_chrIV_580425_580         1.35e-01  100
+sacCer3_chrIV_592860_592         9.99e-01  100
+sacCer3_chrIV_600891_600         9.93e-01  100
+sacCer3_chrIV_602048_602         4.60e-02  100
+sacCer3_chrIV_603412_603         1.95e-03  56_[1(4.05e-05)]_34
+sacCer3_chrIV_632011_632         1.07e-01  100
+sacCer3_chrIV_632874_632         2.66e-03  36_[1(2.17e-06)]_54
+sacCer3_chrIV_682181_682         9.56e-01  100
+sacCer3_chrIV_695255_695         5.84e-01  100
+sacCer3_chrIV_704944_705         5.03e-02  100
+sacCer3_chrIV_705300_705         9.60e-01  100
+sacCer3_chrIV_762742_762         5.88e-01  100
+sacCer3_chrIV_773623_773         9.99e-01  100
+sacCer3_chrIV_840392_840         7.02e-02  100
+sacCer3_chrIV_893923_894         2.68e-01  100
+sacCer3_chrIV_911306_911         4.43e-03  24_[2(1.41e-06)]_35
+sacCer3_chrIV_915932_916         6.09e-01  100
+sacCer3_chrIV_915979_916         1.40e-06  29_[2(4.95e-09)]_30
+sacCer3_chrIV_917163_917         3.17e-02  100
+sacCer3_chrIV_924868_924         2.81e-02  100
+sacCer3_chrIV_927369_927         4.92e-02  100
+sacCer3_chrIV_929172_929         8.84e-05  [2(1.48e-07)]_59
+sacCer3_chrIV_937531_937         2.80e-02  41_[1(1.28e-05)]_49
+sacCer3_chrIV_961374_961         7.37e-01  100
+sacCer3_chrIV_1055284_10         4.02e-01  100
+sacCer3_chrIV_1068362_10         1.03e-02  100
+sacCer3_chrIV_1093820_10         5.59e-01  100
+sacCer3_chrIV_1111675_11         6.62e-03  43_[1(1.64e-05)]_47
+--------------------------------------------------------------------------------
+
+********************************************************************************
+
+
+********************************************************************************
+Stopped because requested number of motifs (3) found.
+********************************************************************************
+
+CPU: IMB12-010665
+
+********************************************************************************

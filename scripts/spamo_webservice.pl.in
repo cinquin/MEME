@@ -1,0 +1,132 @@
+#!@WHICHPERL@
+=head1 NAME
+
+spamo_webservice - Run spamo in a restricted mode and create an index webpage.
+
+=head1 SYNOPSIS
+
+spamo_webservice [options] <sequences file> <primary motif> <secondary db patterns>
+
+  Options:
+    -xalph            force expansion of the secondary db motif's alphabet to equal the primary.
+    -uploaded <file>  file containing uploaded secondary motif database
+    -margin <margin>  margin parameter passed to spamo
+    -dumpseqs         dump the sequence matches to a file for each significant primary/secondary
+    -help             brief help message
+
+=cut
+
+use strict;
+use warnings;
+# load standard perl libraries
+use File::Basename qw(fileparse);
+use File::Copy qw(move);
+use File::Path qw(rmtree);
+use File::Spec::Functions qw(catfile);
+use Getopt::Long qw(:config permute auto_help);
+use Pod::Usage;
+# load custom perl libraries
+use lib qw(@PERLLIBDIR@);
+use Alphabet qw(rna dna protein);
+use StatusPage qw(arg_checks arg_end opt_uploaded opt_db opt_choice opt_integer opt_number);
+use Globals;
+# constants
+my $bin_dir = '@BINDIR@';
+my $motif_db_dir = '@MEMEDB@/motif_databases';
+my $dump_seqs_dir = 'dumpseqs';
+my $dump_seqs_tar = 'dumpseqs.tar.gz';
+my $dump_seqs_pattern = 'seqs_*.txt';
+# required parameters
+my $sequences;
+my $primary;
+my @secondaries = ();
+# option defaults
+my $dumpseqs = 0; # FALSE
+my $margin = undef;
+my $xalph = 0;
+my @up_secondaries = ();
+#status page
+my $status = new StatusPage('SPAMO', \@ARGV);
+$status->add_message('Parsing arguments');
+# parse options
+my @arg_errors = ();
+my $opts_ok = do {
+  local $SIG{__WARN__} = sub { my ($msg) = @_; chomp($msg); push(@arg_errors, $msg); };
+  GetOptions(
+  '<>' => arg_checks(
+      opt_uploaded(\$sequences),
+      opt_uploaded(\$primary),
+      opt_db(\@secondaries, $motif_db_dir, 'db')),
+  'margin=i' => opt_integer(\$margin, 0), 
+  'uploaded=s' => opt_uploaded(\@up_secondaries),
+  'xalph' => \$xalph,
+  'dumpseqs' => \$dumpseqs
+  );
+};
+unshift(@secondaries, @up_secondaries) if @up_secondaries;
+# add additional error messages for missing sequences and motifs
+push(@arg_errors, "No sequences provided.") unless defined $sequences;
+push(@arg_errors, "No primary motif provided.") unless defined $primary;
+push(@arg_errors, "No secondary motifs provided.") unless @secondaries;
+# display the error messages both to the status page and stderr
+foreach my $arg_error (@arg_errors) {
+  print STDERR $arg_error, "\n";
+  $status->add_message($arg_error);
+}
+$opts_ok = 0 if (scalar(@arg_errors) > 0);
+# setup status page
+$status->add_file('html', 'spamo.html', 'SpaMo HTML output');
+$status->add_file('xml', 'spamo.xml', 'SpaMo XML output');
+$status->add_file('dump', $dump_seqs_tar, 'Spamo dumped sequences');
+$status->add_file('seq', $sequences, 'Input sequences');
+$status->add_file('pri', $primary, 'Input primary motif');
+for (my $i = 0; $i < scalar(@up_secondaries); $i++) {
+  $status->add_file('sec_' . $i , $up_secondaries[$i], 'Input secondary motifs (uploaded)');
+}
+$status->add_message($opts_ok ? 'Arguments ok' : "Error parsing arguments");
+$status->update($opts_ok ? 'Starting' : 'Error');
+# exit if there was an error reading the arguments
+unless ($opts_ok) {
+  $status->write_log();
+  pod2usage(2);
+}
+# create the symlink to the databases
+symlink($motif_db_dir, 'db');
+# ensure it will be removed on completion (when the log is written)
+$status->set_cleanup( sub { unlink('db'); } );
+
+# Run SpaMo
+my @spamo_args = ('-verbosity', 1, '-oc', '.', '-numgen', 1);
+push(@spamo_args, ('-margin', $margin)) if $margin;
+push(@spamo_args, '-dumpseqs') if $dumpseqs;
+push(@spamo_args, '-xalph') if $xalph;
+push(@spamo_args, $sequences, $primary,  @secondaries);
+$status->run(PROG => 'spamo', BIN => $bin_dir, ARGS => \@spamo_args);
+
+# tar dumpseqs output
+if ($dumpseqs) {
+  my @dseqs = glob($dump_seqs_pattern);
+  my $count = 0;
+  if (@dseqs) {
+    mkdir $dump_seqs_dir;
+    OUTER: for (my $i = 0; $i < scalar(@dseqs); $i++) {
+      my $file = fileparse($dseqs[$i]);
+      next if ($file eq $sequences || $file eq $primary);
+      for (my $j = 0; $j < scalar(@up_secondaries); $j++) {
+        next OUTER if ($file eq $up_secondaries[$j]);
+      }
+      move($file, catfile($dump_seqs_dir, $file));
+      $count++;
+    }
+    if ($count) {
+      $status->run(PROG => 'tar', ARGS => ['-czf', $dump_seqs_tar, $dump_seqs_dir]);
+    }
+    rmtree($dump_seqs_dir);
+  }
+}
+
+# done
+$status->add_message("Done");
+$status->update();
+$status->write_log();
+1;

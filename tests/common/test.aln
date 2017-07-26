@@ -1,0 +1,14 @@
+CLUSTAL W (1.82) multiple sequence alignment
+
+
+seq1            ------------MRVLLAALGLLFLGAL--------------RAFPQDRPFEDTCHGNPS 34
+seq2            PVAEERGLMSQPLMETCHSVGAAYLESLPLQDASPAGGPSSPRDLPEPRVSTEHTNNKIE 60
+                            :     ::*  :* :*              * :*: *   :  :.: .
+
+seq1            HYYDKAVRRCCYRCPMGLFPTQQ---CPQRP---TDCRKQCEPDYYLDEADR----CTAC 84
+seq2            KIYIMKADTVIVGTVKAELPEGRGLAGPAEPELEEELEADHTPHYPEQETEPPLGSCSDV 120
+                : *   .         . :*  :    * .*    : . :  *.*  :*::     *:  
+
+seq1            VTCSRDD------------- 91
+seq2            MLSVEEEGKEDPLPTAASGK 140
+                : . .::             

@@ -1,0 +1,29 @@
+# Test psp-gen on DNA
+&test('psp-gen1', 'DNA sequences',
+  'psp-gen', '',
+  ['-revcomp', '-pos', 'psp-gen/one-peak-dna.fasta', '-neg', 'psp-gen/all-A.fasta'],
+  [{output => '-', reference => 'psp-gen/one-peak-dna-revcomp.psp', type => 'text'}],
+  'results/pspgen1', 'scripts'
+);
+
+# Test psp-gen on protein
+&test('psp-gen2', 'protein sequences',
+  'psp-gen', '',
+  ['-protein', '-maxrange', '-triples', 
+    '-pos', 'psp-gen/one-peak-protein.fasta',
+    '-neg', 'psp-gen/all-A.fasta'],
+  [{output => '-', reference => 'psp-gen/one-peak-protein.psp', type => 'text'}],
+  'results/pspgen2', 'scripts'
+);
+
+# Test psp-gen on DNA, using an expanded alphabet which contains the
+# conventional DNA alphabet as a subset.
+# The input is the same as the normal DNA test and the alphabet is a superset,
+# so the output should be identical.
+&test('psp-gen3', 'conventional DNA sequences with an expanded alphabet',
+  'psp-gen', '',
+  ['-alph', 'common/extended_dna.alph', '-revcomp', '-pos', 'psp-gen/one-peak-dna.fasta', '-neg', 'psp-gen/all-A.fasta'],
+  [{output => '-', reference => 'psp-gen/one-peak-dna-revcomp.psp', type => 'text'}],
+  'results/pspgen1', 'scripts'
+);
+

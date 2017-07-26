@@ -1,0 +1,24 @@
+ALPHABET "RNA" RNA-LIKE
+
+# This alphabet will accept "T" in place of "U"
+# in input sequences, but logos will use "U".
+
+# Core symbols
+A "Adenine" CC0000 
+C "Cytosine" 0000CC 
+U "Uracil" 008000
+G "Guanine" FFB300
+
+# Ambiguous symbols
+T = U   # (permit T in input sequences)
+R = AG
+Y = CU
+K = GU
+M = AC
+S = CG
+W = AU
+B = CGU
+D = GAU
+H = ACU
+V = ACG
+N = ACGU # wildcard symbol

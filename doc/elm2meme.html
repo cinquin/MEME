@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>elm2meme - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+    <script src="js/shared-doc.js"></script>
+  </head>
+  <body>
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <h2>elm2meme</h2>
+    <div class="usage">
+      <h3>Usage:</h3>
+      <code>elm2meme [options] &lt;ELM file&gt;+</code>
+    </div>
+    <h3>Description</h3>
+    <div class="indent">
+      <p>Reads a tab separated quoted values file containing ELM regular expressions
+      and convert them to MEME motifs where possible.</p>
+    </div>
+    <h3>Input</h3>
+    <div class="indent">
+      <p>Reads ELM entries from the listed files.</p>
+
+      <p>ELM entries describe a motif as a regular expression. Not all can be converted into MEME motifs due to anchors or variable length.</p>
+
+      <h5>Sample Input</h5>
+      <pre class="indent">
+"Accession"	"ELMIdentifier"	"FunctionalSiteName"	"Description"	"Regex"	"Probability"	"#Instances"	"#Instances_in_PDB"
+"ELME000321"	"CLV_C14_Caspase3-7"	"Caspase cleavage motif"	"Caspase-3 and Caspase-7 cleavage site."	"[DSTE][^P][^DEWHFYC]D[GSAN]"	"0.00309374033071"	"39"	"0"
+"ELME000172"	"CLV_MEL_PAP_1"	"Melanisation activation site"	"Prophenoloxidase-activating proteinase (PAP) cleavage site ([ILV]-X-X-R-|-[FV]-[GS]-X)."	"[ILV]..R[VF][GS]."	"0.000105375572148"	"12"	"0"
+"ELME000102"	"CLV_NRD_NRD_1"	"NRD cleavage site"	"N-Arg dibasic convertase (NRD/Nardilysin) cleavage site (X-|-R-K or R-|-R-X)."	"(.RK)|(RR[^KR])"	"0.00746473248158"	"2"	"0"
+"ELME000101"	"CLV_PCSK_FUR_1"	"PCSK cleavage site"	"Furin (PACE) cleavage site (R-X-[RK]-R-|-X)."	"R.[RK]R."	"0.000508722921034"	"13"	"0"
+      </pre>
+    </div>
+
+    <h3>Output</h3>
+    <div class="indent">
+      <script>wrdoc("2meme-output");</script>
+    </div>
+    <h3>Options</h3>
+    <div class="indent">
+      <table class="options">
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Parameter</th>
+            <th>Description</th>
+            <th>Default Behaviour</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th colspan="4">General Options</th>
+          </tr>
+          <script>
+            wropt("2meme-bg");
+            wropt("2meme-pseudo");
+            wropt("2meme-logodds");
+            wropt("2meme-url", {"type": "motif ID", "example": "NANOG"});
+          </script>
+          <tr>
+            <td class="popt">-h</td><td>&nbsp;</td>
+            <td>Prints a usage message and exits.</td>
+            <td>The program runs as normal.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </body>
+</html>
+

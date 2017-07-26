@@ -1,0 +1,20 @@
+ALPHABET "DNA" DNA-LIKE
+
+# Core symbols
+A "Adenine" CC0000 ~ T "Thymine" 008000
+C "Cytosine" 0000CC ~ G "Guanine" FFB300
+
+# Ambiguous symbols
+U = T # alias Uracil to Thymine (permit U in input sequences)
+R = AG
+Y = CT
+K = GT
+M = AC
+S = CG
+W = AT
+B = CGT
+D = GAT
+H = ACT
+V = ACG
+N = ACGT # wildcard symbol
+X = ACGT # alias for wildcard symbol

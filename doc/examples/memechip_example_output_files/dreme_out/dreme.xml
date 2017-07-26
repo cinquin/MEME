@@ -1,0 +1,62 @@
+<dreme version="4.12.0" release="Tue Jun 27 02:09:01 2017 -0700">
+  <model>
+    <command_line>dreme -v 1 -oc memechip_example_output_files/dreme_out -png -dna -p memechip_example_output_files/seqs-centered -n memechip_example_output_files/seqs-shuffled</command_line>
+    <positives name="seqs-centered" count="812" file="memechip_example_output_files/seqs-centered" last_mod_date="Tue Jun 27 13:47:16 PDT 2017" />
+    <negatives name="seqs-shuffled" count="812" from="file" file="memechip_example_output_files/seqs-shuffled" last_mod_date="Tue Jun 27 13:47:16 PDT 2017" />
+    <alphabet name="DNA" like="dna">
+      <letter id="A" symbol="A" complement="T" name="Adenine" colour="CC0000"/>
+      <letter id="C" symbol="C" complement="G" name="Cytosine" colour="0000CC"/>
+      <letter id="G" symbol="G" complement="C" name="Guanine" colour="FFB300"/>
+      <letter id="T" symbol="T" aliases="U" complement="A" name="Thymine" colour="008000"/>
+      <letter id="N" symbol="N" aliases="X." equals="ACGT" name="Any base"/>
+      <letter id="V" symbol="V" equals="ACG" name="Not T"/>
+      <letter id="H" symbol="H" equals="ACT" name="Not G"/>
+      <letter id="D" symbol="D" equals="AGT" name="Not C"/>
+      <letter id="B" symbol="B" equals="CGT" name="Not A"/>
+      <letter id="M" symbol="M" equals="AC" name="Amino"/>
+      <letter id="R" symbol="R" equals="AG" name="Purine"/>
+      <letter id="W" symbol="W" equals="AT" name="Weak"/>
+      <letter id="S" symbol="S" equals="CG" name="Strong"/>
+      <letter id="Y" symbol="Y" equals="CT" name="Pyrimidine"/>
+      <letter id="K" symbol="K" equals="GT" name="Keto"/>
+    </alphabet>
+    <strands>both</strands>
+    <background A="0.246" C="0.254" G="0.250" T="0.251" from="dataset"/>
+    <stop evalue="0.05"/>
+    <ngen>100</ngen>
+    <add_pv_thresh>0.01</add_pv_thresh>
+    <seed>1</seed>
+    <host>D-69-91-189-176.dhcp4.washington.edu</host>
+    <when>Tue Jun 27 13:54:09 PDT 2017</when>
+  </model>
+  <motifs>
+    <motif id="m01" alt="DREME-1" seq="MCRCCCW" length="7" nsites="443" p="369" n="76" pvalue="1.8e-063" evalue="5.8e-059" unerased_evalue="5.8e-059">
+      <pos A="0.613995" C="0.386005" G="0.000000" T="0.000000"/>
+      <pos A="0.000000" C="1.000000" G="0.000000" T="0.000000"/>
+      <pos A="0.697517" C="0.000000" G="0.302483" T="0.000000"/>
+      <pos A="0.000000" C="1.000000" G="0.000000" T="0.000000"/>
+      <pos A="0.000000" C="1.000000" G="0.000000" T="0.000000"/>
+      <pos A="0.000000" C="1.000000" G="0.000000" T="0.000000"/>
+      <pos A="0.503386" C="0.000000" G="0.000000" T="0.496614"/>
+      <match seq="ACACCCT" p="87" n="13" pvalue="1.1e-015" evalue="3.6e-011"/>
+      <match seq="ACACCCA" p="93" n="16" pvalue="1.6e-015" evalue="5.2e-011"/>
+      <match seq="ACGCCCT" p="43" n="1" pvalue="1.5e-012" evalue="4.8e-008"/>
+      <match seq="CCACCCA" p="67" n="16" pvalue="3.0e-009" evalue="9.8e-005"/>
+      <match seq="ACGCCCA" p="38" n="4" pvalue="2.0e-008" evalue="6.5e-004"/>
+      <match seq="CCGCCCT" p="31" n="3" pvalue="3.0e-007" evalue="9.9e-003"/>
+      <match seq="CCGCCCA" p="21" n="3" pvalue="1.3e-004" evalue="4.1e+000"/>
+      <match seq="CCACCCT" p="49" n="26" pvalue="4.4e-003" evalue="1.5e+002"/>
+    </motif>
+    <motif id="m02" alt="DREME-2" seq="TTATCW" length="6" nsites="281" p="253" n="42" pvalue="1.8e-045" evalue="5.7e-041" unerased_evalue="3.2e-042">
+      <pos A="0.000000" C="0.000000" G="0.000000" T="1.000000"/>
+      <pos A="0.000000" C="0.000000" G="0.000000" T="1.000000"/>
+      <pos A="1.000000" C="0.000000" G="0.000000" T="0.000000"/>
+      <pos A="0.000000" C="0.000000" G="0.000000" T="1.000000"/>
+      <pos A="0.000000" C="1.000000" G="0.000000" T="0.000000"/>
+      <pos A="0.430605" C="0.000000" G="0.000000" T="0.569395"/>
+      <match seq="TTATCT" p="154" n="25" pvalue="1.2e-026" evalue="3.7e-022"/>
+      <match seq="TTATCA" p="114" n="17" pvalue="1.8e-020" evalue="5.6e-016"/>
+    </motif>
+  </motifs>
+  <run_time cpu="20.67" real="21.33" stop="evalue"/>
+</dreme>

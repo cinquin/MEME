@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>meme-get-motif - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+  </head>
+  <body>
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <h2>meme-get-motif</h2>
+    
+    <div class="usage">
+      <h3>Usage:</h3>
+      <code>meme-get-motif [options]</code>
+    </div>
+
+    <h3>Description</h3>
+    <div class="indent">
+      <p>Extract specified motifs from a <a href="meme-format.html">MEME format</a> file.
+      </p>
+    </div>
+
+    <h3>Input</h3>
+    <div class="indent">
+      <p>The program reads a file in <a href="meme-format.html">MEME format</a> from standard input.
+      </p>
+    </div>
+
+    <h3>Output</h3>
+    <div class="indent">
+      <p>The program writes a <a href="meme-format.html">MEME text format</a> file to standard output.
+      </p>
+    </div>
+    <h3>Options</h3>
+    <div class="indent">
+      <table class="options">
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Parameter</th>
+            <th>Description</th>
+            <th>Default Behaviour</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th colspan="4">General Options</th>
+          </tr>
+          <tr>
+            <td class="popt">-id</td><td><span class="pdat">motif id</span></td>
+            <td>Extract the motif with ID <span class="pdat">motif id</span>. This
+            switch may be repeated.</td>
+            <td>Outputs nothing.</td>
+          </tr>
+          <tr>
+            <td class="popt">-a</td> 
+            <td></td>
+            <td>Check the alternate ID instead of the ID of the motif for matches
+            in conjunction with the <span class="popt">-id</span> option.  (The alternate
+            ID is the first word, if any, occurring after the ID on the MOTIF line in the
+            MEME .txt file.)</td>
+            <td>Only the motif ID is used.</td>
+          </tr>
+          <tr>
+            <td class="popt">-ia</td>
+            <td></td>
+            <td>Check both the alternate ID and the ID of the motif for matches
+            in conjunction with the <span class="popt">-id</span> option.</td>
+            <td>Only the motif ID is used.</td>
+          </tr>
+          <tr>
+            <td class="popt">-all</td><td></td>
+            <td>Extract all the motifs in the given file.</td>
+            <td>Extract only the motifs with the specified IDs.</td>
+          </tr>
+          <tr>
+            <td class="popt">-rc</td><td></td>
+            <td>Reverse-complement each extracted motif before outputing. This requires a complementable alphabet.</td>
+            <td>Do not reverse-complement the motifs.
+          </tr>
+          <tr>
+            <td class="popt">-h</td><td></td>
+            <td>Print a help message and exit.</td>
+            <td>Run as normal.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </body>
+</html>
+

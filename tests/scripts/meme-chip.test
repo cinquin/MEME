@@ -1,0 +1,40 @@
+#
+# meme-chip.test
+#
+#use File::Which;
+#my %paths;
+
+my %memechip_ignore = (
+  'text' => [
+  ],
+  'json' => [
+    'data:(revision|release|version)', 
+    'programs@.*:time'
+  ]
+);
+
+&test('meme-chip1', 'DNA meme-chip',
+  'meme-chip', '',
+  ['-oc', 'results/meme-chip1', 
+   '-db', 'meme-chip/JASPAR_CORE_2014_vertebrates.meme',
+   'meme-chip/Klf1.100.s', 
+  ],
+  [
+    {
+      output => 'results/meme-chip1/meme-chip.html', 
+      reference => 'meme-chip/meme-chip.html', 
+      type => 'json', ignore => $memechip_ignore{'json'}
+    },
+    {
+      output => 'results/meme-chip1/summary.tsv', 
+      reference => 'meme-chip/summary.tsv', 
+      type => 'text', ignore => $memechip_ignore{'text'}
+    },
+    {
+      output => 'results/meme-chip1/combined.meme', 
+      reference => 'meme-chip/combined.meme', 
+      type => 'text', ignore => $memechip_ignore{'text'}
+    }
+  ], 
+    'results/meme-chip1', 'scripts'
+);

@@ -1,0 +1,183 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<mast version="4.11.3" release="Fri Feb 19 13:23:06 2016 -0800">
+	<command_line><arg>mast</arg><arg>-oc</arg><arg>results/mast7</arg><arg>-nostatus</arg><arg>meme/meme.farntrans5.oops.txt</arg><arg>common/farntrans5.s</arg></command_line>
+	<settings strand_handling="unstranded" max_correlation="0.60" remove_correlated="n" max_seq_evalue="10" adjust_hit="n" max_hit_pvalue="0.0001" max_weak_pvalue="0.0001"/>
+	<alphabet name="Protein" like="protein">
+		<letter id="A" symbol="A" name="Alanine" colour="0000CC"/>
+		<letter id="C" symbol="C" name="Cysteine" colour="0000CC"/>
+		<letter id="D" symbol="D" name="Aspartic acid" colour="FF00FF"/>
+		<letter id="E" symbol="E" name="Glutamic acid" colour="FF00FF"/>
+		<letter id="F" symbol="F" name="Phenylalanine" colour="0000CC"/>
+		<letter id="G" symbol="G" name="Glycine" colour="FFB300"/>
+		<letter id="H" symbol="H" name="Histidine" colour="FFCCCC"/>
+		<letter id="I" symbol="I" name="Isoleucine" colour="0000CC"/>
+		<letter id="K" symbol="K" name="Lysine" colour="CC0000"/>
+		<letter id="L" symbol="L" name="Leucine" colour="0000CC"/>
+		<letter id="M" symbol="M" name="Methionine" colour="0000CC"/>
+		<letter id="N" symbol="N" name="Asparagine" colour="008000"/>
+		<letter id="P" symbol="P" name="Proline" colour="FFFF00"/>
+		<letter id="Q" symbol="Q" name="Glutamine" colour="008000"/>
+		<letter id="R" symbol="R" name="Arginine" colour="CC0000"/>
+		<letter id="S" symbol="S" name="Serine" colour="008000"/>
+		<letter id="T" symbol="T" name="Threonine" colour="008000"/>
+		<letter id="V" symbol="V" name="Valine" colour="0000CC"/>
+		<letter id="W" symbol="W" name="Tryptophan" colour="0000CC"/>
+		<letter id="Y" symbol="Y" name="Tyrosine" colour="33E6CC"/>
+		<letter id="X" symbol="X" aliases="*." equals="ACDEFGHIKLMNPQRSTVWY" name="Any amino acid"/>
+		<letter id="B" symbol="B" equals="DN" name="Asparagine or Aspartic acid"/>
+		<letter id="Z" symbol="Z" equals="EQ" name="Glutamine or Glutamic acid"/>
+		<letter id="J" symbol="J" equals="IL" name="Leucine or Isoleucine"/>
+	</alphabet>
+	<background source="--nrdb--" A="0.0730919" C="0.0181455" D="0.051688" E="0.0622785" F="0.0402434" G="0.0692596" H="0.0224055" I="0.056227" K="0.058435" L="0.0916218" M="0.0230443" N="0.0460321" P="0.0506238" Q="0.0407153" R="0.0518462" S="0.073729" T="0.0593523" V="0.0642985" W="0.0133282" Y="0.0326497"/>
+	<motif_dbs>
+		<motif_db source="meme/meme.farntrans5.oops.txt" last_mod_date="Wed Mar  1 17:39:26 2017">
+			<background A="0.060939" C="0.0369632" D="0.060939" E="0.05994" F="0.0439561" G="0.0749248" H="0.0299702" I="0.052947" K="0.050949" L="0.112886" M="0.0209793" N="0.0339662" P="0.0409591" Q="0.0389611" R="0.0409591" S="0.0779218" T="0.0459541" V="0.056943" W="0.0179823" Y="0.0409591"/>
+		</motif_db>
+	</motif_dbs>
+	<motifs>
+		<motif db="0" id="EGGFQGRPNKLPDVCYSFWV" alt="MEME-1" length="20" nsites="5" evalue="2.3e-030">
+			<pos A="-174" C="-549" D="101" E="341" F="-468" G="-299" H="-249" I="-379" K="-137" L="-418" M="-292" N="-106" P="-278" Q="-80" R="-220" S="24" T="-207" V="-314" W="-499" Y="-405"/>
+			<pos A="-159" C="-414" D="-264" E="-305" F="-433" G="350" H="-327" I="-413" K="-255" L="-492" M="-331" N="-164" P="-347" Q="-318" R="10" S="-242" T="-294" V="-356" W="-392" Y="-408"/>
+			<pos A="-176" C="-427" D="-286" E="-332" F="-447" G="358" H="-350" I="-433" K="-298" L="-511" M="-353" N="-188" P="-360" Q="-351" R="-277" S="-261" T="-315" V="-375" W="-406" Y="-425"/>
+			<pos A="-295" C="-345" D="-493" E="-448" F="386" G="-479" H="-353" I="-101" K="-421" L="103" M="-36" N="-379" P="-389" Q="-380" R="-389" S="-376" T="-313" V="-158" W="-218" Y="-95"/>
+			<pos A="-108" C="135" D="-103" E="-92" F="-294" G="-198" H="-86" I="-250" K="-50" L="-292" M="-163" N="312" P="-221" Q="296" R="-75" S="-115" T="-99" V="-213" W="-328" Y="-256"/>
+			<pos A="-176" C="-427" D="-286" E="-332" F="-447" G="358" H="-350" I="-433" K="-298" L="-511" M="-353" N="-188" P="-360" Q="-351" R="-277" S="-261" T="-315" V="-375" W="-406" Y="-425"/>
+			<pos A="-313" C="-372" D="-445" E="-422" F="-458" G="-408" H="-222" I="-384" K="-97" L="-421" M="-338" N="-267" P="-326" Q="-213" R="447" S="-368" T="-328" V="-436" W="-331" Y="-424"/>
+			<pos A="-63" C="97" D="-195" E="61" F="-293" G="-240" H="-195" I="-245" K="-109" L="-282" M="-182" N="-111" P="361" Q="-114" R="-134" S="40" T="-105" V="-195" W="-363" Y="-300"/>
+			<pos A="-188" C="-396" D="-78" E="72" F="-356" G="-209" H="-114" I="-319" K="-131" L="-393" M="-266" N="416" P="-262" Q="-129" R="-176" S="44" T="-137" V="-306" W="-374" Y="-308"/>
+			<pos A="-318" C="-451" D="-472" E="-400" F="-523" G="-459" H="-377" I="-378" K="416" L="-489" M="-351" N="-290" P="-406" Q="-335" R="-3" S="-426" T="-332" V="-427" W="-439" Y="-479"/>
+			<pos A="-275" C="-363" D="-497" E="-397" F="107" G="-473" H="-349" I="-47" K="-357" L="273" M="40" N="-362" P="-358" Q="-288" R="-300" S="-390" T="-255" V="-107" W="-288" Y="-248"/>
+			<pos A="110" C="-266" D="-305" E="-241" F="-261" G="-248" H="-272" I="-112" K="-216" L="-236" M="-143" N="-212" P="334" Q="-208" R="-214" S="-157" T="-116" V="217" W="-356" Y="-320"/>
+			<pos A="-291" C="-459" D="383" E="-92" F="-417" G="-370" H="-283" I="-390" K="-349" L="-461" M="-350" N="-37" P="-416" Q="-318" R="-335" S="-325" T="-328" V="-362" W="-427" Y="-393"/>
+			<pos A="-22" C="-224" D="-301" E="-251" F="-224" G="200" H="-264" I="-74" K="-218" L="-202" M="-97" N="-170" P="-249" Q="-214" R="-211" S="-129" T="165" V="242" W="-315" Y="-275"/>
+			<pos A="-344" C="470" D="-543" E="-486" F="-480" G="-544" H="-495" I="-404" K="-511" L="-506" M="-366" N="-443" P="-508" Q="-491" R="-440" S="-470" T="-354" V="-442" W="-579" Y="-559"/>
+			<pos A="-337" C="-420" D="-443" E="-429" F="-10" G="-430" H="-166" I="-333" K="-382" L="-337" M="-272" N="-310" P="-395" Q="-352" R="-334" S="-376" T="-351" V="-327" W="-146" Y="441"/>
+			<pos A="113" C="-235" D="-329" E="-333" F="-350" G="-220" H="-330" I="-332" K="-274" L="-391" M="-248" N="-138" P="-259" Q="-279" R="-251" S="313" T="70" V="-257" W="-398" Y="-367"/>
+			<pos A="-354" C="-384" D="-477" E="-454" F="367" G="-462" H="-176" I="-258" K="-400" L="-236" M="-195" N="-305" P="-405" Q="-341" R="-343" S="-378" T="-346" V="-274" W="394" Y="67"/>
+			<pos A="-365" C="-421" D="-423" E="-406" F="-135" G="-423" H="-374" I="-380" K="-369" L="-284" M="-257" N="-332" P="-414" Q="-342" R="-312" S="-415" T="-356" V="-331" W="562" Y="-179"/>
+			<pos A="-53" C="46" D="-338" E="-273" F="-214" G="-323" H="-266" I="26" K="-237" L="-176" M="-88" N="-237" P="-267" Q="39" R="-210" S="-243" T="-90" V="346" W="-328" Y="-301"/>
+		</motif>
+		<motif db="0" id="CQDEETGGLSDKPGEEVDFYHTCFGLAGL" alt="MEME-2" length="29" nsites="5" evalue="5.7e-016">
+			<pos A="-317" C="468" D="-536" E="-480" F="-473" G="-515" H="-489" I="-393" K="-502" L="-496" M="-358" N="-431" P="-496" Q="-481" R="-434" S="-439" T="-202" V="-421" W="-572" Y="-551"/>
+			<pos A="-201" C="-28" D="-352" E="-110" F="-388" G="-392" H="-45" I="-323" K="-218" L="-293" M="-130" N="-177" P="-280" Q="435" R="-152" S="-273" T="-235" V="-303" W="-327" Y="-386"/>
+			<pos A="-101" C="-461" D="226" E="200" F="-366" G="-252" H="-171" I="-296" K="142" L="-325" M="-195" N="-63" P="-210" Q="179" R="-106" S="-160" T="-127" V="-232" W="-399" Y="-310"/>
+			<pos A="-39" C="127" D="-86" E="197" F="-232" G="-186" H="-81" I="-180" K="159" L="-220" M="-89" N="1" P="-155" Q="14" R="6" S="-70" T="148" V="-136" W="-275" Y="-194"/>
+			<pos A="-54" C="-354" D="-66" E="215" F="-262" G="-208" H="-104" I="-209" K="154" L="-4" M="-113" N="-26" P="160" Q="9" R="-17" S="-97" T="-59" V="-161" W="-303" Y="-220"/>
+			<pos A="109" C="-318" D="-107" E="-17" F="-246" G="-198" H="-89" I="-192" K="159" L="-232" M="-97" N="-10" P="-164" Q="171" R="12" S="-63" T="240" V="-146" W="-282" Y="-207"/>
+			<pos A="-155" C="-406" D="-271" E="-314" F="-437" G="348" H="-337" I="-418" K="-283" L="-497" M="-338" N="-171" P="32" Q="-333" R="-265" S="-240" T="-290" V="-356" W="-399" Y="-415"/>
+			<pos A="-176" C="-427" D="-286" E="-332" F="-447" G="358" H="-350" I="-433" K="-298" L="-511" M="-353" N="-188" P="-360" Q="-351" R="-277" S="-261" T="-315" V="-375" W="-406" Y="-425"/>
+			<pos A="-253" C="-339" D="-527" E="-442" F="287" G="-470" H="-372" I="161" K="-402" L="180" M="36" N="-379" P="-390" Q="-333" R="-355" S="-390" T="-242" V="-73" W="-270" Y="-215"/>
+			<pos A="145" C="-250" D="-160" E="-77" F="-208" G="-199" H="-130" I="-136" K="-22" L="-8" M="-77" N="-48" P="-178" Q="-48" R="140" S="187" T="10" V="-98" W="-272" Y="-203"/>
+			<pos A="-261" C="-452" D="373" E="-63" F="-408" G="-335" H="-255" I="-377" K="-56" L="-443" M="-329" N="-19" P="-380" Q="-253" R="-275" S="-283" T="-285" V="-345" W="-421" Y="-376"/>
+			<pos A="-190" C="-410" D="-273" E="-160" F="-401" G="-304" H="-150" I="-302" K="299" L="-322" M="-201" N="170" P="-285" Q="-45" R="295" S="-221" T="-166" V="-272" W="-344" Y="-309"/>
+			<pos A="-106" C="-385" D="26" E="-217" F="-346" G="-298" H="-272" I="-305" K="-205" L="-329" M="-260" N="-201" P="420" Q="-198" R="-216" S="-191" T="-175" V="-255" W="-429" Y="-395"/>
+			<pos A="-148" C="-419" D="-141" E="170" F="-426" G="310" H="-269" I="-390" K="-187" L="-446" M="-308" N="-100" P="-301" Q="-180" R="-220" S="-209" T="-227" V="-325" W="-415" Y="-386"/>
+			<pos A="110" C="-357" D="131" E="152" F="-267" G="-184" H="-93" I="-229" K="149" L="-257" M="-123" N="190" P="-164" Q="6" R="-33" S="-82" T="-53" V="-176" W="-307" Y="-218"/>
+			<pos A="-36" C="-329" D="116" E="133" F="-230" G="-179" H="182" I="-199" K="27" L="-230" M="211" N="15" P="-150" Q="22" R="-11" S="73" T="-33" V="-150" W="-277" Y="-173"/>
+			<pos A="155" C="-224" D="-224" E="-142" F="-204" G="-219" H="-182" I="-47" K="-94" L="-184" M="-75" N="-118" P="-213" Q="-113" R="114" S="44" T="-57" V="264" W="-287" Y="-237"/>
+			<pos A="-291" C="-459" D="383" E="-92" F="-417" G="-370" H="-283" I="-390" K="-349" L="-461" M="-350" N="-37" P="-416" Q="-318" R="-335" S="-325" T="-328" V="-362" W="-427" Y="-393"/>
+			<pos A="-142" C="-249" D="-385" E="-310" F="340" G="-341" H="-256" I="-34" K="-271" L="38" M="-12" N="-245" P="90" Q="-255" R="-251" S="-241" T="-141" V="97" W="-205" Y="-69"/>
+			<pos A="-229" C="-329" D="-362" E="-321" F="283" G="-383" H="-55" I="-236" K="-290" L="-245" M="-169" N="-229" P="-322" Q="-266" R="-248" S="-273" T="-258" V="-228" W="-63" Y="367"/>
+			<pos A="-334" C="-407" D="-306" E="-333" F="-257" G="-386" H="482" I="-415" K="-346" L="-379" M="-261" N="-89" P="-344" Q="-90" R="-175" S="-295" T="-273" V="-364" W="-300" Y="-124"/>
+			<pos A="-145" C="-275" D="-320" E="-331" F="-332" G="-339" H="-304" I="-212" K="-239" L="-361" M="-157" N="-102" P="-300" Q="-226" R="-230" S="94" T="393" V="-169" W="-371" Y="-379"/>
+			<pos A="-60" C="275" D="-318" E="-233" F="-106" G="-266" H="-205" I="27" K="-185" L="55" M="20" N="163" P="-241" Q="-176" R="-173" S="-173" T="-55" V="163" W="-215" Y="-165"/>
+			<pos A="-203" C="-306" D="-347" E="-303" F="308" G="-370" H="-62" I="-189" K="-277" L="-4" M="-126" N="-230" P="-304" Q="-265" R="-243" S="-256" T="-239" V="-192" W="-85" Y="313"/>
+			<pos A="-80" C="268" D="-333" E="-367" F="-417" G="307" H="-368" I="-385" K="-337" L="-457" M="-324" N="-215" P="-317" Q="-342" R="-309" S="-180" T="-204" V="-287" W="-426" Y="-424"/>
+			<pos A="-119" C="-241" D="-381" E="-299" F="-128" G="-328" H="-266" I="230" K="-251" L="149" M="20" N="-228" P="-287" Q="-233" R="-229" S="16" T="-104" V="153" W="-253" Y="-210"/>
+			<pos A="344" C="-163" D="-332" E="-265" F="-268" G="-160" H="-306" I="-203" K="-245" L="-82" M="-141" N="-225" P="-319" Q="-251" R="-233" S="30" T="-118" V="-77" W="-328" Y="-328"/>
+			<pos A="5" C="-385" D="-271" E="-313" F="-431" G="348" H="-336" I="-409" K="-281" L="-490" M="-328" N="-170" P="-338" Q="-330" R="-260" S="-223" T="-272" V="-339" W="-394" Y="-412"/>
+			<pos A="-288" C="-378" D="-491" E="-401" F="-150" G="-464" H="-371" I="-73" K="-359" L="290" M="14" N="-369" P="-362" Q="-300" R="-305" S="-397" T="-271" V="-125" W="-326" Y="-314"/>
+		</motif>
+	</motifs>
+	<correlations>
+		<correlation idx_a="0" idx_b="1" value="0.46"/>
+	</correlations>
+	<sequence_dbs>
+		<sequence_db source="common/farntrans5.s" last_mod_date="Wed Jan 20 14:03:15 2016" seq_count="5" residue_count="1900"/>
+	</sequence_dbs>
+	<sequences>
+		<sequence db="0" name="RATRABGERB" comment="Rat rab geranylgeranyl transferase beta-subunit" length="331">
+			<score strand="both" combined_pvalue="2.94e-45" evalue="1.5e-44"/>
+			<seg start="76">
+				<data>
+KSCQHECGGVSASIGHDPHLLYTLSAVQILTLYDSIHVINVDKVVAYVQSLQKEDGSFAGDIWGEIDTRFSFCAV
+				</data>
+				<hit pos="77" idx="1" pvalue="5.3e-05" match="  + + ++ +   + +  +  ++  +  +"/>
+				<hit pos="130" idx="0" pvalue="5.3e-05" match="++ + +      ++  ++  "/>
+			</seg>
+			<seg start="226">
+				<data>
+SGGLNGRPEKLPDVCYSWWVLASLKIIGRLHWIDREKLRSFILACQDEETGGFADRPGDMVDPFHTLFGIAGLSL
+				</data>
+				<hit pos="226" idx="0" pvalue="2.0e-22" match="++++++++++++++++++++"/>
+				<hit pos="270" idx="1" pvalue="1.4e-30" match="+++++++++++++++++++++++++++++"/>
+			</seg>
+		</sequence>
+		<sequence db="0" name="BET2_YEAST" comment="YPT1/SEC4 PROTEINS GERANYLGERANYLTRANSFERASE BETA SUBUNIT (EC 2." length="325">
+			<score strand="both" combined_pvalue="1.72e-44" evalue="8.6e-44"/>
+			<seg start="1">
+				<data>
+MSGSLTLLKEKHIRYIESLDTNKHNFEYWLTEHLRLNGIYWGLTALCVLDSPETFVKEEVISFVLSCWDDKYGAF
+APFPRHDAHLLTTLSAVQILATYDALDVLGKDRKVRLISFIRGNQLEDGSFQGDRFGEVDTRFVYTALSALSILG
+				</data>
+				<hit pos="67" idx="1" pvalue="7.3e-06" match="+ + + + ++  +  ++ +  ++  +  +"/>
+				<hit pos="123" idx="0" pvalue="4.0e-05" match="++ +++     +++   +  "/>
+			</seg>
+			<seg start="151">
+				<data>
+ELTSEVVDPAVDFVLKCYNFDGGFGLCPNAESHAAQAFTCLGALAIANKLDMLSDDQLEEIGWWLCERQLPEGGL
+NGRPSKLPDVCYSWWVLSSLAIIGRLDWINYEKLTEFILKCQDEKKGGISDRPENEVDVFHTVFGVAGLSLMGYD
+				</data>
+				<hit pos="171" idx="0" pvalue="3.7e-05" match="++++   ++       ++ +"/>
+				<hit pos="222" idx="0" pvalue="1.3e-23" match="++++++++++++++++++++"/>
+				<hit pos="266" idx="1" pvalue="1.3e-28" match="+++++++++++++++++++++++++++++"/>
+			</seg>
+		</sequence>
+		<sequence db="0" name="RAM1_YEAST" comment="PROTEIN FARNESYLTRANSFERASE BETA SUBUNIT (EC 2.5.1.-) (CAAX FARN" length="431">
+			<score strand="both" combined_pvalue="2.74e-40" evalue="1.4e-39"/>
+			<seg start="226">
+				<data>
+LTEELTEGVLNYLKNCQNYEGGFGSCPHVDEAHGGYTFCATASLAILRSMDQINVEKLLEWSSARQLQEERGFCG
+RSNKLVDGCYSFWVGGSAAILEAFGYGQCFNKHALRDYILYCCQEKEQPGLRDKPGAHSDFYHTNYCLLGLAVAE
+				</data>
+				<hit pos="295" idx="0" pvalue="3.3e-22" match="++++++++++++++++++++"/>
+				<hit pos="343" idx="1" pvalue="5.1e-26" match="++++++++++++++++++++++++++ ++"/>
+			</seg>
+		</sequence>
+		<sequence db="0" name="PFTB_RAT" comment="PROTEIN FARNESYLTRANSFERASE BETA SUBUNIT (EC 2.5.1.-) (CAAX FARNES" length="437">
+			<score strand="both" combined_pvalue="3.55e-40" evalue="1.8e-39"/>
+			<seg start="76">
+				<data>
+EKHFHYLKRGLRQLTDAYECLDASRPWLCYWILHSLELLDEPIPQIVATDVCQFLELCQSPDGGFGGGPGQYPHL
+APTYAAVNALCIIGTEEAYNVINREKLLQYLYSLKQPDGSFLMHVGGEVDVRSAYCAASVASLTNIITPDLFEGT
+				</data>
+				<hit pos="132" idx="1" pvalue="8.5e-06" match="  + + +++   +++   +  +   + ++"/>
+			</seg>
+			<seg start="226">
+				<data>
+AEWIARCQNWEGGIGGVPGMEAHGGYTFCGLAALVILKKERSLNLKSLLQWVTSRQMRFEGGFQGRCNKLVDGCY
+SFWQAGLLPLLHRALHAQGDPALSMSHWMFHQQALQEYILMCCQCPAGGLLDKPGKSRDFYHTCYCLSGLSIAQH
+				</data>
+				<hit pos="231" idx="1" pvalue="4.3e-07" match="  +   +++   ++ ++    +  +++++"/>
+				<hit pos="285" idx="0" pvalue="3.9e-23" match="++++++++++++++++++++"/>
+				<hit pos="342" idx="1" pvalue="5.6e-25" match="+ +++++++ +++++++++++++++++++"/>
+			</seg>
+		</sequence>
+		<sequence db="0" name="CAL1_YEAST" comment="RAS PROTEINS GERANYLGERANYLTRANSFERASE (EC 2.5.1.-) (PROTEIN GER" length="376">
+			<score strand="both" combined_pvalue="7.50e-31" evalue="3.8e-30"/>
+			<seg start="226">
+				<data>
+TLALLSSLEKLSDKFKEDTITWLLHRQVSSHGCMKFESELNASYDQSDDGGFQGRENKFADTCYAFWCLNSLHLL
+				</data>
+				<hit pos="274" idx="0" pvalue="2.6e-20" match="++++++++++++++++++++"/>
+			</seg>
+			<seg start="301">
+				<data>
+TKDWKMLCQTELVTNYLLDRTQKTLTGGFSKNDEEDADLYHSCLGSAALALIEGKFNGELCIPQEIFNDFSKRCC
+				</data>
+				<hit pos="321" idx="1" pvalue="3.1e-18" match=" +++ +++++ ++++++++++++ +++++"/>
+			</seg>
+		</sequence>
+	</sequences>
+	<runtime host="Timothys-iMac.rd.unr.edu" when="Wed Mar  1 17:58:27 2017" cycles="15548" seconds="0.016"/>
+</mast>

@@ -1,0 +1,263 @@
+div.header {
+  position: relative;
+  overflow: hidden;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  margin-right: 3px;
+  margin-left: 3px;
+}
+div.header > h2 {
+  font-size: 1.5em;
+  font-style: normal;
+  margin: 0;
+  font-variant: small-caps; 
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+div.header > span {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+table.nowrap th, table.nowrap td {
+  white-space: nowrap;
+}
+
+table.th_ul th {
+  white-space: nowrap;
+  font-size: 1.2em;
+  font-style: normal;
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+table.th_ul th > span.th_ul {
+  display: block;
+  border-bottom: 1px solid #CCCCCC;
+  margin-right: 3px;
+  padding-bottom: 1px; 
+}
+table.th_ul td, table.th_ul th {
+  padding-right: 10px;
+}
+div.ml {
+  line-height: 1.8em;
+  height: 3.6em;
+  overflow-y: auto;
+}
+
+body:not(.revcomp) .revcomp {
+  visibility: hidden;
+}
+
+
+td.pri_nlist {
+  text-align: center;
+}
+
+td.seq_loaded, td.seq_too_short, td.seq_ambiguous, td.seq_no_primary, td.seq_too_similar, td.seq_used {
+  text-align: center;
+}
+
+textarea.sa_contr_seqs {
+  height: 300px;
+}
+
+div.sa_spacings_anchor {
+  position: relative;
+}
+
+div.sa_spacings_scroll {
+  height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right:10px;
+}
+
+table.orient_0 tr.orient_0,
+table.orient_1 tr.orient_1,
+table.orient_2 tr.orient_2,
+table.orient_3 tr.orient_3,
+table.orient_4 tr.orient_4,
+table.orient_5 tr.orient_5,
+table.orient_6 tr.orient_6,
+table.orient_7 tr.orient_7,
+table.orient_8 tr.orient_8  {
+  background: #EEE;
+}
+
+table.sa_spacings tr.sa_sp_row:hover, tr.sa_row:hover {
+  background: #E4ECEC;
+  cursor: pointer;
+}
+
+table.sa_spacings tr.sa_sp_row.active, tr.sa_row.active {
+  background: #026666;
+  color: white;
+}
+
+tr.fixed_header th {
+  color: transparent;
+  white-space: nowrap;
+}
+tr.fixed_header th div {
+  color: black;
+  background: #FFF;
+  position: absolute;
+  top: 0;
+}
+
+tr.fixed_header div.fill_back {
+  left: 0; 
+  right: 15px;
+  height: 1em;
+}
+
+input.sa_sp_select {
+}
+
+td.sa_sp_gap {
+  text-align: right;
+}
+
+td.sa_sp_orient {
+  text-align: center;
+}
+
+td.sa_sp_pvalue {
+  text-align: left;
+}
+
+div.sp_info {
+  display: inline-block;
+  vertical-align:top;
+}
+
+div.sp_info h3 {
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+  font-size: 1.2em;
+  font-style: normal;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  border-bottom: 1px solid #CCCCCC;
+  margin-right: 3px;
+  padding-bottom: 1px; 
+  text-align: center;
+}
+
+#tmpl_primary {
+  display: none;
+}
+
+canvas.sa_align_up_pos, canvas.sa_align_up_neg, canvas.sa_align_dn_pos, canvas.sa_align_dn_neg {
+  display: block;
+}
+
+div.align_scroll {
+  width: 99%;
+  overflow-x: auto;
+}
+
+a.sa_contr_seqs_dl {
+  padding-left: 10px;
+}
+
+div.pop_logo {
+  position:absolute;
+  z-index:1;
+  top:0px;
+  left:0px;
+  border: 3px outset black;
+  background-color: white;
+  display:none;
+}
+
+table.sa_summary {
+  width: 100%;
+  font-size: 1.2em;
+  font-style: normal;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  margin-bottom: 20px;
+}
+
+table.sa_summary tr th {
+  text-align: right;
+}
+
+table.sa_summary tr td {
+  text-align: left;
+  padding-left: 5px;
+}
+
+.overlink {
+  display: inline-block;
+  position: relative;
+}
+
+.overlink a {
+  display: inline-block;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 5px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+.overlink span {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 50%;
+  text-align: center;
+  display: none;
+}
+
+.overlink:hover span {
+  display: block;
+}
+
+.overlink span.top {
+  top: 0;
+}
+.overlink span.base {
+  bottom: 0;
+}
+
+.pop_content dl dt {
+  font-weight: bold;
+}
+
+.sa_align_scrollbox {
+  width: 500px;
+  overflow-x: auto;
+}
+
+.sa_align_scroll {
+  height: 1px;
+  width: 1px;
+  display: inline-block;
+}
+
+.sa_scroll_up_pos, .sa_scroll_up_neg, .sa_scroll_dn_pos, .sa_scroll_dn_neg {
+ width: 500px;
+ overflow-x: hidden;
+}
+
+span.sec_best, span.sec_all {
+  display: none;
+}
+td.best span.sec_best, td.all span.sec_all {
+  display: inline;
+}
+
+span.xalph_true, span.xalph_false {
+  display: none;
+}
+td.convert span.xalph_true, td.no_convert span.xalph_false {
+  display: inline;
+}

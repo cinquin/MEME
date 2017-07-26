@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Overview - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+    <style>
+      img.central {
+        display:block;
+        margin-left:auto;
+        margin-right:auto;
+      }
+      table.overview th {
+        text-align: left;
+      }
+      table.overview > tbody + tbody  th {
+        padding-top: 40px;
+      }
+      table.overview tr:hover {
+        background-color: #E4ECEC;
+      }
+      table.overview tr:nth-child(1):hover {
+        background-color: inherit;
+      }
+      table.logos {
+        margin-left: 20px;
+      }
+      table.logos td {
+        padding: 0 30px;
+      }
+      p.funding {
+        font-size: large;
+      }
+      hr.pad {
+        margin-top: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <p>The MEME Suite allows the biologist to discover novel motifs in
+    collections of unaligned nucleotide or protein sequences, and to perform 
+    a wide variety of other motif-based analyses.</p>
+
+    <p>
+      The MEME Suite supports motif-based analysis of DNA, RNA 
+      and protein sequences.  It provides motif 
+      discovery algorithms using both probabilistic (MEME) and 
+      discrete models (MEME), which have complementary strengths.  
+      It also allows discovery of motifs with arbitrary insertions 
+      and deletions (GLAM2).  In addition to motif discovery, the MEME 
+      Suite provides tools for scanning sequences for matches to motifs
+      (FIMO, MAST and GLAM2Scan), scanning for clusters of motifs (MCAST),
+      comparing motifs to known motifs (Tomtom), finding preferred spacings
+      between motifs (SpaMo), predicting the biological roles of 
+      motifs (GOMo), measuring the positional enrichment of sequences for
+      known motifs (CentriMo), and analyzing ChIP-seq and other large
+      datasets (MEME-ChIP).
+    </p>
+
+    <p>The MEME Suite is comprised of a collection of tools that work
+    together, as shown below. Not all the tools are available as
+    webservices, so to get the full power of the MEME Suite you will need to  <!-- ../meme-download.html -->
+    <a href="download.html">download</a> and <a href="install.html">install</a>
+    a local copy of the software. To see what has changed recently you can
+    peruse the <a href="release-notes.html">release notes</a>.
+    </p>
+    <h3>Table of Contents:</h3>
+    <ul>
+      <li><a href="#motif_discovery">Motif Discovery</a></li>
+      <li><a href="#motif_enrichment">Motif Enrichement Analysis</a></li>
+      <li><a href="#motif_search">Motif Search</a></li>
+      <li><a href="#motif_comparison">Motif Comparison</a></li>
+      <li><a href="#additional_primary">Additional Primary Tools</a></li>
+      <li><a href="#motif_conversion">Motif Format Conversion Scripts</a></li>
+      <li><a href="#file_conversion">File Format Conversion Utilities</a></li>
+      <li><a href="#other">Other Utilities</a></li>
+      <li><a href="#formats">File Formats</a></li>
+      <li><a href="#guides">Guides and Tutorials</a></li>
+    </ul>
+    <hr />
+
+    <table class="overview">
+      <tbody>
+      <tr>
+        <th colspan="3">Motif Discovery</th>
+      </tr>
+
+      <tr>
+        <td><a href="meme.html">MEME</a></td>
+        <td>Find ungapped motifs in unaligned DNA, RNA or protein sequences.</td>
+        <td><a href="examples/meme_example_output_files/meme.html">Sample</a></td>
+      </tr>
+
+      <tr>
+        <td><a href="meme-chip.html">MEME-ChIP</a></td>
+        <td>Comprehensive motif analysis of large nucleotide datasets such as
+        those from ChIP-seq or CLIP-seq experiments.</td>
+        <td>
+          <a href="examples/memechip_example_output_files/index.html">Sample</a>
+        </td>
+      </tr>
+
+      <tr>
+        <td><a href="dreme.html">DREME</a></td>
+        <td>Find short, ungapped motifs in large sets of DNA or RNA sequences.  Also allows
+        discriminative motif analysis using a set of control sequences.</td>
+        <td>
+          <a href="examples/dreme_example_output_files/dreme.html">Sample</a>
+        </td>
+      </tr>
+
+      <tr>
+        <td><a href="glam2.html">GLAM2</a></td>
+        <td>Find <b>gapped</b> motifs in DNA or protein sequences.
+          It has a <a href="glam2_tut.html">tutorial</a>.</td>
+        <td>
+          <a href="examples/glam2_example_output_files/glam2.html">Sample</a>
+        </td>
+      </tr>
+      </tbody>
+      
+      <tr>
+        <td><a href="momo.html">MoMo</a></td>
+        <td>Find PTM motifs in fixed width protein sequences.</td>
+        <td>
+          <a href="examples/momo_example_output_files/momo.html">Sample</a>
+        </td>
+      </tr>
+      </tbody>
+
+      <tbody>
+      <tr>
+        <th colspan="3" id="motif_enrichment">Motif Enrichment Analysis</th>
+      </tr>
+
+      <tr>
+        <td><a href="ame.html">AME</a></td>
+        <td>Motif Enrichment Analysis: find known DNA or RNA motifs 
+        that are relatively enriched in the input sequences compared to
+        shuffled version of those sequences or control sequences.</td>
+        <td><a href="examples/ame_example_output_files/ame.html">Sample</a></td>
+      </tr>
+
+      <tr>
+        <td><a href="centrimo.html">CentriMo</a></td>
+        <td>Local Motif Enrichment Analysis: Find motifs that are enriched
+        in local regions in equal-length sequences.</td>
+        <td>
+          <a href="examples/centrimo_example_output_files/centrimo.html">Sample</a>
+        </td>
+      </tr>
+
+      <tr>
+        <td><a href="spamo.html">SpaMo</a></td>
+        <td>Motif Spacing Analysis: Find known motifs that occur with preferred
+        spacings relative to a primary motif in a set of DNA sequences.</td>
+        <td>
+          <a href="examples/spamo_example_output_files/spamo.html">Sample</a>
+        </td>
+      </tr>
+
+      <tr>
+        <td><a href="gomo.html">GOMO</a></td>
+        <td>Genome Ontology Motif Enrichment: Identify possible roles (Gene Ontology terms) 
+          for DNA binding motifs.</td>
+        <td><a href="examples/gomo_example_output_files/gomo.html">Sample</a></td>
+      </tr>
+      </tbody>
+
+
+      <tbody>
+      <tr>
+        <th colspan="3" id="motif_search">Motif Search</th>
+      </tr>
+
+      <!--
+      <tr>
+        <td><a href="beadstring.html">Beadstring</a></td>
+        <td>
+          Searches a sequence database for a given collection of motifs.  The
+          motifs are represented using a hidden Markov model with a linear
+          topology, thus requiring that the motifs appear in a specified
+          order.
+        </td>
+        <td>Sample</td>
+      </tr>
+      -->
+
+      <tr>
+        <td><a href="fimo.html">FIMO</a></td>
+        <td>
+          Search a sequence database for occurrences of known motifs.  This
+          program treats each motif independently and reports all putative motif
+          occurrences below a specified <i>p</i>-value threshold.
+        </td>
+        <td><a href="examples/fimo_example_output_files/fimo.html">Sample</a></td>
+      </tr>
+
+      <tr>
+        <td><a href="mast.html">MAST</a></td>
+        <td>
+          Search a sequence database for occurences of known motifs.  This
+          program assumes exactly one occurrence of each motif per sequence, and
+          each sequence in the database is assigned a <i>p</i>-value, based on
+          the product of the <i>p</i>-values of the individual motif occurrences in
+          that sequence.
+        </td>
+        <td><a href="examples/mast_example_output_files/mast.html">Sample</a></td>
+      </tr>
+
+      <tr>
+        <td><a href="mcast.html">MCAST</a></td>
+        <td>
+          Search a sequence database for <b>clusters</b> of known motifs.
+          <!--Like beadstring and miao,--> 
+          mcast employs a motif-based hidden
+          Markov model, using a star topology and a novel scoring algorithm.
+          The motifs may appear in any order.
+        </td>
+        <td><a href="examples/mcast_example_output_files/mcast.html">Sample</a></td>
+      </tr>
+
+      <tr>
+        <td><a href="motiph.html">MOTIPH</a></td>
+        <td>
+          Search a set of aligned sequences for <b>conservered</b> matches
+	  to motifs.  In addition to the aligned sequences and the motifs,
+	  this program requires a maximum likelihood phylogenetic tree estimating
+	  the evolutionary relationships and distances among the sequences.
+        </td>
+        <td><a href="examples/motiph_example_output_files/motiph.html">Sample</a></td>
+      </tr>
+
+      <tr>
+        <td><a href="glam2scan.html">GLAM2Scan</a></td>
+        <td>Search for occurences of gapped motifs, discovered by GLAM2.</td>
+        <td><a href="examples/glam2scan_example_output_files/glam2scan.html">Sample</a></td>
+      </tr>
+    </tbody>
+    <tbody>
+
+      <tr>
+        <th colspan="3" id="motif_comparison">Motif Comparison</th>
+      </tr>
+      <tr>
+        <td><a href="tomtom.html">Tomtom</a></td>
+        <td>Find motifs that are similar to a given DNA or RNA motif by searching a database of 
+        known motifs.</td>
+        <td><a href="examples/tomtom_example_output_files/tomtom.html">Sample</a></td>
+      </tr>
+    </tbody>
+    <tbody>
+
+      <tr>
+        <th colspan="3" id="additional_primary">Additional Primary Tools</th>
+      </tr>
+
+      <tr>
+        <td><a href="ama.html">AMA</a></td>
+        <td>Print the Average Motif Affinity score of each sequence in a database.  
+        The score is calculated by averaging the likelihood ratio scores for all
+        feasible binding events to the given sequence and to its reverse strand. 
+        </td>
+      </tr>
+    </tbody>
+
+    <tbody>
+      <tr id="motif_conversion_utilities">
+        <th colspan="2" id="motif_conversion">Motif Format Conversion Scripts</th>
+        <td rowspan="14"><a href="motif_conversion.html">Foreign Motif Formats</a></td>
+      </tr>
+        <tr>
+          <td><a href="beeml2meme.html">beeml2meme</a></td>
+          <td>Convert an BEEML matrix file to MEME format.</td>
+        </tr>
+        <tr>
+          <td><a href="chen2meme.html">chen2meme</a></td>                  
+          <td>Convert a CHEN matrix file to MEME format.</td>
+        </tr>
+        <tr>
+          <td><a href="elm2meme.html">elm2meme</a></td>                  
+          <td>Convert a ELM tab separated file to MEME format.</td>
+        </tr>
+        <tr>
+          <td><a href="iupac2meme.html">iupac2meme</a></td>
+          <td>Convert an IUPAC string to MEME format.</td>
+        </tr>
+        <tr>
+          <td><a href="jaspar2meme.html">jaspar2meme</a></td>
+          <td>Convert a directory of JASPAR files to MEME format.</td>
+        </tr>
+        <tr>
+          <td><a href="matrix2meme.html">matrix2meme</a></td>
+          <td>Convert count or frequency matrices to MEME format.</td>
+        </tr>
+        <tr>
+          <td><a href="meme2meme.html">meme2meme</a></td>
+          <td>Convert and merge multiple MEME formatted files.</td>
+        </tr>
+        <tr>
+          <td><a href="nmica2meme.html">nmica2meme</a></td>
+          <td>Convert a nestedMICA (BioTiffin/XMS) matrix file to MEME format.</td>
+        </tr>
+        <tr>
+          <td><a href="priority2meme.html">priority2meme</a></td>
+          <td>Convert a PRIORITY matrix file to MEME format.</td>
+        </tr>
+        <tr>
+          <td><a href="rna2meme.html">rna2meme</a></td>
+          <td>Convert a FASTA file with short RNA sequences into motifs for DNA
+            they might bind in MEME format.</td>
+        </tr>
+        <tr>
+          <td><a href="scpd2meme.html">scpd2meme</a></td>
+          <td>Convert an SCPD matrix file to MEME format.</td>
+        </tr>
+        <tr>
+          <td><a href="sites2meme.html">sites2meme</a></td>
+          <td>Convert files containing sites into MEME format.</td>
+        </tr>
+        <tr>
+          <td><a href="taipale2meme.html">taipale2meme</a></td>
+          <td>Convert a tab-separated file exported from a spreadsheet of
+            Taipale results to MEME format.</td>
+        </tr>
+        <tr>
+          <td><a href="tamo2meme.html">tamo2meme</a></td>
+          <td>Convert a TAMO matrix file to MEME format.</td>
+        </tr>
+        <tr>
+          <td><a href="transfac2meme.html">transfac2meme</a></td>                  
+          <td>Convert a TRANSFAC matrix file to MEME format.</td>
+        </tr>
+        <tr>
+          <td><a href="uniprobe2meme.html">uniprobe2meme</a></td>                  
+          <td>Convert a UNIPROBE matrix file to MEME format.</td>
+        </tr>
+
+    </tbody>
+
+
+    <tbody>
+
+      <tr id="conversion_utilities">
+        <th colspan="3" id="file_conversion">File Format Conversion Utilities</th>
+      </tr>
+
+
+
+        <tr>
+          <td><a href="clustalw2fasta.html">clustalw2fasta</a></td>
+          <td>Convert a Clustalw multiple alignment into FASTA format.</td>
+        </tr>
+
+        <tr>
+          <td><a href="clustalw2phylip.html">clustalw2phylip</a></td>
+          <td>Convert a Clustalw multiple alignment into Phylip format.</td>
+        </tr>
+
+        <!-- Not currently supported
+        <tr>
+          <td><a href="draw-mhmm.html">draw-mhmm</a></td>
+          <td>
+            Convert a motif-based HMM into a format suitable for drawing by 
+            <a href="http://www.research.att.com/sw/tools/graphviz">graphviz</a>.
+          </td>
+        </tr>
+        -->
+
+        <tr>
+          <td><a href="glam2format.html">glam2format</a></td>
+          <td>Convert glam2 motifs to standard alignment formats.</td>
+        </tr>
+
+        <tr>
+          <td><a href="godag-format.html#obo2dag">obo2dag</a></td>
+          <td>Convert a Gene Ontology OBO file into a GO DAG file.</td>
+        </tr>
+
+
+
+        <!-- Not currently supported
+        <tr>
+          <td><a href="log-hmm.html">log-hmm</a></td>
+          <td>Convert a motif-based HMM from probabilities to log probabilities.</td>
+        </tr>
+        -->
+
+      </tbody>
+      <tbody>
+
+      <tr id="assorted_utilities"></a>
+        <th colspan="3" id="other">Other Utilities</th>
+      </tr>
+
+        <tr>
+          <td><a href="alphtype.html">alphtype</a></td>
+          <td>
+            Classify a string passed as a command line argument
+            as an instance of the DNA or protein alphabet.
+          </td>
+        </tr>
+
+        <tr>
+          <td><a href="ama-qvalues.html">ama-qvalues</a></td>
+          <td>
+            Add q-values to AMA output.
+          </td>
+        </tr>
+
+        <tr>
+          <td><a href="ceqlogo.html">ceqlogo</a></td>
+          <td>Create motif logos.</td>
+        </tr>
+
+        <tr>
+          <td><a href="compute-prior-dist.html">compute-prior-dist</a></td>
+          <td>Compute the distribution of priors in a 
+          <a href="psp-format.html">MEME PSP format file</a>.</td>
+          <td><a
+          href="examples/compute_prior_dist_example_output_files/prior.dist.txt">Sample</a></td>
+        </tr>
+
+        <tr>
+          <td><a href="create-priors.html">create-priors</a></td>
+          <td>Compute priors and their distribution
+          from raw scores in a
+          <a href="http://genome.ucsc.edu/goldenPath/help/wiggle.html">Wiggle format file</a>.
+          </td>
+        </tr>
+
+        <tr>
+          <td><a href="dust.html">dust</a></td>
+          <td>Mask low-complexity regions in DNA sequences in a FASTA file to <tt>N</tt> characters.</td>
+        </tr>
+
+        <tr>
+          <td><a href="fasta-center.html">fasta-center</a></td>
+          <td>Output the central portion of each sequence in a FASTA file of sequences.</td>
+        </tr>
+
+        <tr>
+          <td><a href="fasta-dinucleotide-shuffle.html">fasta-dinucleotide-shuffle</a></td>
+          <td>Shuffle the letters in each sequence in a file of FASTA file of nucleotide sequences, 
+                preserving the dinucleotide frequencies.</td>
+        </tr>
+
+        <tr>
+          <td><a href="fasta-get-markov.html">fasta-get-markov</a></td>
+          <td>Estimate a Markov model from a FASTA file of sequences.</td>
+        </tr>
+
+        <tr>
+          <td><a href="fasta-hamming-enrich.html">fasta-hamming-enrich</a></td>
+          <td>Compute the relative enrichment of a regular expression in two sets of sequence,
+		where the shortest Hamming distance is used to classify sequences.</td>
+        </tr>
+
+        <tr>
+          <td><a href="fasta-grep.html">fasta-grep</a></td>
+          <td>Find matches to a Perl regular expression in a FASTA file of sequences.</td>
+        </tr>
+
+        <tr>
+          <td><a href="fasta-io.html">fasta-io</a></td>
+          <td>Read and write FASTA files.</td>
+        </tr>
+
+        <tr>
+          <td><a href="fasta-shuffle-letters.html">fasta-shuffle-letters</a></td>
+          <td>Shuffle the letters in each sequence in a file of FASTA file
+            preserving k-mer frequencies. This makes use of
+            <a href="http://digital.cs.usu.edu/~mjiang/ushuffle/">uShuffle</a>.</td>
+        </tr>
+
+        <tr>
+          <td><a href="fasta-subsample.html">fasta-subsample</a></td>
+          <td>Extract a random selection of the sequences in a FASTA file. Can also subsample the sequences themselves.</td>
+        </tr>
+
+        <tr>
+          <td><a href="fitevd.html">fitevd</a></td>
+          <td>Fit an extreme value distribution to data.</td>
+        </tr>
+
+        <tr>
+          <td><a href="gendb.html">gendb</a></td>
+          <td>Generate sequences from a Markov model.</td>
+        </tr>
+
+        <tr>
+          <td><a href="getsize.html">getsize</a></td>
+          <td>Print statistics about or (higher-order) shuffle sequences read from a FASTA file.</td>
+        </tr>
+
+        <tr>
+          <td><a href="glam2mask.html">glam2mask</a></td>
+          <td>                    
+            Mask glam2 motifs out of sequences so that weaker motifs can be
+            found.
+          </td>
+        </tr>
+
+        <tr>
+          <td><a href="gomo_highlight.html">gomo_highlight</a></td>                  
+          <td>
+            Identify GO terms which are implied by other GO terms, allowing the
+            most specific GO terms to be highlighted in the conversion to html.
+          </td>
+        </tr>
+
+        <tr>
+          <td><a href="meme2alph.html">meme2alph</a></td>
+          <td>Extract the sequence alphabet definition from a MEME Motif Format file (e.g., MEME or DREME output).</td>
+        </tr>
+
+        <tr>
+          <td><a href="meme2images.html">meme2images</a></td>
+          <td>Create motif logos from a MEME Motif Format file (e.g., MEME or DREME output).</td>
+        </tr>
+
+        <tr>
+          <td><a href="meme-get-motif.html">meme-get-motif</a></td>
+          <td>Extract specified motifs from a MEME text (.txt) format file.</td>
+        </tr>
+
+        <tr>
+          <td><a href="meme-rename.html">meme-rename</a></td>
+          <td>Easily rename MEME Suite HTML files to unique names incorporating
+          the path name (rather than "meme.html").</td>
+        </tr>
+
+
+        <!-- Not currently supported
+        <tr>
+          <td><a href="mhmm.html">mhmm</a></td>
+          <td>
+            Create motif-based hidden Markov models (HMMs) of families of related 
+            biosequences. The program takes as input a set of DNA or protein motif models constructed 
+            by MEME and produces as output a single HMM containing the given motifs.
+          </td>
+        </tr>
+
+        <tr>
+          <td><a href="mhmme.html">mhmme</a></td>
+          <td>
+            Randomly generate sequences according to a given hidden Markov
+            model.
+          </td>
+        </tr>
+
+        <tr>
+          <td><a href="mhmms.html">mhmms</a></td>
+          <td>
+            Search a sequence database using a Meta-MEME motif-based hidden 
+            Markov model (HMM) of the kind produced by mhmm.
+          </td>
+        </tr>
+
+        <tr>
+          <td><a href="mhmmscan.html">mhmmscan</a></td>
+
+        <tr>
+          <td><a href="meme-get-motif.html">meme-get-motif</a></td>
+          <td>Extract specified motifs from a MEME text (.txt) format file.</td>
+        </tr>
+
+        <tr>
+          <td><a href="meme-rename.html">meme-rename</a></td>
+          <td>Easily rename MEME Suite HTML files to unique names incorporating
+          the path name (rather than "meme.html").</td>
+        </tr>
+
+
+        <!-- Not currently supported
+        <tr>
+          <td><a href="mhmm.html">mhmm</a></td>
+          <td>
+            Create motif-based hidden Markov models (HMMs) of families of related 
+            biosequences. The program takes as input a set of DNA or protein motif models constructed 
+            by MEME and produces as output a single HMM containing the given motifs.
+          </td>
+        </tr>
+
+        <tr>
+          <td><a href="mhmme.html">mhmme</a></td>
+          <td>
+            Randomly generate sequences according to a given hidden Markov
+            model.
+          </td>
+        </tr>
+
+        <tr>
+          <td><a href="mhmms.html">mhmms</a></td>
+          <td>
+            Search a sequence database using a Meta-MEME motif-based hidden 
+            Markov model (HMM) of the kind produced by mhmm.
+          </td>
+        </tr>
+
+        <tr>
+          <td><a href="mhmmscan.html">mhmmscan</a></td>
+          <td>
+            Search a sequence database using a Meta-MEME motif-based hidden 
+            Markov model (HMM) of the kind produced by mhmm. This program is similar to mhmms, 
+            except that mhmmscan searches arbitrarily long sequences, and
+            allows the model to match a given sequence multiple times, 
+            and each match is reported separately.
+          </td>
+        </tr>
+        -->
+
+        <tr>
+          <td><a href="pmp_bf.html">pmb_bf</a></td>
+          <td>Calculate the statistical power of phylogentic motif models.</td>
+        </tr>
+
+        <tr>
+          <td><a href="psp-gen.html">psp-gen</a></td>
+          <td>
+          Generate position-specific priors from positive (likely to
+          contain a feature of interest) and negative (unlikely
+          to contain a feature of interest) sequences for use as an additional input to
+          MEME.
+          </td>
+        </tr>
+
+        <tr>
+          <td><a href="purge.html">purge</a></td>
+          <td>Remove highly similar members of a set of sequences.</td>
+        </tr>
+
+        <tr>
+          <td><a href="qvalue.html">qvalue</a></td>
+          <td>Compute q-values from <i>p</i>-values.</td>
+        </tr>
+
+        <tr>
+          <td><a href="reconcile-tree-alignment.html">reconcile-tree-alignment</a></td>
+          <td>
+            Given a tree and an alignment, identify the intersection of the sets
+            of sequence IDs and leaf labels.  Trim the extra sequences and leaves
+            and print the resulting alignment and tree.
+          </td>
+        </tr>
+
+        <tr>
+          <td><a href="reduce-alignment.html">reduce-alignment</a></td>
+          <td>Extract specified columns from a multiple alignment.</td>
+        </tr>
+
+        <tr>
+          <td><a href="remove-alignment-gaps.html">remove-alignment-gaps</a></td>
+          <td>
+            Remove from an alignment all columns that correspond to a gap in a
+            specified species.
+          </td>
+        </tr>
+
+        <!-- Not currently supported
+        <tr>
+          <td><a href="select-star-species.html">select-star-species</a></td>
+          <td>Tries to find the subset of species whose subtree is "closet" to a start topology.</td>
+        </tr>
+                    -->
+
+        <tr>
+          <td><a href="shadow.html">shadow</a></td>
+          <td>
+            Perform phylogenetic shadowing on a given DNA alignment, using a given
+            tree.
+          </td>
+        </tr>
+
+        <tr>
+          <td><a href="update-sequence-db.html">update-sequence-db</a></td>
+          <td>
+            Create or update the sequence databases for a MEME Suite web server.
+          </td>
+        </tr>
+
+      </tbody>
+
+      <tbody>
+        <tr><th colspan="3" id="formats">File Formats</th></tr>
+        <tr>
+          <td><a href="meme-format.html">MEME Motif</a></td>
+          <td>The motif format which is supported by the MEME Suite.</td>
+        </tr>
+        <tr>
+          <td><a href="alphabet-format.html">Alphabet Definition</a></td>
+          <td>A method for defining custom alphabets.</td>
+        </tr>
+        <tr>
+          <td><a href="bfile-format.html">Background Model</a></td>
+          <td>Background frequencies for DNA or protein sequences.</td>
+        </tr>
+        <tr>
+          <td><a href="psm-format.html">Peptide-Spectra Match</a></td>
+          <td>Peptides identified from tandem mass spectra.</td>
+        </tr>
+        <tr>
+          <td><a href="psp-format.html">Position-Specific Priors (PSP)</a></td>
+          <td>Priors (weights) on each position in each input sequence that can bias the 
+          search for motifs by MEME.</td>
+        </tr>
+        <tr>
+          <td><a href="dmix-format.html">Dirichlet Mixtures</a></td>
+          <td>A Dirichlet mixture file specifies residues' tendencies to align with one another, 
+          and is the basis for scoring columns of aligned residues in MEME and GLAM2.
+          </td>
+        <tr>
+          <td><a href="fasta-format.html">FASTA Sequence</a></td>
+          <td>DNA or protein sequences.</td>
+        </tr>
+        <tr>
+          <td><a href="clustalw-format.html">ClustalW Alignment</a></td>
+          <td>A multiple alignment of DNA or protein sequences.</td>
+        </tr>
+        <tr>
+          <td><a href="motif_conversion.html">Foreign Motif Formats</a></td>
+          <td>Motif formats that can be converted into MEME motifs using
+	the <a href="#motif_conversion">motif format conversion scripts</a>
+        available when you install the MEME Suite on your own computer.</td>
+        </tr>
+        <tr>
+          <td><a href="glam2_alphabet.html">GLAM2 Alphabet</a></td>
+          <td>A custom sequence alphabet for GLAM2. This can be used
+            to provide alternate alphabets other than the standard DNA and
+            protein.</td>
+        </tr>
+        <tr>
+          <td><a href="godag-format.html">GO DAG</a></td>
+          <td>A file format which stores the structure of the Gene Ontology so
+            it can be used to improve GOMO output.</td>
+        </tr>
+        <tr>
+          <td><a href="gomo-format.html">GOMO Output</a></td>
+          <td>The file format output by the GOMO tool.</td>
+        </tr>
+        <!--
+        <tr>
+          <td><a href="mhmm-format.html">MHMM</a></td>
+          <td>The motif-based hidden Markov model format used by mhmmscan, which
+        underlies the MCAST tool.</td>
+        </tr>
+        -->
+      </tbody>
+
+      <tbody>
+        <tr><th colspan="3" id="guides">Guides and Tutorials</th></tr>
+        <tr>
+          <td><a href="scripting.html">Web Service Access</a></td>
+          <td>How to access MEME Suite web services from Perl or Python scripts.</td>
+        </tr>
+        <tr>
+          <td><a href="install.html">Installation</a></td>
+          <td>How to install a local copy of the MEME Suite.</td>
+        </tr>
+        <tr>
+          <td><a href="release-notes.html">Release notes</a></td>
+          <td>A list of changes included in the latest release.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr class="pad"/>
+    <p class="funding">Maintenance and development of the MEME Suite is 
+    funded by grant R01&nbsp;GM103544 from the 
+    <a href="http://www.nih.gov">National Institutes of Health</a>.</p>
+    <p class="funding">The MEME Suite web portal also receives support from Google.</p>
+    <hr class="pad"/>
+    <h4>Developed and maintained by:</h4>
+    <table class="logos">
+      <tr>
+        <td>
+          <a href="http://www.uq.edu.au">
+            <img src="images/uq_logo.png" alt="UQ logo">
+          </a>
+        </td>
+        <td>
+          <a href="http://www.washington.edu">
+            <img src="images/UWlogo150p.gif" alt="UW logo">
+          </a>
+        </td>
+        <td>
+          <a href="http://www.ucsd.edu">
+            <img src="images/ucsd_logo.png" alt="UCSD logo">
+          </a>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>MoMo - Submission form</title>
+    <link rel="shortcut icon" type="image/x-icon" href="../doc/images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="../doc/images/memesuite_icon.png">
+    <link href="../doc/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="../css/component_sequences.css" rel="stylesheet" type="text/css">
+    <script src="../doc/js/menu-path.js"></script>
+    <script src="../doc/js/menu.js"></script>
+    <script src="../doc/js/utilities.js"></script>
+    <script src="../doc/js/motif_logo.js"></script>
+    <script src="../js/site.js"></script>
+    <script src="../js/alphabet_parser.js" type="text/javascript"></script>
+    <script src="../js/fasta-debug.js" type="text/javascript"></script>
+    <script src="../js/component_sequences.js"></script>
+    <script src="../js/momo.js"></script>
+    <style>
+      span.pad {
+        display: inline-block;
+        min-width: 12em;
+      }
+      th {
+        font-size: small;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Help Popups -->
+    <!--{help/}-->
+    <div class="pop_content" id="pop_">
+      <div class="pop_close">[ <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_modified_sequences">
+      <p>List of peptides with modifications. These can be in three formats:</p>
+      <p><b>psm:</b> <a href="../doc/psm-format.html">Tab-delimited Peptide-Spectrum Match file.</a></p>
+      <p><b>prealigned:</b> List of fixed width peptides centered around modification site separated by new lines.</p>
+      <p><b>fasta:</b> List of fixed width peptides centered around modification site in <a href="../doc/fasta-format.html">FASTA</a> format.</p>
+      <div class="pop_close">[ <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sequences">
+      <p>Protein database to use for flanking information and background sequences in <a href="../doc/fasta-format.html">FASTA</a> format.</p>
+      <div class="pop_close">[ <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_occurs">
+      <p>Minimum occurrences of modification required to output a motif. This threshold is applied after filter and eliminate repeats (if applicable).</p>
+      <div class="pop_close">[ <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_width">
+      <p>Motif width</p>
+      <div class="pop_close">[ <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_single_per_mass">
+      <p>Create one motif per mass instead of one motif per mass and central peptide.</p>
+      <div class="pop_close">[ <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_eliminate_repeats">
+      <p>Remove duplicate copies of modifications with identical flanking sequences for a user specified width.</p>
+      <div class="pop_close">[ <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_filter">
+      <p>Filter PSMs using for a field specified within the uploaded file.</p>
+      <div class="pop_close">[ <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_algorithm">
+      <p>Choose the algorithm used for searching motifs.</p>
+      <div class="pop_close">[ <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <!-- Page starts -->
+    <div class="content_box">
+      <!--{header}-->
+      <p>
+      <!--{title}-->MoMo<!--{/title}--> - <!--{subtitle}-->Modification Motifs<!--{/subtitle}--><br>
+      <!--{logo}-->../doc/images/momo_icon.png<!--{/logo}-->: <!--{alt}-->MOMO Logo<!--{/alt}--><br>
+      <!--{blurb}--><span class="blurb" data-id="momo"></span><!--{/blurb}-->
+      </p>
+      <!--{/header}-->
+      <form enctype="multipart/form-data" accept-charset="utf-8" 
+      method="POST" action="momo" id="momo_form">
+        <fieldset>
+          <legend>Data Submission Form</legend>
+          <p class="meme">Perform motif discovery on peptide-spectrum matches.</p> 
+
+          <h2 class="meme">Choose an algorithm</h2>
+          <div class="subcontent">
+            <input type="radio" name="algorithm" id="alg_simp" value="alg_simp" checked>
+            <label for="alg_simp">Simple</label>
+            <input type="radio" name="algorithm" id="alg_mtfx" value="alg_mtfx">
+            <label for="alg_mtfx">Motif-X</label>
+            <input type="radio" name="algorithm" id="alg_modl" value="alg_modl">
+            <label for="alg_modl">MoDL</label>
+            <div class="help" data-topic="pop_algorithm"></div>
+          </div>
+          <script>
+              $("alg_simp").addEventListener("click", on_alg_change, false);
+              $("alg_mtfx").addEventListener("click", on_alg_change, false);
+              $("alg_modl").addEventListener("click", on_alg_change, false);
+          </script>
+
+          <h2 class="meme"><!--{title}-->Input the modification files<!--{/title}--></h2>
+          <div class="subcontent">
+            <h4 class="meme"><!--{subtitle}-->Enter the files with post-translational modifications (PTMs) for generating motifs.<!--{/subtitle}-->
+            <div class="help" data-topic="pop_modified_sequences"></div></h4>
+
+            <table id="filetype_table">
+              <thead id="filetype_body">
+                <tr id="filetype_row">
+                  <th>
+                  <b>PTM File Format:</b>
+                  <select name="fg_filetype">
+                    <option value="fasta">fasta</option>
+                    <option value="prealigned">prealigned</option>
+                    <option selected="selected" value="psm">psm</option>
+                  </select>
+                  </th>
+                <th id="sequence_column_name"><b>Sequence Column Name:</b>
+                  <input type="text" name="psm_column_name" value="sequence">
+                </th>
+                </tr>
+              </thead>
+            </table>
+
+            <script>
+              var selectFiletype = document.getElementsByName("fg_filetype")[0];
+              selectFiletype.addEventListener('change', on_filetype_change, false);
+              var psmColumnName = document.getElementsByName("psm_column_name")[0];
+              psmColumnName.addEventListener('change', calculateSummary, false);
+            </script>
+
+            <table id="psm_table">
+              <thead>
+              <tr>
+                <th>File</th>
+              </tr>
+              </thead>
+<!--
+              <tbody id="filetype_body">
+                <tr id="filetype_row">
+                <td>
+                  PSM File Format:
+                  <select name="fg_filetype">
+                    <option value="fasta">fasta</option>
+                    <option value="prealigned">prealigned</option>
+                    <option selected="selected" value="psm">psm</option>
+                  </select>
+                </td>
+                <td>Sequence Column Name:
+                  <input type="text" name="psm_column_name" value="sequence">
+                </td>
+                </tr>
+              </tbody>
+-->
+              <tbody id="psm_rows">
+              <tr id="psm_main_row">
+                <td><input type="file" name="psm_1" multiple></td>
+              </tr>
+              </tbody>
+            </table>
+
+            <input type="button" value="+" id="more_psms"><input type="button" value="-" id="less_psms">
+            <script>
+              // Add listening to the first file reader
+              var selectFile = document.getElementsByName("psm_1")[0];
+              selectFile.addEventListener('change', function(){firstFileChanged(selectFile)}, false);
+              selectFile.addEventListener('change', calculateSummary, false);
+
+              $("momo_form").addEventListener('reset', reloadpage, false);
+
+              $("more_psms").addEventListener("click", add_psm, false);
+              $("less_psms").addEventListener("click", remove_psm, false);
+            </script>
+          </div>
+
+          <div id="flanking_sequences">
+            <!--{sequences}-->
+            <p style="border: 1px solid black">
+            <!--{prefix}-->sequences<!--{/prefix}--><br>
+            <!--{description}-->flanking sequences<!--{/description}-->
+            <!--{title}-->Input the flanking sequences<!--{/title}--><br>
+            <!--{subtitle}-->Enter sequences containing the flanking regions of matches.<!--{/subtitle}--><br>
+            <!--{alph_type}-->PROTEIN_ALPHABET<!--{/alph_type}-->
+            <!--{enable_db/}-->
+            <!--{enable_noseq/}-->
+            <!--{default}-->NOSEQ<!--{/default}-->
+            <!--{register}-->register_component<!--{/register}-->
+            </p>
+            <!--{/sequences}-->
+          </div>
+
+          <h2 class="meme">Summary</h2>
+          <div class="subcontent">
+          <table id="summary_table">
+            <tr>
+              <td>Total Number of PTMs in Files</td>
+              <td>0</td>
+            </tr>
+            <tr>
+              <td>Total Number of PTM Types</td>
+              <td>0</td>
+            </tr>
+          </table>
+          </div>
+
+          <!--{job_details/}-->
+
+          <!-- Advanced Options -->
+          <div style="margin-top:5px; margin-bottom: 5px; width:90%;">
+          <!--{advanced_options/}-->
+          <div>
+
+            <h3 class="meme">Filter Sequences?</h3>
+            <table id="filter_table">
+              <thead>
+                <tr>
+                  <th>Filter?</th><th>Field</th><th>&nbsp;</th><th>Threshold</th><th>&nbsp;</th>
+                </tr>
+              </thead>
+              <tbody id="filter_rows">
+                <tr id="filter_row">
+                  <td><input type="checkbox" name="filter_enable" value="1"></td>
+                  <td><select name="filter_field"></select></td>
+                  <td>
+                    <select name="filter_type">
+                      <option value="lt">&lt;</option>
+                      <option value="le">&le;</option>
+                      <option value="eq">=</option>
+                      <option value="ge">&ge;</option>
+                      <option value="gt">&gt;</option>
+                    </select>
+                  </td>
+                  <td><input type="text" class="numonly" name="filter_thresh" size="5"></td>
+                  <td><div class="help" data-topic="pop_filter"></div></td>
+                </tr>
+              </tbody>
+            </table>
+            <script>
+              // Add listening to checkbox
+              toggleFilter();
+              var filter_enable = document.getElementsByName("filter_enable")[0];
+              filter_enable.disabled=true;
+              filter_enable.addEventListener('change', toggleFilter, false);
+            </script>
+
+            <div id="occurrences">
+              <h3 class="meme">How many occurrences are required?</h3>
+              <label for="occurs">Occurrences:</label>
+              <input class="meme intonly sz2" type="number" name="occurs" value="5"
+              step="1" min="1" size="2" id="occurs">
+              <div class="help" data-topic="pop_occurs"></div>
+            </div>
+
+            <div id="motifx_thresholds" style="display:none">
+              <h3 class="meme">Motif-X thresholds?</h3>
+              <label for="count_threshold">Count Threshold:</label>
+              <input class="meme intonly sz2" type="number" name="count_threshold" value="20"
+                step="1" min="1" size="2" id="count_threshold">
+              <label for="score_threshold">Score Threshold:</label>
+              <input class="meme intonly sz4" type="text" name="score_threshold" value="0.000001"
+                step="any" min="0" size="4" id="score_threshold">
+              <div class="help" data-topic="pop_occurs"></div>
+            </div>
+
+            <h3 class="meme">How wide can motifs be?</h3>
+            <div>
+              <label for="width">Width:</label>
+              <input class="meme intonly sz2" type="number" name="width" value="7"
+              step="2" min="1" max="300" size="2" id="width">
+              <div class="help" data-topic="pop_width"></div>
+            </div>
+
+            <div id="single_motif_per_mass">
+              <h3 class="meme top">Create single motif per mass?</h3>
+              <input class="meme" type="checkbox" id="single_per_mass" name="single_per_mass" value="1">
+              <label for="single_per_mass">Create a single motif per mass?</label>
+              <div class="help" data-topic="pop_single_per_mass"></div>
+            </div>
+
+            <h3 class="meme">Eliminate repeats</h3>
+            <span class="enabopt">
+            <input type="checkbox" value="1" name="eliminate_enable"
+            id="eliminate_enable" checked>
+            <label for="purge">Eliminate repeats: </label>
+            <input class="meme intonly sz2" type="number" name="eliminate_width" value="7"
+              step="2" min="1" max="300" size="2" id="eliminate_width">
+            <div class="help" data-topic="pop_eliminate_repeats"></div>
+            </span>
+          </div>
+          </div>
+          <!-- /Advanced Options -->
+          <!-- Search and clear buttons -->
+          <!--{submit_reset/}-->
+        </fieldset>
+      </form>
+      <!--{footer/}-->
+    </div>
+  </body>
+</html>
+

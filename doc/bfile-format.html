@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Markov Background Model Format - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+    <style>
+      code {
+        background-color: #DFD;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <h2>Markov Background Model Format</h2>
+    <h3>Description</h3>
+    <div class="indent">
+      <p>This file format is used by many programs in the MEME Suite to model
+      Markov background probabilities.  A background model file specifies all 
+      <i>k</i>-mer frequencies up to a user-chosen maximum <i>k</i>.  These
+      define a Markov of order <i>k-1</i>.  
+      Some the MEME Suite programs only use the 0-order model, and ignore
+      any higher order information in the file.  You can easily create
+      a Markov model of any order from a FASTA file of sequences using
+      the <a href=fasta-get-markov.html>fasta-get-markov</a> command
+      provided with the downloadable version of the MEME Suite.
+    </div>
+    <h3>Example Background models</h3>
+    <div class="indent">
+      <h4>0-order DNA Markov model</h4>
+      <pre class="indent">
+#   order 0
+a       0.324
+c       0.176
+g       0.176
+t       0.324
+      </pre>
+      <h4>1st-order DNA Markov model</h4>
+      <pre class="indent">
+#   order 0
+A       2.563e-01
+C       2.437e-01
+G       2.437e-01
+T       2.563e-01
+#   order 1
+AA      7.020e-02
+AC      5.388e-02
+AG      8.089e-02
+AT      5.134e-02
+CA      7.575e-02
+CC      7.050e-02
+CG      1.659e-02
+CT      8.089e-02
+GA      6.280e-02
+GC      5.652e-02
+GG      7.050e-02
+GT      5.388e-02
+TA      4.751e-02
+TC      6.280e-02
+TG      7.575e-02
+TT      7.020e-02
+      </pre>
+    </div>
+
+    <h3>Format Specification</h3>
+    <div class="indent">
+      <p>Each line may contain either:</p>
+      <ul>
+        <li>Any number of white-space characters including empty lines.</li>
+        <li>A unique <i>k</i>-mer and a probability
+        separated and potentially surrounded by whitespace.</li>
+        <li>One of the other options followed by a "#" character designating
+        the rest of the line as a comment to be ignored.</li>
+      </ul>
+
+      <p>For each value of <i>k</i>, up to the maximum you choose, 
+        the file should have exactly one line for each possible
+        <i>k</i>-mer composed of the <b>core</b> symbols from either the standard 
+        <a href=alphabet-format.html#standard_DNA>DNA</a>,
+        <a href=alphabet-format.html#standard_RNA>RNA</a>, or
+        <a href=alphabet-format.html#standard_proten>protein</a> alphabet,
+        or from a <a href=alphabet-format.html>custom alphabet</a>.
+        The frequencies of all <i>k</i>-mers
+        must preceed the frequencies of all <i>k+1</i>-mers.
+      </p>
+
+      <p>For each value of <i>k</i>, the probabilities of the <i>k</i>-mers must
+      sum to approximately 1.0 (small allowances for rounding are made). 
+      To define a consistent Markov model, it is necessary that,
+      for each value of <i>k</i>, the sum of the probabilities of the <i>k</i>-mers whose
+      suffix is a particular <i>k-1</i>-mer should approximately equal the probability of that <i>k-1</i>-mer,
+      as given in the file.
+      </p>
+
+      <p>The probabilities are numbers in the range 0 &le; <b>p</b> &le; 1.
+      The may be in simple decimal (e.g., 0.00015) or use exponential notation (e.g., 1.5e-4).
+      To be precise, each probability is a number <b>p</b>, where
+      <b>p</b> can be matched by the regular expression
+      <code>^([0]|[1-9][0-9]*)(\.[0-9]+)?([eE][+-]?[0-9]+)?$</code>
+      and is in the range 0 &le; <b>p</b> &le; 1.</p>
+
+      <p>It is important to note that probabilities of zero (or one)
+      are not allowed because these cause asymptotic conditions in the equations
+      used by our programs. They are also unlikely to be correct - just because
+      the dataset used to calculate a background might not contain any instances
+      of "CGAAA" does not mean that it is impossible. For this reason the tool
+      <a href="fasta-get-markov.html">fasta-get-markov</a> automatically adds
+      pseudocounts to the observed letter counts (unless it is specifically told not to).</p>
+
+    </div>
+    <h3>See Also</h3>
+    <div class="indent">
+      <p>A background model file can be created from any
+      <a href="fasta-format.html">FASTA sequence file</a> using the 
+      <a href="fasta-get-markov.html">fasta-get-markov</a> program.</p>
+    </div>
+  </body>
+</html>
+

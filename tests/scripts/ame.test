@@ -1,0 +1,10 @@
+# Whacky use of a change of alphabet (dna->rna) just to make sure it works.
+&test('ame1', 'basic enrichment test',
+  'ame', '',
+  ['--oc', 'results/ame1', '--silent', '--verbose', 1, 
+    '--bgformat', 0, '--xalph', 'common/alphabet_rna.txt', '--control', 'common/Klf1-200-100-shuffled.s',
+    'common/Klf1-200-100.s', 'common/Jaspar-subset.meme'],
+  [{output => 'results/ame1/ame.txt', reference => 'ame/ame.txt', type => 'text'}],
+  'results/ame1'
+);
+

@@ -1,0 +1,7 @@
+&test('fasta-center1', '',
+  'fasta-center', 'common/Klf1-200.s',
+  ['-len', 100, '-dna'],
+  [{output => '-', reference => 'common/Klf1-200-100.s', type => 'text'}],
+  'results/fasta-center1', 'scripts'
+);
+

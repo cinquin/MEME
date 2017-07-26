@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>meme2alph - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+    <script src="js/shared-doc.js"></script>
+  </head>
+  <body>
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <h2>meme2alph</h2>
+    <div class="usage">
+      <h3>Usage:</h3>
+      <code>meme2alph [options] &lt;motif file&gt; [&lt;alphabet file&gt;]</code>
+    </div>
+    <h3>Description</h3>
+    <div class="indent">
+      <p>Extract the alphabet from a <a href="meme-format.html">MEME Motif Format</a> 
+      file and write it out as an <a href="alphabet-format.html">alphabet definition</a>.</p>
+    </div>
+    <h3>Input</h3>
+    <div class="indent">
+      <p>
+       Reads a MEME or DREME &lt;motif file&gt; in <a href="meme-format.html">MEME Motif Format</a>.</p>
+    </div>
+    <h3>Output</h3>
+    <div class="indent">
+      <p>Writes the extracted <a href="alphabet-format.html">alphabet definition</a>
+      to the &lt;alphabet file&gt; or standard output if no file was given.</p>
+    </div>
+    <h3>Options</h3>
+    <div class="indent">
+      <table class="options">
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Parameter</th>
+            <th>Description</th>
+            <th>Default Behaviour</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th colspan="4">General Options</th>
+          </tr>
+          <tr>
+            <td class="popt">-help</td><td>&nbsp;</td>
+            <td>Display a brief help message and exit.</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
+

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>AME - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+    <script src="js/shared-doc.js"></script>
+  </head>
+  <body>
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <div class="prog_logo">
+      <img src="images/ame_icon.png" alt="AME Logo">
+      <h1>AME</h1>
+      <h2>Analysis of Motif Enrichment</h2>
+    </div>
+
+    <div style='display:inline' id='man_web_button'>
+      <p> <button onclick="toggle_man_display()">View Web Version</button> </p>
+    </div>
+
+    <div style='display:none' id='man_cmd_button'>
+      <p> <button onclick="toggle_man_display()">View Command-Line Version</button> </p>
+    </div>
+
+    <div style='display:inline' id='man_usage'>
+      <div class="usage">
+        <h3>Usage:</h3>
+        <code>ame [options] &lt;sequence file&gt; &lt;motif file&gt;+</code>
+      </div>
+    </div>
+
+    <h3>Description</h3>
+    <div class="indent">
+       <span class="man blurb" data-id="ame"></span>
+    </div>
+
+    <!-- Command Line Version Doc -->
+    <div style='display:inline' id='man_cmd'>
+      <div class="indent">
+	 <p>The command-line version of AME supports a wide variety of methods for scoring motif enrichment and
+         many methods of testing the scored motif enrichment for significance.  
+         If a set of control sequences is provided, AME determines if each motif is 
+	 enriched in the primary set compared to the control set.
+         If no control sequence set is given, the primary sequences are assumed to be <b>sorted</b> 
+         in decreasing order of 'importance' according to some secondary criterion.  For each motif, 
+         AME determines if the sequences at the top of the list are significantly enriched for matches to it.  
+         With no control sequences, by default AME performs unconstrained partition maximization, 
+         looking for the pair of thresholds (on motif score and the secondary criterion, respectively) 
+         that yields the most significant result. 
+        <p>
+      </div>
+      <h3>Input</h3>
+      <div class="indent">
+        <h4>Sequence File</h4>
+        <p>A set of (primary) sequences in <a href="fasta-format.html">FASTA</a> format.  
+        The sequences must be sorted by <b>increasing</b> value of some secondary
+        criterion (e.g., expression level, peak height, fluorescence score).  
+        In this documentation, we refer to this secondary criterion as
+        the "FASTA score".  This score can <b>optionally</b> be placed in the FASTA ID line.
+        If present, the FASTA score must come immediately after the sequence ID.  
+        For example, if the FASTA ID line is 
+        <ul><code>&gt;seq_1 0.123</code></ul>
+        then <code>0.123</code> is the FASTA score for that sequence.
+        <h4>Motif File</h4>
+        <p>File(s) containing <a href="meme-format.html">MEME formatted motifs</a>.
+        Outputs from MEME and DREME are supported, as well as Minimal MEME
+        Format. You can convert many other motif formats to MEME format
+        using <a href="overview.html#motif_conversion_utilities">conversion scripts</a>
+        available with the MEME Suite.</p>
+      </div>
+      <h3>Output</h3>
+      <div class="indent">
+        <p>AME writes to a directory, <code>ame_out</code>, unless a different 
+        directory name is specified on the command line. The output directory
+        contains outputs in two formats: HTML and plain text, in files named
+        respectively <a href=examples/ame_example_output_files/ame.html><code>ame.html</code></a>
+        and <a href=examples/ame_example_output_files/ame.txt><code>ame.txt</code></a>.  
+	The text output includes a <a href=motif-consensus.html>consensus sequence</a> 
+	computed for each significant motif.</p>
+      </div>
+      <h3>Options</h3>
+      <div class="indent">
+        <table class="options">
+          <thead>
+            <tr>
+              <th>Option</th>
+              <th>Parameter</th>
+              <th>Description</th>
+              <th>Default Behaviour</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th colspan="4">General Options</th>
+            </tr>
+            <script>
+              wropt("all-o", {"ddash": true, "dir": "ame_out"});
+              wropt("all-oc", {"ddash": true, "dir": "ame_out"});
+            </script>
+            <tr>
+              <td class="popt">--control</td><td><span class="pdat">file</span></td>
+              <td>A set of control sequences in <a href="fasta-format.html">FASTA</a> format.  
+                If a set of control sequences is provided, AME determines if each motif 
+                is enriched in the primary set compared to the control set.  
+		With this option, the <b>order</b> of the sequences in the primary and control 
+		sets <b>does not</b> affect the results.
+		Depending on the biological application, the control sequences might be, for example, 
+		randomly chosen genome regions or shuffled sequences (the utility 
+	        <a href=fasta-shuffle-letters.html>fasta-shuffle-letters</a> can be used to create these
+	        from the primary sequences).
+		 <b>Note: </b>The control sequences should have (approximately) the same distribution of lengths
+		as the primary sequences or AME may fail to correctly detect enriched motifs and will report 
+		inaccurate <i>p</i>-values.
+              </td>
+              <td>If no control sequences are provided, AME searches for position <i>N</i> in the list
+		of primary sequences (a "partition") such that the given motif is maximally enriched in the first <i>N</i>
+		sequences relative to the remaining primary sequences.
+		Consequently, without a control set of sequences, the order of the sequences in the primary set matters.</td>
+            </tr>
+            <tr>
+              <td class="popt">--method</td><td><span
+                  class="popt">fisher</span>|<span 
+                  class="popt">ranksum</span>|<span 
+                  class="popt">mhg</span>|<span 
+                  class="popt">4dmhg</span>|<span 
+                  class="popt">spearman</span>|<span
+                  class="popt">linreg</span>
+              </td>
+              <td>Select the association function for testing motif enrichment
+              significance. 
+                <dl>
+                  <dt><code>fisher</code> -</dt> <dd>one-tailed Fisher's Exact test</dd>
+                  <dt><code>ranksum</code> -</dt> <dd>one-tailed Wilcoxon rank-sum test, also known as 
+                    the Mann-Whitney U test</dd>
+                  <dt><code>mhg</code> and <code>4dmhg</code> -</dt> <dd><b>two-tailed tests</b>
+                    described in McLeay and Bailey, 
+                    "Motif Enrichment Analysis: a unified framework and an evaluation on ChIP data", 
+                    BMC Bioinformatics <b>11</b>:165, 2010.  <b>Note:</b> Motifs enriched in <i>either</i> 
+                    the primary or control sequences (or at the top or bottom of the primary sequences 
+                    if only one sequence file is given) are considered significant by these tests.</dd>
+                  <dt><code>spearman</code> -</dt> <dd>Spearman's rank coefficient (&rho;) between the motif score 
+                    and the FASTA score (in the FASTA IDs of the sequences).  Not valid with 
+                    <code>--control</code>.
+                    Not valid with <code>--fix-partition</code>; always uses all input sequences.</dd>
+                  <dt><code>linreg</code> -</dt> <dd>mean-squared error of the linear regression of the 
+                    motif score and the FASTA score (in the FASTA IDs of the sequences).  
+                    Note that the FASTA ID lines <b>must</b> each contain a FASTA score with this function.
+                    Not valid with <code>--control</code>.  Using this function, AME reports raw values only.  
+                    For the full approach used in the paper, please use the tool RAMEN, which is also 
+                    included in the MEME Suite. RAMEN also supports estimation of p-values.</dd>
+                </dl> 
+                  All statistical tests except <code>mhg</code> and <code>4dmhg</code> use the 
+                  alternative hypothesis that high motif scores are enriched in the primary sequences 
+                  (or among the first sequences if only one set is given).  Note that linear 
+                  regression and Spearman rank correlation tests do not calculate <i>p</i>-values. 
+                  Please use RAMEN if you desire to use linear regression with <i>p</i>-values.
+              </td>
+              <td>The Fisher's Exact test (<code>fisher</code>) is used for testing motif enrichment.</td>
+            </tr>
+            <tr>
+              <td class="popt">--scoring</td><td><span
+                  class="popt">avg</span>|<span
+                  class="popt">max</span>|<span
+                  class="popt">sum</span>|<span
+                  class="popt">totalhits</span></td>
+              <td>Method of scoring a single sequence for matches to a motif. The score assigned to a sequence
+              is either: 
+                <dl>
+                  <dt><code>avg</code> -</dt> <dd>the average motif score of the sequence (note: motif scores are odds scores, not log-odds scores)</dd>
+                  <dt><code>max</code> -</dt> <dd>the maximum motif score of any position in the sequence</dd>
+                  <dt><code>sum</code> -</dt> <dd>the sum of the motif (odds) scores over the sequence</dd>
+              <dt><code>totalhits</code> -</dt> <dd>the total number of positions in the sequence whose motif score p-value is less than the <code>--pvalue-threshold</code> (see below).</dd>
+                </dl>
+              </td>
+              <td>The <code>totalhits</code> scoring method is used.</td>
+            </tr>
+            <script>
+              wropt("all-xalph", {"ddash": true});
+            </script>
+            <tr>
+              <td class="popt">--bgformat</td><td>0|1|2</td>
+              <td>Select the background source.
+                <dl>
+                  <dt>0 - uniform background</dt>
+                  <dt>1 - motif file</dt>
+                  <dt>2 - background file (see the <span class="popt">--bgfile</span> option)</dt>
+                </dl>
+              </td>
+              <td>The background specified in the motif file is used.</td>
+            </tr>
+            <tr>
+              <td class="popt">--bgfile</td><td><span class="pdat">bfile</span></td>
+              <td>Use the 0-order frequencies in the specified file in
+              <a href="bfile-format.html">Markov Background Model format</a>
+	      as the background model for converting the position-specific probability
+	      matrix (PSPM) motifs into position-specific log-odds scoring matrices (PSSM).
+	      The background model normalizes for biased distribution of single letters in the sequences.
+	      This option overrides the <span class="popt">--bgformat</span> option.</td>
+              <td>Use frequencies based on the motif file or files. See also
+              <span class="popt">--bgformat</span></td>
+            </tr>
+            <tr>
+              <td class="popt">--pvalue-threshold</td><td><span class="pdat">pvalue</span></td>
+              <td>Threshold to consider single motif hit significant; only valid with <code>totalhits</code>
+              scoring method.</td>
+              <td>A p-value threshold of 0.0002 is used.</td>
+            </tr>
+            <tr>
+              <td class="popt">--length-correction</td><td>&nbsp;</td>
+              <td>Correct for length bias by making the hit <i>p</i>-value threshold more stringent
+		for longer sequences.  Note: This option is only valid with the <code>totalhits</code>
+		scoring method, which is the default scoring method.
+                </td>
+              <td>The same <i>p</i>-value threshold (set with option <span class="popt">--pvalue-threshold</span>)
+		is used for determining hits regardless of sequence length.</td>
+            </tr>
+            <tr>
+              <td class="popt">--pvalue-report-threshold</td><td><span class="pdat">pvalue</span></td>
+              <td>Corrected <i>p</i>-value threshold for reporting a motif as significantly enriched.</td>
+              <td>The threshold of 0.05 is used for reporting a motif.</td>
+            </tr>
+            <tr>
+              <td class="popt">--pwm-threshold</td><td><span class="pdat">score</span></td>
+              <td>For the Fisher's exact test only. This is the <i>minimum</i> motif-based sequence score
+                for a sequence to be a 'positive'.</td>
+              <td>A minimum motif score of 1 is used to call a sequence a 'positive'.</td>
+            </tr>
+            <tr>
+              <td class="popt">--fasta-threshold</td><td><span class="pdat">p-value</span></td>
+              <td>For the Fisher's exact test only when <code>--poslist</code> is used.
+              This is the <i>maximum</i> FASTA score to call a sequence a
+              'positive'.</td>
+              <td>A maximum FASTA score of 0.001 is used to call a sequence a 'positive'.</td>
+            </tr>
+            <tr>
+              <td class="popt">--fix-partition</td><td><span class="pdat">num</span></td>
+              <td>Number of positive sequences; the remainder are the negative sequences.</td>
+              <td>If no control set is provided, partition maximization is performed over the (sorted) input sequences.  
+		The partition with the lowest <i>p</i>-value is used.</td>
+            </tr>
+            <tr>
+              <td class="popt">--rsmethod</td><td><span class="popt">better</span>|<span class="popt">quick</span></td>
+              <td>Select how to compute the Wilcoxon rank-sum test:
+                <dl>
+                  <dt><code>better</code> -</dt><dd>compute the proper test (slow)</dd>
+                  <dt><code>quick</code> -</dt> <dd>use faster heuristic version of test</dd>
+                </dl>
+              </td>
+              <td>Use the heuristic version of the test (<code>quick</code>).</td>
+            </tr>
+            <tr>
+              <td class="popt">--poslist</td><td><span class="popt">pwm</span>|<span class="popt">fasta</span></td>
+              <td>For partition maximization, test thresholds on either X (motif)
+              or Y (FASTA score). Only applies for partition maximization
+              and for the Ranksum test.
+                <dl>
+                  <dt><code>pwm</code> -</dt><dd>Use motif score (X).<dd>
+                  <dt><code>fasta</code> -</dt><dd>Use FASTA score (Y).<dd>
+                </dl>
+              <b>Hint:</b> Be careful when switching the <code>poslist</code>. It switches between
+              using X and Y for determining true positives in the contingency matrix,
+              in addition to switching which of X and Y is used for partition maximization.</td>
+              </td>
+              <td>Use the FASTA score.</td>
+            </tr>
+            <tr>
+              <td class="popt">--log-fscores</td><td>&nbsp;</td>
+              <td>For linear regression and Spearman tests only: regress using
+              ln(FASTA score), rather than the score directly.</td>
+              <td>Use the score directly.</td>
+            </tr>
+            <tr>
+              <td class="popt">--log-pwmscores</td><td>&nbsp;</td>
+              <td>For linear regression and Spearman tests only: regress using
+              ln(pwm score), rather than the score directly.</td>
+              <td>Use the score directly.</td>
+            </tr>
+            <tr>
+              <td class="popt">--normalise-affinity</td><td>&nbsp;</td>
+              <td>Normalise motif scores so that motif scores can be compared
+              directly. Only relevant for Spearman and Linear Regression tests,
+              where <i>p</i>-values are not calculated.</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="popt">--linreg-switchxy</td><td>&nbsp;</td>
+              <td>Make the x-points FASTA scores and the y-points motif
+              scores. Only relevant for Spearman and Linear Regression
+              tests.</td>  
+              <td>Keep the original axis.</td>
+            </tr>
+            <tr>
+              <td class="popt">--verbose</td><td>1|2|3|4|5</td>
+              <td>A number that regulates the verbosity level of the output 
+              information messages. If set to 1 (quiet) then it will only 
+              output error messages whereas the other extreme 5 (dump) 
+              outputs lots of mostly useless information. This option is
+              best placed first. At verbosity level 3, AME will report
+              the significance of each set of each partition of the sequences
+              that it considers.</td>
+              <td>The verbosity level is set to 2 (normal).</td>
+            </tr>
+            <tr>
+              <td class="popt">--help</td><td>&nbsp;</td>
+              <td>Print a usage message and exit.</td>
+              <td>Run as normal.</td>
+            </tr>
+            <tr>
+              <td class="popt">--version</td><td></td>
+              <td>Display the version and exit.</td>
+              <td>Run as normal.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <h3>Citing</h3>
+    <div class="indent">
+      <p>If you use AME in your research, please cite the following paper:<br />
+        <span class="citation">
+          Robert McLeay and Timothy L. Bailey, 
+          &quot;Motif Enrichment Analysis: A unified framework and method evaluation&quot;, 
+          <i>BMC Bioinformatics</i>, <b>11</b>:165, 2010, doi:10.1186/1471-2105-11-165.
+          <a href="http://www.biomedcentral.com/1471-2105/11/165">[full text]</a>
+        </span>
+      </p>
+    </div>
+
+    <script src="js/manual.js"></script>
+
+  </body>
+</html>
+

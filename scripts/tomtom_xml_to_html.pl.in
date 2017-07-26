@@ -1,0 +1,391 @@
+#!@WHICHPERL@
+=head1 NAME
+
+tomtom_xml_to_html - Make a Tomtom HTML output from a Tomtom XML output.
+
+=head1 SYNOPSIS
+
+tomtom_xml_to_html <Tomtom XML file> <Tomtom HTML file>
+=cut
+
+use strict;
+use warnings;
+
+use Cwd qw(abs_path);
+use Fcntl qw(O_RDONLY SEEK_SET);
+use File::Basename qw(fileparse);
+use File::Spec::Functions qw(tmpdir);
+use File::Temp qw(tempfile);
+use Getopt::Long;
+use Pod::Usage;
+use XML::Parser::Expat;
+
+use lib '@PERLLIBDIR@';
+
+my $etc_dir;
+my $temp_dir;
+my $scripts_dir;
+
+#
+# initialise the global constants
+# 
+sub initialise {
+  # setup etc dir
+  $etc_dir = defined($ENV{MEME_ETC_DIR}) ? $ENV{MEME_ETC_DIR} : '@APPCONFIGDIR@';
+  # setup temporary directory
+  $temp_dir = '@TMP_DIR@';
+  # use the perl default if none is supplied or the replace fails
+  $temp_dir = tmpdir() if ($temp_dir eq '' || $temp_dir =~ m/^\@TMP[_]DIR\@$/);
+
+  # find the location of the script
+  my $script_name;
+  ($script_name, $scripts_dir) = fileparse(__FILE__);
+  $scripts_dir = abs_path($scripts_dir);
+
+  # add script location to search path
+  unshift(@INC, $scripts_dir);
+
+  require HtmlMonolithWr;
+  require TomtomSAX;
+}
+
+sub arguments {
+  # Set Option Defaults
+  my $options = {XML_PATH => undef, HTML_PATH => undef};
+  # General Options
+  my $help = 0; # FALSE
+  my @errors = ();
+  my @dbs = ();
+
+  # get the options from the arguments
+  my $options_success = 0; # FALSE
+  # redirect stderr to a temp file so we can get the error message from GetOptions
+  my $olderr;
+  my $tmperr = tempfile('GetOptions_XXXXXXXXXX', DIR => $temp_dir, UNLINK => 1);
+  open($olderr, ">&STDERR") or die("Can't dup STDERR: $!");
+  open(STDERR, '>&', $tmperr) or die("Can't redirect STDERR to temp file: $!");
+  # parse options
+  $options_success = GetOptions(
+    'help|?'          => \$help,
+  );
+  ($options->{XML_PATH}, $options->{HTML_PATH}) = @ARGV;
+  # display help
+  pod2usage(1) if $help;
+  # reset STDERR
+  open(STDERR, ">&", $olderr) or die("Can't reset STDERR: $!");
+  # read argument parsing errors
+  seek($tmperr, 0, SEEK_SET);
+  while (<$tmperr>) {chomp; push(@errors, $_);}
+  close($tmperr);
+  # check source XML file
+  unless (defined($options->{XML_PATH})) {
+    push(@errors, "No Tomtom XML file specified");
+  } elsif (not -e $options->{XML_PATH}) {
+    push(@errors, "The Tomtom XML file specified does not exist");
+  }
+  unless (defined($options->{HTML_PATH})) {
+    push(@errors, "No output file specified");
+  }
+  # print errors
+  foreach my $error (@errors) {
+    print STDERR $error, "\n";
+  }
+  pod2usage(2) if @errors;
+  # return options
+  return $options;
+}
+
+sub start_tomtom {
+  my ($info, $vmajor, $vminor, $vpatch, $release_date) = @_;
+  my $wr = $info->{wr};
+  $wr->str_prop('program', 'Tomtom');
+  $wr->str_prop('version', "$vmajor.$vminor.$vpatch");
+  # tomtom doesn't include the revision information in the XML
+  $wr->str_prop('release', $release_date);
+}
+
+sub end_tomtom {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+}
+
+sub start_model {
+  my ($info) = @_;
+  $info->{model} = {};
+}
+
+sub end_model {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+
+  $wr->str_array_prop("cmd", split(/\s+/, $info->{model}->{command_line}));
+  $wr->property("options");
+  $wr->start_object_value();
+  $wr->str_prop("strands", $info->{model}->{strands});
+  $wr->str_prop("distance_measure", $info->{model}->{distance_measure});
+  $wr->str_prop("threshold_type", $info->{model}->{threshold}->{type});
+  $wr->num_prop("threshold_value", $info->{model}->{threshold}->{value});
+  $wr->str_prop("background_source", $info->{model}->{background}->{source});
+  if (defined($info->{model}->{background}->{file})) {
+    $wr->str_prop("background_file", $info->{model}->{background}->{file});
+  }
+  # more options to be put here
+  $wr->end_object_value();
+  $wr->property("alphabet");
+  $info->{alphabet}->to_json($wr);
+  $wr->num_array_prop("background", @{$info->{model}->{background}->{probs}});
+}
+
+sub handle_command_line {
+  my ($info, $command_line) = @_;
+  $info->{model}->{command_line} = $command_line;
+}
+
+sub handle_distance_measure {
+  my ($info, $distance_measure) = @_;
+  $info->{model}->{distance_measure} = $distance_measure;
+}
+
+sub handle_threshold {
+  my ($info, $type, $value) = @_;
+  $info->{model}->{threshold} = {type => $type, value => $value};
+}
+
+sub handle_alphabet {
+  my ($info, $alphabet) = @_;
+  $info->{alphabet} = $alphabet;
+}
+
+sub handle_strands {
+  my ($info, $strands) = @_;
+  $info->{model}->{strands} = $strands;
+}
+
+sub handle_background {
+  my ($info, $source, $file, @probs) = @_;
+  $info->{model}->{background} = {
+    source => $source,
+    probs => [@probs],
+    file => $file
+  };
+}
+
+sub handle_host {
+  my ($info, $host) = @_;
+  $info->{model}->{host} = $host;
+}
+
+sub handle_when {
+  my ($info, $when) = @_;
+  $info->{model}->{when} = $when;
+}
+
+sub start_query_dbs {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->property("query_dbs");
+  $wr->start_array_value();
+}
+
+sub end_query_dbs {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->end_array_value();
+}
+
+sub start_target_dbs {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->property("target_dbs");
+  $wr->start_array_value();
+}
+
+sub end_target_dbs {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->end_array_value();
+}
+
+sub handle_db {
+  my ($info, $source, $name, $loaded, $excluded, $last_mod) = @_;
+  my $wr = $info->{wr};
+  $wr->start_object_value();
+  $wr->str_prop("source", $source);
+  $wr->str_prop("name", $name);
+  $wr->num_prop("loaded", $loaded);
+  $wr->num_prop("excluded", $excluded);
+  $wr->str_prop("last_modified", $last_mod);
+  $wr->end_object_value();
+}
+
+sub start_queries {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->property("queries");
+  $wr->start_array_value();
+}
+
+sub end_queries {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->end_array_value();
+}
+
+sub start_targets {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->property("targets");
+  $wr->start_array_value();
+}
+
+sub end_targets {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->end_array_value();
+}
+
+sub start_motif {
+  my ($info, $db, $id, $alt, $len, $nsites, $evalue, $url) = @_;
+  my $wr = $info->{wr};
+  $wr->start_object_value();
+  $wr->num_prop("db", $db);
+  $wr->str_prop("id", $id);
+  $wr->str_prop("alt", $alt) if (defined($alt));
+  $wr->num_prop("len", $len);
+  $wr->num_prop("nsites", $nsites) if (defined($nsites));
+  $wr->str_prop("evalue", $evalue) if (defined($evalue));
+  $wr->str_prop("url", $url) if $url;
+  $wr->property("pwm");
+  $wr->start_array_value();
+}
+
+sub end_motif {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->end_array_value();
+  $wr->end_object_value();
+}
+
+sub handle_pos {
+  my ($info, @probs) = @_;
+  my $wr = $info->{wr};
+  $wr->num_array_value(@probs);
+}
+
+sub start_matches {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->property("all_matches");
+  $wr->start_array_value();
+}
+
+sub end_matches {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->end_array_value();
+}
+
+sub start_query {
+  my ($info, $idx) = @_;
+  my $wr = $info->{wr};
+  $wr->start_object_value();
+  $wr->num_prop("idx", $idx);
+  $wr->property("matches");
+  $wr->start_array_value();
+}
+
+sub end_query {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->end_array_value();
+  $wr->end_object_value();
+}
+
+sub handle_target {
+  my ($info, $idx, $rc, $off, $pvalue, $evalue, $qvalue) = @_;
+  my $wr = $info->{wr};
+  $wr->start_object_value();
+  $wr->num_prop("idx", $idx);
+  $wr->bool_prop("rc", $rc) if (defined($rc));
+  $wr->num_prop("off", $off);
+  $wr->str_prop("pv", $pvalue);
+  $wr->str_prop("ev", $evalue);
+  $wr->str_prop("qv", $qvalue);
+  $wr->end_object_value();
+}
+
+sub handle_runtime {
+  my ($info, $cycles, $seconds) = @_;
+  my $wr = $info->{wr};
+  $wr->property("runtime");
+  $wr->start_object_value();
+  $wr->str_prop("host", $info->{model}->{host});
+  $wr->str_prop("when", $info->{model}->{when});
+  $wr->num_prop("cycles", $cycles);
+  $wr->num_prop("seconds", $seconds);
+  $wr->end_object_value();
+}
+
+
+sub transform_data {
+  my ($opts, $jsonwr) = @_;
+  my $info = {wr => $jsonwr};
+
+  my $sax = new TomtomSAX($info,
+    start_tomtom => \&start_tomtom,
+    end_tomtom => \&end_tomtom,
+    start_model => \&start_model,
+    end_model => \&end_model,
+    handle_command_line => \&handle_command_line,
+    handle_distance_measure => \&handle_distance_measure,
+    handle_threshold => \&handle_threshold,
+    handle_alphabet => \&handle_alphabet,
+    handle_strands => \&handle_strands,
+    handle_background => \&handle_background,
+    handle_host => \&handle_host,
+    handle_when => \&handle_when,
+    start_query_dbs => \&start_query_dbs,
+    end_query_dbs => \&end_query_dbs,
+    start_target_dbs => \&start_target_dbs,
+    end_target_dbs => \&end_target_dbs,
+    handle_db => \&handle_db,
+    start_queries => \&start_queries,
+    end_queries => \&end_queries,
+    start_targets => \&start_targets,
+    end_targets => \&end_targets,
+    start_motif => \&start_motif,
+    end_motif => \&end_motif,
+    handle_pos => \&handle_pos,
+    start_matches => \&start_matches,
+    end_matches => \&end_matches,
+    start_query => \&start_query,
+    end_query => \&end_query,
+    handle_target => \&handle_target,
+    handle_runtime => \&handle_runtime
+  );
+  my $fh;
+  sysopen($fh, $opts->{XML_PATH}, O_RDONLY) or die("Failed to open file \"$opts->{XML_PATH}\"\n");
+  while (<$fh>) {
+    $sax->parse_more($_);
+  }
+  $sax->parse_done();
+  my @errors = $sax->get_errors();
+  foreach my $error (@errors) {
+    print $error, "\n";
+  }
+}
+
+sub main {
+  &initialise();
+  my $opts = &arguments();
+  # start writing HTML
+  my $htmlwr = new HtmlMonolithWr($etc_dir, 'tomtom_template.html', 
+    $opts->{HTML_PATH}, 'tomtom_data.js' => 'data');
+  # transform the XML into JSON
+  &transform_data($opts, $htmlwr->output());
+  # finish writing HTML
+  $htmlwr->output();
+}
+
+&main();
+1;

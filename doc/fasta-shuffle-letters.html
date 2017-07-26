@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>fasta-shuffle-letters - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+  </head>
+  <body>
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <h2>fasta-shuffle-letters</h2>
+    
+    <div class="usage">
+      <h3>Usage:</h3>
+      <code>fasta-shuffle-letters [options] &lt;sequence file&gt; [&lt;output file&gt;]</code>
+    </div>
+
+    <h3>Description</h3>
+    <div class="indent">
+      <p>The program fasta-shuffle-letters creates a shuffled version of a FASTA file.
+      The letters in each sequence in the input file are shuffled in such a way
+      that k-mer frequencies are exactly preserved where k is by default 1 but
+      may be set by the "<span class="popt">-kmer</span>" option.  If an alphabet
+      is specified via <span class="popt">-dna</span>, <span class="popt">-rna</span>,
+      <span class="popt">-protein</span> or <span class="popt">-alph</span>,
+      any aliased symbols are first converted to their core symbol before shuffling.
+      By default, aliased symbols are <i>not</i> converted to their core symbols, and are
+      treated as distinct letters, which may not be what you want.
+      
+      <p>The underlying implementation uses 
+      <a href="http://digital.cs.usu.edu/~mjiang/ushuffle/">uShuffle</a>.</p>
+
+    </div>
+
+    <h3>Input</h3>
+    <div class="indent">
+      <p>Sequences in <a href="fasta-format.html">FASTA format</a> from a file.</p>
+    </div>
+
+    <h3>Output</h3>
+    <div class="indent">
+      <p>Writes a <a href="fasta-format.html">FASTA format</a> file to the
+      optional output file or standard output if it is left unspecified.</p>
+    </div>
+
+    <h3>Options</h3>
+    <div class="indent">
+      <table class="options">
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Parameter</th>
+            <th>Description</th>
+            <th>Default Behaviour</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th colspan="4">General Options</th>
+          </tr>
+          <tr>
+            <td class="popt">-kmer</td><td><span class="pdat">num</span></td>
+            <td>Shuffle the sequences so groups of <span class="pdat">num</span>
+            symbols appear with exactly the same frequencies. Note that in setting
+            this number you must maintain a balance - the larger the number the
+            more realistic the sequence will be however too large and it will not
+            be shuffled at all! A value of 2 is used by MEME-ChIP. For values
+            larger than 1 specifing the alphabet is highly recommended because
+            it allows for the translation of aliases which may be important in
+            some cases like soft-masked sequence.</td>
+            <td>A value of 1 is used which allows the shuffle to be completely
+            random.</td>
+          </tr>
+          <tr>
+            <td class="popt">-copies</td><td><span class="pdat">num</span></td>
+            <td>The number of shuffled copies to create for each sequence in the
+            source.</td>
+            <td>A single shuffled sequence is created for each sequence in the source.</td>
+          </tr>
+          <tr>
+            <td class="popt">-dna</td><td>&nbsp;</td>
+            <td>As if the <span class="popt">-alph</span>
+              option was specified with the <a href=alphabet-format.html#standard_DNA>standard DNA alphabet</a> as input.</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="popt">-rna</td><td>&nbsp;</td>
+            <td>As if the <span class="popt">-alph</span>
+              option was specified with the <a href=alphabet-format.html#standard_RNA>standard RNA alphabet</a> as input.</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="popt">-protein</td><td>&nbsp;</td>
+            <td>As if the <span class="popt">-alph</span>
+              option was specified with the <a href=alphabet-format.html#standard_protein>standard protein alphabet</a> as input.</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td class="popt">-alph</td><td><span class="pdat">file</span></td>
+            <td>Alias symbols are converted to their core representation in the given 
+		<a href="alphabet-format.html">alphabet definition</a> prior to shuffling.
+              Any unknown symbols will be converted to the alphabet's wildcard.</td>
+            <td>When no alphabet is specified symbols (including aliases) are treated as distinct
+              symbols while shuffling.</td>
+          </tr>
+          <tr>
+            <td class="popt">-line</td><td><span class="pdat">num</span></td>
+            <td>The sequences will be output with a maximum of <span class="pdat">num</span>
+              symbols per line.</td>
+            <td>A line length of 100 is used.</td>
+          </tr>
+          <tr>
+            <td class="popt">-tag</td><td><span class="pdat">text</span></td>
+            <td>The name of the sequence will have <span class="pdat">text</span>
+              appended to it.</td>
+            <td>The name of the sequence will have "_shuf" appended to it.</td>
+          </tr>
+          <tr>
+            <td class="popt">-seed</td><td><span class="pdat">num</span></td>
+            <td>Set the seed of the random number generator to <span class="pdat">num</span>.</td>
+            <td>Seed the random number generator from the computer as randomly as possible.</td>
+          </tr>
+          <tr>
+            <td class="popt">-help</td><td>&nbsp;</td>
+            <td>Display a brief help message and exit.</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
+

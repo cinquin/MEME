@@ -1,0 +1,18 @@
+my @datasets = ('crp0', 'lipo');
+my $counter = 1;
+my $ignore = ['^MHMM\s\s*v[1-9][0-9]*\.\{0,1\}[0-9]*\.\{0,1\}[0-9]*\s*$'];
+foreach my $dset (@datasets) {
+  my $linear_model = catfile('mhmm', $dset.'.linear.mhmm');
+  my $complete_model = catfile('mhmm', $dset.'.complete.mhmm');
+  &test('mhmm-io'.$counter, '',
+    'mhmm-io', '', ['--verbosity', 1, $linear_model],
+    [{output => '-', reference => $linear_model, type => 'text', ignore => $ignore}],
+    catdir('results', 'mhmm_io'.($counter++))
+  );
+  &test('mhmm-io'.$counter, '', 
+    'mhmm-io', '', ['--verbosity', 1, $complete_model],
+    [{output => '-', reference => $complete_model, type => 'text', ignore => $ignore}],
+    catdir('results', 'mhmm_io'.($counter++))
+  );
+}
+

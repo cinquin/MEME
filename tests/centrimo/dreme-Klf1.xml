@@ -1,0 +1,55 @@
+<dreme version="4.11.2" release="Fri Jul 01 17:41:55 2016 -0700">
+  <model>
+    <command_line>dreme -oc results/dreme1 -v 1 -p common/Klf1-200-100.s -n common/Klf1-200-100-shuffled.s</command_line>
+    <positives name="Klf1-200-100" count="169" file="common/Klf1-200-100.s" last_mod_date="Fri Jul 01 11:24:56 PDT 2016" />
+    <negatives name="Klf1-200-100-shuffled" count="169" from="file" file="common/Klf1-200-100-shuffled.s" last_mod_date="Fri Jul 01 11:24:56 PDT 2016" />
+    <alphabet name="DNA" like="dna">
+      <letter id="A" symbol="A" complement="T" name="Adenine" colour="CC0000"/>
+      <letter id="C" symbol="C" complement="G" name="Cytosine" colour="0000CC"/>
+      <letter id="G" symbol="G" complement="C" name="Guanine" colour="FFB300"/>
+      <letter id="T" symbol="T" aliases="U" complement="A" name="Thymine" colour="008000"/>
+      <letter id="N" symbol="N" aliases="X." equals="ACGT" name="Any base"/>
+      <letter id="V" symbol="V" equals="ACG" name="Not T"/>
+      <letter id="H" symbol="H" equals="ACT" name="Not G"/>
+      <letter id="D" symbol="D" equals="AGT" name="Not C"/>
+      <letter id="B" symbol="B" equals="CGT" name="Not A"/>
+      <letter id="M" symbol="M" equals="AC" name="Amino"/>
+      <letter id="R" symbol="R" equals="AG" name="Purine"/>
+      <letter id="W" symbol="W" equals="AT" name="Weak"/>
+      <letter id="S" symbol="S" equals="CG" name="Strong"/>
+      <letter id="Y" symbol="Y" equals="CT" name="Pyrimidine"/>
+      <letter id="K" symbol="K" equals="GT" name="Keto"/>
+    </alphabet>
+    <strands>both</strands>
+    <background A="0.244" C="0.253" G="0.250" T="0.253" from="dataset"/>
+    <stop evalue="0.05"/>
+    <ngen>100</ngen>
+    <add_pv_thresh>0.01</add_pv_thresh>
+    <seed>1</seed>
+    <host>D-173-250-153-57.dhcp4.washington.edu</host>
+    <when>Wed Jul 20 14:46:09 PDT 2016</when>
+  </model>
+  <motifs>
+    <motif id="m01" alt="DREME-1" seq="ACRCCC" length="6" nsites="71" p="63" n="11" pvalue="1.7e-012" evalue="2.9e-008" unerased_evalue="2.9e-008">
+      <pos A="1.000000" C="0.000000" G="0.000000" T="0.000000"/>
+      <pos A="0.000000" C="1.000000" G="0.000000" T="0.000000"/>
+      <pos A="0.661972" C="0.000000" G="0.338028" T="0.000000"/>
+      <pos A="0.000000" C="1.000000" G="0.000000" T="0.000000"/>
+      <pos A="0.000000" C="1.000000" G="0.000000" T="0.000000"/>
+      <pos A="0.000000" C="1.000000" G="0.000000" T="0.000000"/>
+      <match seq="ACACCC" p="42" n="9" pvalue="2.6e-007" evalue="4.6e-003"/>
+      <match seq="ACGCCC" p="23" n="2" pvalue="4.9e-006" evalue="8.7e-002"/>
+    </motif>
+    <motif id="m02" alt="DREME-2" seq="TTATCW" length="6" nsites="56" p="51" n="7" pvalue="4.0e-011" evalue="6.8e-007" unerased_evalue="6.8e-007">
+      <pos A="0.000000" C="0.000000" G="0.000000" T="1.000000"/>
+      <pos A="0.000000" C="0.000000" G="0.000000" T="1.000000"/>
+      <pos A="1.000000" C="0.000000" G="0.000000" T="0.000000"/>
+      <pos A="0.000000" C="0.000000" G="0.000000" T="1.000000"/>
+      <pos A="0.000000" C="1.000000" G="0.000000" T="0.000000"/>
+      <pos A="0.357143" C="0.000000" G="0.000000" T="0.642857"/>
+      <match seq="TTATCT" p="34" n="4" pvalue="7.0e-008" evalue="1.2e-003"/>
+      <match seq="TTATCA" p="20" n="3" pvalue="1.6e-004" evalue="2.7e+000"/>
+    </motif>
+  </motifs>
+  <run_time cpu="4.97" real="4.97" stop="evalue"/>
+</dreme>

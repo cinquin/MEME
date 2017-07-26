@@ -1,0 +1,112 @@
+#!@WHICHPERL@
+=head1 NAME
+
+tomtom_webservice - Run tomtom in a restricted mode and create an index webpage.
+
+=head1 SYNOPSIS
+
+tomtom_webservice [options] <query motifs> <motif databases>
+
+  Options:
+    -dist (pearson|ed|sandelin)   distance function to use
+    -ev <evalue>                  evalue threshold; not usable with -qv
+    -qv <qvalue>                  qvalue threshold; not usable with -ev
+    -m <name>                     filter query motifs by name (id); repeatable
+    -mi <index>                   filter query motifs by file order; repeatable
+    -uptargets <file>             uploaded target motifs
+    -xalph                        allow expansion of the target motifs alphabet
+    -incomplete_scores            don't included unaligned parts of the motif in scoring
+    -niced                        run tomtom niced
+    -help                         brief help message
+
+  Distance Functions
+    pearson - Pearson correlation coefficient
+    ed - Euclidean distance
+    sandelin - Sandelin-Wasserman similarity function
+
+  Motif Databases
+    The motif databases may be specified as a pattern using * as a wildcard.
+=cut
+
+use strict;
+use warnings;
+# load standard perl libraries
+use Getopt::Long qw(:config permute auto_help);
+use Pod::Usage;
+# load custom perl libraries
+use lib qw(@PERLLIBDIR@);
+use StatusPage qw(arg_checks opt_uploaded opt_db opt_choice opt_integer opt_number opt_evalue opt_safe);
+# constants
+my $bin_dir = '@BINDIR@';
+my $motif_db_dir = '@MEMEDB@/motif_databases';
+# required parameters
+my $queries;
+my @targets;
+# option defaults
+my ($uptargets, $qv, $ev, $dist);
+my ($xalph, $incomplete_scores, $niced) = (0, 0, 0); #FALSE
+my @query_names = ();
+my @query_indexes = ();
+#status page
+my $status = new StatusPage('Tomtom', \@ARGV);
+$status->add_message('Parsing arguments');
+# parse options
+my @arg_errors = ();
+my $opts_ok = do {
+  local $SIG{__WARN__} = sub { my ($msg) = @_; chomp($msg); push(@arg_errors, $msg); };
+  GetOptions(
+  '<>' => arg_checks(opt_uploaded(\$queries), opt_db(\@targets, $motif_db_dir, 'db')),
+  'dist=s' => opt_choice(\$dist, 'pearson', 'ed', 'sandelin'),
+  'ev=f' => opt_evalue(\$ev),
+  'qv=f' => opt_number(\$qv, '>', 0, '<=', 1),
+  'm=s' => opt_safe(\@query_names),
+  'mi=i' => opt_integer(\@query_indexes, 1),
+  'uptargets=s' => opt_uploaded(\$uptargets),
+  'xalph' => \$xalph,
+  'incomplete_scores' => \$incomplete_scores,
+  'niced' => \$niced
+  );
+};
+unshift(@targets, $uptargets) if defined $uptargets;
+# add additional error messages for missing sequences and motifs
+push(@arg_errors, "Option ev is incompatible with option qv.") if (defined($ev) && defined($qv));
+push(@arg_errors, "No query motifs provided.") unless defined $queries;
+push(@arg_errors, "No target motifs provided.") unless @targets;
+# display the error messages both to the status page and stdout
+foreach my $arg_error (@arg_errors) {
+  print STDERR $arg_error, "\n";
+  $status->add_message($arg_error);
+}
+$opts_ok = 0 if (scalar(@arg_errors) > 0);
+# setup status page
+$status->add_file('html', 'tomtom.html', 'Tomtom HTML output');
+$status->add_file('xml', 'tomtom.xml', 'Tomtom XML output');
+$status->add_file('text', 'tomtom.txt', 'Tomtom text output');
+$status->add_file('qmot', $queries, 'Input query motifs');
+$status->add_file('tmot', $uptargets, 'Uploaded target motifs');
+$status->add_message($opts_ok ? 'Arguments ok' : "Error parsing arguments");
+$status->update($opts_ok ? 'Starting' : 'Error');
+# exit if there was an error reading the arguments
+unless ($opts_ok) {
+  $status->write_log();
+  pod2usage(2);
+}
+# create the symlink to the databases
+symlink($motif_db_dir, 'db');
+# ensure it will be removed on completion (when the log is written)
+$status->set_cleanup( sub { unlink('db'); } );
+# Run Tomtom
+my @filter = ((map {('-m', $_)} @query_names), (map {('-mi', $_)} @query_indexes));
+my @tomtom_args = ( '-no-ssc', '-oc', '.', '-verbosity', 1, '-min-overlap', 5, @filter);
+push(@tomtom_args, '-dist', $dist) if (defined($dist));
+push(@tomtom_args, '-evalue', '-thresh', $ev) if (defined($ev));
+push(@tomtom_args, '-thresh', $qv) if (defined($qv));
+push(@tomtom_args, '-xalph') if ($xalph);
+push(@tomtom_args, '-incomplete-scores') if ($incomplete_scores);
+push(@tomtom_args, $queries, @targets);
+$status->run(PROG => 'tomtom', BIN => $bin_dir, ARGS => \@tomtom_args, NICE => ($niced ? 19 : undef));
+# done
+$status->add_message("Done");
+$status->update();
+$status->write_log();
+1;

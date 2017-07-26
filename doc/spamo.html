@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>SpaMo - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+    <script src="js/shared-doc.js"></script>
+    <script>
+
+      function draw_range(ctx, x, y, w, h, label) {
+        ctx.save();
+        
+        ctx.beginPath();
+        ctx.moveTo(x, Math.floor(y) + 0.5);
+        ctx.lineTo(x + w, Math.floor(y) + 0.5);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(Math.floor(x) + 0.5, y - (h / 2));
+        ctx.lineTo(Math.floor(x) + 0.5, y + (h / 2));
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(Math.ceil(x + w) - 0.5, y - (h / 2));
+        ctx.lineTo(Math.ceil(x + w) - 0.5, y + (h / 2));
+        ctx.stroke();
+
+        if (typeof label === "string") {
+          ctx.textAlign = "center";
+          ctx.textBaseline = "bottom";
+          ctx.fillText(label, x + (w / 2), y);
+        }
+
+        ctx.restore();
+      }
+
+      function draw_arrow_head(ctx, x, y) {
+        ctx.beginPath();
+        ctx.moveTo(x - 3, y + 5);
+        ctx.lineTo(Math.floor(x) + 0.5, y);
+        ctx.lineTo(x + 3, y + 5);
+        ctx.stroke();
+      }
+
+      function draw_diagram1() {
+        var diag, ctx, pad, seq_w, mar_w, pri_w;
+        diag = document.getElementById("primary_site_diagram");
+        if (!diag.getContext || !diag.getContext('2d')) return;
+        diag.width = 640;
+        diag.height = 70;
+        ctx = diag.getContext('2d');
+        pad = 10;
+        seq_w = diag.width - 2 * pad;
+        mar_w = 0.2 * seq_w;
+        pri_w = seq_w - 2 * mar_w;
+
+        draw_range(ctx, pad, 15, seq_w, 14, "Sequence");
+        draw_range(ctx, pad, 35, mar_w, 14, "Margin");
+        draw_range(ctx, diag.width - pad - mar_w, 35, mar_w, 14, "Margin");
+        draw_range(ctx, pad + mar_w, 55, pri_w, 14, "Area scanned for primary motif");
+      }
+      function draw_diagram2() {
+        var diag, ctx, pad, seq_w, mar_w, scan_max, pri_min, pri_max, pri_w, pri_x;
+        diag = document.getElementById("secondary_site_diagram");
+        if (!diag.getContext || !diag.getContext('2d')) return;
+        diag.width = 640;
+        diag.height = 80;
+        ctx = diag.getContext('2d');
+
+        pad = 10;
+        seq_w = diag.width - 2 * pad;
+        mar_w = 0.2 * seq_w;
+        draw_range(ctx, 10, 15, seq_w, 14, "Sequence");
+
+        scan_max = seq_w - (2 * mar_w);
+        pri_min = scan_max * 0.05;
+        pri_max = scan_max * 0.5;
+        pri_w = Math.floor((Math.random() * (pri_max - pri_min)) + pri_min);
+        pri_x = mar_w + Math.floor(Math.random() * (scan_max - pri_w));
+
+        ctx.fillRect(10 + pri_x, 16, pri_w, 6);
+
+        var primary_center = Math.floor(10 + pri_x + (pri_w / 2)) + 0.5;
+        ctx.save();
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.fillText("Primary motif site", primary_center, 45);
+        ctx.restore();
+
+        ctx.beginPath();
+        ctx.moveTo(primary_center, 24);
+        ctx.lineTo(primary_center, 44);
+        ctx.stroke();
+
+        draw_arrow_head(ctx, primary_center, 24);
+
+        draw_range(ctx, pad + pri_x - mar_w, 35, mar_w, 14, "Margin");
+        draw_range(ctx, pad + pri_x + pri_w, 35, mar_w, 14, "Margin");
+
+        var lmargin_center = Math.floor(pad + pri_x - (mar_w / 2)) + 0.5;
+        var rmargin_center = Math.floor(pad + pri_x + pri_w + (mar_w / 2)) + 0.5
+        ctx.beginPath();
+        ctx.moveTo(lmargin_center, 37);
+        ctx.lineTo(lmargin_center, 59.5);
+        ctx.lineTo(rmargin_center, 59.5);
+        ctx.lineTo(rmargin_center, 37);
+        ctx.stroke();
+
+        draw_arrow_head(ctx, lmargin_center, 37);
+        draw_arrow_head(ctx, rmargin_center, 37);
+
+        ctx.beginPath();
+        ctx.moveTo(Math.floor(pri_x) + 0.5, 60);
+        ctx.lineTo(Math.floor(pri_x) + 0.5, 65);
+        ctx.stroke();
+
+        ctx.save();
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.fillText("Area scanned for secondary motifs", pri_x, 65);
+        ctx.restore();
+      }
+
+      function draw_margin_diagrams() {
+        draw_diagram1();
+        draw_diagram2();
+      }
+      window.addEventListener('load', draw_margin_diagrams, false);
+    </script>
+  </head>
+  <body>
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <div class="prog_logo">
+      <img src="images/spamo_icon.png" alt="SpaMo Logo">
+      <h1>SpaMo</h1>
+      <h2>Spaced Motif Analysis Tool</h2>
+    </div>
+
+    <div style='display:inline' id='man_web_button'>
+      <p> <button onclick="toggle_man_display()">View Web Version</button> </p>
+    </div>
+
+    <div style='display:none' id='man_cmd_button'>
+      <p> <button onclick="toggle_man_display()">View Command-Line Version</button> </p>
+    </div>
+
+    <div style='display:inline' id='man_usage'>
+      <div class="usage">
+        <h3>Usage:</h3>
+        <code>spamo [options] &lt;sequences&gt; &lt;primary motif&gt; &lt;secondary motifs&gt;+</code>
+      </div>
+    </div>
+
+    <h3>Description</h3>
+    <div class="indent">
+      <span class="man blurb" data-id="spamo"></span>
+    </div>
+
+    <!-- Command Line Version Doc -->
+    <div style='display:inline' id='man_cmd'>
+      <h3>Inputs</h3>
+      <div class="indent">
+        <span class='popt'><b>&lt;sequences&gt;</b></span>
+        <div class="indent">
+          <p>The name of a FASTA formatted file containing 
+          sequences (ideally of about 500bp) centered on a genomic location
+          expected to be relevant to the primary motif. This would
+          typically be generated by expanding either side of a ChIP-seq peak to
+          obtain sequences of about 500 bases in length.</p>
+          <p>SpaMo scans the central section, excluding the margin on either edge,
+          for the primary motif. As the margin on each edge is excluded then if
+          the sequence is shorter than two times the margin plus the trimmed
+          length of the primary motif the sequence will always be discarded.</p>
+        </div>
+
+        <span class='popt'><b>&lt;primary motif&gt;</b></span>
+        <div class="indent">
+          <p>The name of a file containing at least one <a href="meme-format.html">MEME formatted motif</a>.
+          Outputs from MEME and DREME are supported, as well as Minimal MEME
+          Format. You can convert many other motif formats to MEME format
+          using <a href="overview.html#motif_conversion_utilities">conversion scripts</a>
+          available with the MEME Suite.
+          The primary motif is the motif for which you are trying to find cofactors. If the file
+          contains more than one motif then the first will be selected by default
+          or another can be selected using the <span class='popt'>-primary</span> or <span class='popt'>-primaryi</span> options.</p>
+        </div>
+
+        <span class='popt'><b>&lt;secondary motifs&gt;</b></span>
+        <div class="indent">
+          <p>The names of one or more 
+          <a href="meme-format.html">MEME formatted</a>
+          motif files containing DNA motifs (see Primary Motifs, above). The
+          secondary motifs are tested for a significant spacing with the primary
+          motif which might imply they act together. If the motif databases
+          contain motifs which you don't wish to scan, the motifs can be filtered
+          based on their name by using the <span class='popt'>-inc</span> and <span class='popt'>-exc</span> options.</p>
+        </div>
+      </div>
+
+      <h3>Outputs</h3>
+      <div class="indent">
+        <p>SpaMo outputs its output to files in a directory named
+        <code>spamo_out</code>, which it creates if necessary. You can change the
+        output directory using the <span class='popt'>-o</span> or <span class='popt'>-oc</span> options.</p> 
+        
+        <p>The main output file is an HTML file named 
+        <a href=examples/spamo_example_output_files/spamo.html><code>spamo.html</code></a>, 
+	and it can be viewed with a web browser. A tab-separated values (TSV) output file named 
+        <a href=examples/spamo_example_output_files/spamo.tsv><code>spamo.tsv</code></a> 
+        is also generated that contains a single line for each significant 
+	primary-secondary motif spacing. Detailed documentation
+	on the meanings of the columns in the is provided at the bottom of the TSV file.
+        </p>
+        <p>
+        Additional outputs may be requested using the <span class='popt'>-dumpseqs</span>,
+        <span class='popt'>-dumpsigs</span>, <span class='popt'>-eps</span> and 
+        <span class='popt'>-png</span> options, as described below.  
+        </p>
+      </div>
+      <h3>Options</h3>
+      <div class="indent">
+      <table class="options">
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Parameter</th>
+            <th>Description</th>
+            <th>Default Behaviour</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th colspan="4">Input/Output</th>
+          </tr>
+          <script>
+            wropt("all-o", {"dir": "spamo_out"});
+            wropt("all-oc", {"dir": "spamo_out"});
+          </script>
+          <tr>
+            <td class='popt'>-eps</td>
+            <td>&nbsp;</td>
+            <td>Output histograms in Encapsulated PostScript format which can be
+            included in publications. This option can be used with the <span class='popt'>-png</span>
+            option.</td>
+            <td>Image files are not output by default as the webpage is capable of
+            generating the graphs on demand.</td>
+          </tr>
+          <tr>
+            <td class='popt'>-png</td>
+            <td>&nbsp;</td>
+            <td>Output histograms in Portable Network Graphic format which is good
+            for webpages. This option can be used with the <span class='popt'>-eps</span> option.</td>
+            <td>Image files are not output by default as the webpage is capable of
+            generating the graphs on demand.</td>
+          </tr>
+          <tr>
+            <td class='popt'>-dumpseqs</td>
+            <td>&nbsp;</td>
+            <td>Write space separated values in columns, describing the motif 
+              matches used to make the histograms, to output files named 
+              <code>seqs_&lt;primary_motif&gt;_&lt;secondary_db&gt;_&lt;secondary_motif&gt;.txt</code>. 
+              The rows are initially in sequence name order but various command-line tools can
+              be used to sort them on other values. The columns contain:
+              <table class="dark" style="width:100%">
+                <thead>
+                  <tr><th>column(s)</th><th>contents</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td>Trimmed lowercase sequence with uppercase
+                      matches</td></tr>
+                  <tr><td>2</td><td>Position of the secondary match within the whole
+                      sequence</td></tr>
+                  <tr><td>3</td><td>Sequence fragment that the primary matched</td></tr>
+                  <tr><td>4</td><td>Strand of the primary match (+/-)</td></tr>
+                  <tr><td>5</td><td>Sequence fragment that the secondary matched</td></tr>
+                  <tr><td>6</td><td>Strand of the secondary match (+/-)</td></tr>
+                  <tr><td>7</td><td>Is the primary match on the same strand as the
+                      secondary (s/o)</td></tr>
+                  <tr><td>8</td><td>Is the secondary match downstream or
+                      upstream (d/u)</td></tr>
+                  <tr><td>9</td><td>The gap between the primary and secondary
+                      matches</td></tr>
+                  <tr><td>10</td><td>The name of the sequence</td></tr>
+                  <tr><td>11</td><td>The <i>p</i>-value of the bin containing the match, 
+                      adjusted for the number of bins</td></tr>
+                  <tr><th colspan="2">If the sequence names are in Genome Browser position
+                  format (e.g., "chr5:36715616-36715623"), the following additional columns
+                  appear:</th></tr>
+                  <tr><td>12-14</td><td>Position of primary match in BED coordinates</td></tr>
+                  <tr><td>15</td><td>Position of primary match in Genome Browser
+                      coordinates</td></tr>
+                  <tr><td>16-18</td><td>Position of secondary match in BED
+                      coordinates</td></tr>
+                  <tr><td>19</td><td>Position of secondary match in Genome Browser
+                      coordinates</td></tr>
+                </tbody>
+              </table>
+            </td>
+            <td>No specific match information is output.</td>
+          </tr>
+          <tr>
+            <td class='popt'>-dumpsigs</td>
+            <td>&nbsp;</td>
+            <td>Same as <span class='popt'>-dumpseqs</span>, but only secondary matches in significant
+            bins are dumped.</td>
+            <td>As in <span class='popt'>-dumpseqs</span>.</td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr>
+            <th colspan="4">Scanning</th>
+          </tr>
+          <tr>
+            <td class='popt'>-numgen</td>
+            <td><span class="pdat">seed</span></td>
+            <td>Specify a number as the seed for initializing the pseudo-random
+            number generator used in breaking scoring ties. The seed is included
+            in the output so experiments can be repeated. If you wish to run
+            multiple experiments with different seeds then you can use the special
+            value 'time' (without the quotes) which sets the seed to the system
+            clock.</td>
+            <td>A seed of 1 is used.</td>
+          </tr>
+          <tr>
+            <td class='popt'>-margin</td> 
+            <td><span class="pdat">size</span></td>   
+            <td>The distance either side of the primary motif site which makes up
+            the region that can contain the secondary motif site. Additionally it
+            is the minimum gap between the primary motif site and the edge of the
+            sequence. These constraints mean that input sequences shorter than
+            the trimmed length of the primary motif plus two times the margin size
+            can not be used by SpaMo.</td> 
+            <td>A margin of 150 is used. For an input sequence of length 500 this 
+            means the central 200 bases are scanned for the best primary motif 
+            match and then the 300 bases surrounding the best primary site are
+            scanned for the best secondary site.</td>
+          </tr>
+          <tr>
+            <td class='popt'>-minscore</td> 
+            <td><span class="pdat">value</span></td>   
+            <td> The minimum score accepted as a match to either the primary or 
+             secondary motif.  This value can greatly affect the results of SpaMo.  
+             If it is too high, there will be no matches to the primary motif.  
+             If too low, sequences with non-significant matches
+             to the primary and/or secondary motif will reduce the effectiveness 
+             of the spacing analysis.
+            <b>Note:</b> If <span class="pdat">value</span> is in the range [-1,0)
+            then the minimum score is set to the absolute value
+            of <span class="pdat">value</span> times
+            the maximum possible match score.</td>
+            <td>A minimum score of 7 bits is used.</td>
+          </tr>
+          <tr>
+            <td class='popt'>-bin</td>
+            <td><span class="pdat">size</span></td>
+            <td>The size of the bin used to calculate the histogram and
+            <i>p</i>-values. A bin size of 1 is recommended as it gives better
+            output.</td>
+            <td>A bin size of 1 is used.</td>
+          </tr>
+          <tr>
+            <td class='popt'>-range</td>
+            <td><span class="pdat">size</span></td>
+            <td>The distance from the primary motif site for which <i>p</i>-values
+            are calculated to include in significance tests. A small value for
+            range may miss significant peaks but this is a trade-off as a the
+            larger the range the more bins have to be tested leading to a larger
+            factor used in the Bonferroni correction for multiple tests.</td>
+            <td>A range of 150 is used.</td>
+          </tr>
+          <tr>
+            <td class='popt'>-shared</td>
+            <td><span class="pdat">fraction</span></td>
+            <td>Redundant sequences are removed that have more than this
+            fraction of identical residues.  After the primary motif site has been selected in each sequence
+            the sequence is trimmed to only include a region of size margin on
+            either side of the primary motif site. This aligned and trimmed
+            sequence (and its reverse complement) is then compared with all the 
+            other sequences and the fraction of shared bases is calculated, not including the bases
+            in the match to the primary motif. If the fraction of shared
+            bases between the sequence (or its reverse complement)
+            is larger than this limit, then the second sequences is
+            eliminated. To disable this feature set the shared fraction to 1.</td>
+            <td>The shared fraction is set to 0.5 which means that the trimmed,
+            aligned sequences must share 50% or more of their bases to be declared
+            redundant.</td>
+          </tr>
+          <tr>
+            <td class='popt'>-odds</td>
+            <td><span class="pdat">odds ratio</span></td>
+            <td>To speed up the elimination of redundant sequences their
+            positions are compared in a random order and comparison stops
+            whenever the number of matches is so small that the odds ratio
+            is greater than this value.  The odds ratio is the probability
+            of the given number of matches given that the sequences were 
+            generated by the background model, divided by the same probability
+            given they have at least <span class="pdat">fraction</span>
+            matching positions (as specified by the option <span class='popt'>-shared</span>).
+            <td>The odds ratio is set to 20.</td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr>
+            <th colspan="4">Summarizing</th>
+          </tr>
+          <tr>
+            <td class='popt'>-cutoff</td>
+            <td><span class="pdat"><i>p</i>-value</span></td>
+            <td>The <i>p</i>-value cutoff for bins to be considered significant. 
+            This is the <i>p</i>-value of the Binomial Test on the number of
+            observed secondary spacings or more falling into the given bin,
+            adjusted for the number of bins tested. Note that the <i>p</i>-value
+            is only calculated and tested for bins within the distance of the
+            primary motif as specified by the option <span class='popt'>-range</span>.</td>
+            <td>A bin <i>p</i>-value smaller than or equal to 0.05 is considered
+            significant.</td>
+          </tr>
+          <tr>
+            <td class='popt'>-evalue</td>
+            <td><span class="pdat"><i>E</i>-value</span></td>
+            <td>The minimum secondary motif <i>E</i>-value for its results to be
+            printed. For each secondary motif, this is the minimum <i>p</i>-value
+            of all tested bins multipled by the number of secondary motifs. The
+            <i>E</i>-value estimates the expected number of random secondary
+            motifs that would have the given <i>E</i>-value or lower.</td>
+            <td>Results for all secondary motifs with <i>E</i>-value smaller than
+            or equal to 10 are printed.</td>
+          </tr>
+          <tr>
+            <td class='popt'>-overlap</td>
+            <td><span class="pdat">size</span></td>
+            <td>To determine if two motifs are redundant the most significant bin
+            in the tested range for each of the motifs is compared. For the motifs
+            to be considered redundant it needs to be possible that the sites that
+            got counted in the bin could have overlapped, and this parameter sets
+            the minimum overlap. For a bin size larger than 1 the overlap of the
+            bins can not be precisely calculated as the actual site positions are
+            not stored and so the maximum possible overlap is used.</td>
+            <td>A minimum overlap of 2 is required.</td>
+          </tr>
+          <tr>
+            <td class='popt'>-joint</td> 
+            <td><span class="pdat">fraction</span></td>
+            <td>To determine if two motifs are redundant the most significant bin
+            in the tested range in each of the motifs is compared. The most
+            significant bin in each motif has the list of sequence identifiers
+            which had a primary and secondary at the correct spacing to go into
+            that bin. To compare the motifs for redundancy this set of sequence
+            identifiers is compared and the size of the intersection is counted.
+            This intersection size is divided by the size of the smaller of the
+            two sequence sets to get the joint sequence fraction.</td>
+            <td>A minimum joint sequence fraction of 0.5 is required for two
+            motifs to be considered redundant.</td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr>
+            <th colspan="4">Motif Loading</th>
+          </tr>
+          <tr>
+            <td class='popt'>-pseudo</td>
+            <td><span class="pdat">count</span></td>
+            <td>The pseudocount added to loaded motifs.</td>
+            <td>A pseudocount of 0.1 is added to loaded motifs.</td>
+          </tr>
+	  <script>
+	    wropt("all-bg", {"ddash": false, "spamo": true, "sequences": true});
+	  </script>
+          <script>
+            wropt("all-xalph", {"ddash": false, "spamo": true, "nospan": true});
+          </script>
+          <tr>
+            <td class='popt'>-trim</td><td><span class="pdat">bits</span></td>
+            <td>Trim the edges of motifs based on the information content. The
+            positions on the edges of the motifs with information content less
+            than bits will not be used in scanning. 
+            </td>
+            <td>Positions on the edges of the motifs with information content
+            less than or equal to 0.25 will be trimmed.</td>
+          </tr>
+          <tr>
+            <td class='popt'>-primary</td><td><span class="pdat">name</span></td>
+            <td>The name of the motif to select as the primary motif. This option
+            is incompatible with <span class='popt'>-primaryi</span> as only one primary motif can be
+            selected.</td>
+            <td>The first motif in the file is selected.</td>
+          </tr>
+          <tr>
+            <td class='popt'>-primaryi</td><td><span class="pdat">num</span></td>
+            <td>The index of the motif to select as the primary motif counting
+            from 1. This option is incompatible with <span class='popt'>-primary</span> as only one primary
+            motif can be selected.</td>
+            <td>The first motif in the file is selected.</td>
+          </tr>
+          <tr>
+            <td class='popt'>-keepprimary</td><td>&nbsp;</td>
+            <td>If the same file is specified for the primary and secondary motifs
+            then by default the primary motif is excluded but specifying this
+            option keeps it.</td>
+            <td>The primary motif is excluded from the secondaries if the same
+            file is used for the primary and secondary motifs.</td>
+          </tr>
+          <tr>
+            <td class='popt'>-inc</td><td><span class="pdat">pattern</span></td>
+            <td>Select the motifs with names matching the pattern. The pattern can
+            contain shell like wildcards (e.g., '*') though they must be escaped
+            or quoted to prevent the shell from auto-expanding them. This option
+            may be may be repeated and all the patterns will be used.</td> 
+            <td>Unless the <span class='popt'>-exc</span> option has been specified all the motifs are
+            used.</td>
+          </tr>
+          <tr>
+            <td class='popt'>-exc</td><td><span class="pdat">pattern</span></td>
+            <td>Exclude the motifs with names matching the pattern. The pattern
+            can contain shell like wildcards (e.g., '*') though they must be
+            escaped or quoted to prevent the shell from auto-expanding them. This
+            option may be may be repeated and all the patterns will be used.</td> 
+            <td>Unless the <span class='popt'>-inc</span> option has been specified all the motifs are
+            used.</td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr>
+            <th colspan="4">Miscellaneous</th>
+          </tr>
+          <tr>
+            <td class='popt'>-help</td><td>&nbsp;</td>
+            <td>Print out a help message.</td>
+            <td>&nbsp;</td>
+          </tr>
+          <script>wropt("all-verbosity");</script>
+          <tr>
+            <td class='popt'>-version</td><td>&nbsp;</td>
+            <td>Display the version and exit.</td>
+            <td>Run as normal.</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <h3>Citing</h3>
+    <div class="indent">
+      <p>
+        If you use SpaMo in your research please cite the following paper:<br />
+        <span class="citation">
+          Tom Whitington, Martin C. Frith, James Johnson and Timothy L. Bailey,<br>
+          "Inferring transcription factor complexes from ChIP-seq data",<br>
+          <i>Nucleic Acids Research</i>, <b>39</b>(15):e98, 2011.
+          <a href="http://nar.oxfordjournals.org/content/39/15/e98">[full text]</a>
+        </span>
+      </p>
+    </div>
+
+   <script src="js/manual.js"></script>
+
+  </body>
+</html>

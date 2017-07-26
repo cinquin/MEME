@@ -1,0 +1,355 @@
+div.template {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  visibility: hidden;
+}
+div.pop_block {
+  position:absolute;
+  z-index:5;
+  padding: 5px;
+  border: 1px solid black;
+  display: inline-block;
+  background-color: white;
+}
+div.header {
+  position: relative;
+  overflow: hidden;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  margin-right: 3px;
+  margin-left: 3px;
+}
+div.header > h2 {
+  font-size: 1.5em;
+  font-style: normal;
+  margin: 0;
+  font-variant: small-caps; 
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+div.header > span {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+table.seqs_table, table.nos_table {
+  width: 100%;
+}
+
+table.seqs_table th {
+  white-space: nowrap;
+}
+
+tbody:not(.more) .more, tbody:not(.more) .block_handle, tbody:not(.more) .block_needle, tbody:not(.more) .more_arrow .up, tbody.more .more_arrow .down {
+  display: none;
+}
+
+/* from mast-to-html.css */
+
+.more_arrow {
+  font-family:Arial,Serif;
+  font-size: larger;
+  font-weight: bold;
+  text-decoration:none; 
+  cursor: pointer;
+  color: blue;
+}
+div.infobox {
+  background-color:#ddddff;
+  margin-top: 40px;
+  margin-bottom: 1em;
+}
+div.infobox:not(.separate) span.separate_pv, div.infobox:not(.separate) select.strand_selector {
+  display: none;
+}
+
+div.infoline {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+select.strand_selector {
+  margin-left: 10px;
+  margin-bottom: 2px;
+}
+
+div.annotated_sequence_container {
+  position: relative;
+  overflow: hidden;
+}
+
+div.annotated_sequence {
+  position: absolute;
+  top: 0px;
+  left: 40px;
+}
+
+.sequence, .alpha_symbol {
+  font-weight:bold; 
+  font-size:15px; 
+  font-family: 'Courier New', Courier, monospace;
+  height: 15px;
+  line-height: 15px;
+  white-space: pre;
+}
+.sequence.ruler {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1; 
+  visibility:hidden;
+}
+.sequence .joiner, .sequence.flank {
+  color: grey;
+}
+.sequence_labels {
+  position: relative; 
+  width: 100%; 
+  height: 2.5em; 
+  padding: 0px; 
+  margin: 0px;
+}
+.sequence_label {
+  font-family:Serif; 
+  font-weight:normal;
+  position:absolute; 
+  z-index:2; 
+  height:1em; 
+  text-align:center; 
+  vertical-align:middle;
+}
+.sequence_label_top {
+  top:0px;
+}
+.sequence_label_bottom {
+  top:1.25em;
+}
+.inlineTitle {
+  display:inline;
+}
+.label_container {
+  position:relative;
+  width:100%;
+  height:25px;
+  padding:0px; 
+  margin: 0px;
+}
+table.padded-table td { 
+  padding:0px 10px; 
+}
+table.padded-table th { 
+  padding:0px 5px; 
+}
+td.tnum {
+  text-align:right;
+}
+tr.highlight {
+  background:#aaffaa;
+}
+td.dim {
+  color: gray;
+}
+span.dim {
+  color: gray;
+}
+
+td.block_td {
+  width: 100%;
+}
+
+.motif_line {
+  height: auto; 
+}
+
+.motif_box {
+  display: inline-block;
+}
+.center_box {
+  position: relative;
+  display: inline-block;
+}
+.center_box_label {
+  position: absolute;
+  display: inline-block;
+  font-family: Arial;
+  font-weight: normal;
+  white-space: nowrap;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+div.sequence_line {
+  position: relative;
+}
+div.line_start {
+  position: absolute;
+  display: inline-block;
+  top: 0;
+  left: -10px;
+  font-family: Arial;
+  font-weight: normal;
+  transform: translateX(-100%);
+  padding: 2px;
+  border: 1px solid black;
+  background-color: white;
+}
+
+div.line_end {
+  display: inline-block;
+  font-family: Arial;
+  font-weight: normal;
+  margin-left: 10px;
+  padding: 2px;
+  border: 1px solid black;
+  background-color: white;
+}
+.bunch + .bunch {
+  margin-top: 20px;
+}
+
+table.block_information {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table.block_information * th {
+  text-align: right;
+}
+
+table.inputs, table.alpha_bg_table {
+  margin-top: 20px;
+  border-collapse:collapse;
+}
+
+table.inputs * td, table.inputs * th, table.alpha_bg_table * td, table.alpha_bg_table * th {
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+div.preview_btn {
+  border: 2px solid transparent;
+  height: 16px;
+  width: 16px;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+  cursor: pointer;
+}
+div.preview_btn + div.preview_btn {
+  margin-top: 3px;
+}
+
+div.preview_box:not(.rc) div.preview_btn.plus, div.preview_box.rc div.preview_btn.minus {
+  border: 2px solid black;
+  cursor: default;
+}
+
+div.preview_box:not(.rc) canvas.motif_box.minus, div.preview_box.rc canvas.motif_box.plus {
+  display: none;
+}
+
+div.preview_btn:hover {
+  background-color: black;
+  color: white;
+  border-color: black;
+}
+
+div.preview_box:not(.rc) div.preview_btn.plus:hover, div.preview_box.rc div.preview_btn.minus:hover {
+  background-color: transparent;
+  color: black;
+  border-color: black;
+}
+
+div.preview_btn_box {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  padding: 3px;
+}
+
+div.preview_logo_box {
+  height: 50px;
+  overflow-y: hidden;
+}
+
+div.preview_btn_box + div.preview_logo_box {
+  margin-left: 25px;
+}
+
+div.preview_box {
+  position: relative;
+}
+
+table.motifs {
+  border-collapse:collapse;
+}
+
+table.motifs:not(.remove_correlated) tr.bad {
+  background-color: #FDD;
+}
+
+table.motifs.remove_correlated tr.bad, table.motifs.remove_correlated td.remove, table.motifs.remove_correlated th.remove {
+  color: #AAA;
+}
+
+table.motifs.remove_correlated td.bad {
+  color: #F99;
+}
+
+table.motifs.remove_correlated tr.bad .preview_box {
+  color: black;
+  opacity: 0.3;
+}
+
+th.motif_ordinal {
+  text-align: center;
+}
+thead th.motif_ordinal {
+  text-align: right;
+  padding-right: 15px;
+}
+th.motif_logo {
+  padding-right: 10px;
+}
+td.motif_logo {
+  padding-right: 10px;
+}
+th.motif_id, th.motif_alt {
+  padding-right: 5px;
+}
+td.motif_id, td.motif_alt {
+  padding-left: 10px;
+  padding-right: 15px;
+}
+th.motif_width {
+  text-align: right;
+  padding-right: 5px;
+}
+td.motif_width {
+  text-align: right;
+  padding-right: 15px;
+}
+th.motif_similarity {
+  text-align: center;
+  padding-right: 5px;
+}
+td.motif_similarity {
+  text-align: right;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+td.motif_similarity.bad {
+  color: orange;
+}
+table.motifs:not(.remove_correlated) tr.bad td.motif_similarity.bad {
+  background-color: #F88;
+  color: black;
+}
+td.motif_same {
+  text-align: right;
+  padding-right: 15px;
+}

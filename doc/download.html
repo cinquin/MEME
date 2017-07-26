@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Download Releases - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+    <script src="js/shared-doc.js"></script>
+    <style>
+      iframe {
+        width: 100%;
+        height: 500px;
+        border-style:none;
+        margin: 0;
+        padding:0;
+      }
+    </style>
+    <script>
+      function viewport_height() {
+        if (typeof window.innerWidth != 'undefined') {
+          // the more standards compliant browsers (mozilla/netscape/opera/IE7)
+          // use window.innerWidth and window.innerHeight
+          return window.innerHeight
+        } else if (typeof document.documentElement != 'undefined' &&
+            typeof document.documentElement.clientWidth != 'undefined' 
+            && document.documentElement.clientWidth != 0) {
+          // IE6 in standards compliant mode (i.e. with a valid doctype as the first line in the document)
+          return document.documentElement.clientHeight
+        } else {
+          // older versions of IE
+          return document.getElementsByTagName('body')[0].clientHeight
+        }
+      }
+      function resize_dl_frame() {
+        var page, iframe, rect, scroll;      
+        page = (document.compatMode === "CSS1Compat") ? document.documentElement : document.body;
+        iframe = document.querySelector("iframe");
+        if (iframe == null) return;
+
+        rect = iframe.getBoundingClientRect();
+        scroll = ((typeof window.pageYOffset !== "undefined") ?
+            window.pageYOffset : document.body.scrollTop);
+        h = viewport_height() - (rect.top + scroll) - 20;
+        iframe.style.height = h + "px";
+      }
+      window.addEventListener('load', resize_dl_frame, false);
+      window.addEventListener('resize',resize_dl_frame, false); 
+    </script>
+  </head>
+  <body>
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <noscript><iframe src="http://meme-suite.org/meme-software/index.html"></iframe></noscript>
+    <script>
+      (function() {
+        // if you're reading this and wondering why on earth is he dynamically creating
+        // the iframe then the answer is browsers really really like to cache iframes...
+        var iframe = document.createElement("iframe");
+        iframe.id = "IF_" + new Date().getTime(); // prevent Safari from using old data.
+        iframe.src = "http://meme-suite.org/meme-software/index.html?nocache=" + new Date().getTime();
+        document.body.appendChild(iframe);
+      })();
+    </script>
+  </body>
+</html>
+

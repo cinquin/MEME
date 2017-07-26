@@ -1,0 +1,475 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>MAST</title>
+    <script src="mast_data.js"></script>
+    <script src="utilities.js"></script>
+    <script src="motif_logo.js"></script>
+    <script src="block_diagram.js"></script>
+    <script src="alphabet_utilities.js"></script>
+    <script src="mast_template.js"></script>
+    <link rel="stylesheet" type="text/css" href="meme.css">
+    <link rel="stylesheet" type="text/css" href="block_diagram.css">
+    <link rel="stylesheet" type="text/css" href="mast_template.css">
+  </head>
+  <body data-autobtns>
+    <span class="sequence ruler" id="ruler">ACGTN</span>
+
+    <!-- HELP POPUPS -->
+    <div class="pop_content" id="pop_motif_id">
+      <p>The name of the motif.</p>
+    </div>
+    <div class="pop_content" id="pop_motif_alt">
+      <p>The alternate name of the motif.</p>
+    </div>
+    <div class="pop_content" id="pop_motif_width">
+      <p>The width of the motif. No gaps are allowed in motifs supplied to MAST
+        as it only works for motifs of a fixed width.</p>
+    </div>
+    <div class="pop_content" id="pop_motif_bmatch">
+      <p>The sequence that would achieve the best possible match score and its
+        reverse complement for nucleotide motifs.</p>
+    </div>
+    <div class="pop_content" id="pop_motif_similarity">
+      <p>MAST computes the pairwise correlations between each pair of motifs. 
+        The correlation between two motifs is the maximum sum of Pearson's 
+        correlation coefficients for aligned columns divided by the width of 
+        the shorter motif. The maximum is found by trying all alignments of the
+        two motifs.</p> 
+        <p>Motifs with correlations below <b>0.60</b> have little effect on
+        the accuracy of the <i>E</i>-values computed by MAST. Motifs with higher
+        correlations with other motifs should be removed from the query. You can
+	also request MAST to remove redundant motifs from its analysis
+        under <b>Advanced options</b> from the MAST web page, 
+        or by specifying <code>--remcorr</code>
+        when running MAST on your own computer.</p>
+    </div>
+    <div class="pop_content" id="pop_sdb_name">
+      <p>The name of the (FASTA) sequence database file.</p>
+    </div>
+    <div class="pop_content" id="pop_sdb_count">
+      <p>The number of sequences in the database.</p>
+    </div>
+    <div class="pop_content" id="pop_sdb_residues">
+      <p>The number of residues in the sequence database.</p>
+    </div>
+    <div class="pop_content" id="pop_sdb_lastmod">
+      <p>The date of the last modification to the sequence database.</p>
+    </div>
+    <div class="pop_content" id="pop_mdb_name">
+      <p>The name of the file containing the (MEME-formatted) motifs used in the search.</p>
+    </div>
+    <div class="pop_content" id="pop_mdb_lastmod">
+      <p>The date of the last modification to the motif database.</p>
+    </div>
+    <div class="pop_content" id="pop_nos">
+      <p>This diagram shows the normal spacing of the motifs specified to MAST.</p>
+      <p>MAST will calculate larger <i>p</i>-values for sites that diverge from the order and spacing in the diagram.</p>
+    </div>
+    <div class="pop_content" id="pop_sequence">
+      <p>The name of the sequence. This maybe be linked to search a sequence database for the sequence name.</p>
+    </div>
+    <div class="pop_content" id="pop_evalue">
+      <p>The <a href="javascript:help_refine('pop_sequence_evalue')"
+        ><i>E</i>-value</a> of the sequence.</p>
+      <p>If strands were scored separately then there will be two 
+      <i>E</i>-values for the sequence separated by a slash (/). The score for the
+      provided sequence will be first and the score for the reverse-complement
+      will be second.
+      </p>
+    </div>
+    <div class="pop_content" id="pop_diagram" style="width:500px;">
+      <p>The block diagram shows the best non-overlapping tiling of motif matches on the sequence.
+         These motif matches are the ones used by MAST to compute the <i>E</i>-value for the sequence.
+         <b>Hovering the mouse cursor over a motif match causes the display of the motif name, 
+         position <i>p</i>-value of the match and other details in the hovering text.</b></p>
+      <ul style="padding-left: 1em; margin-top:5px;">
+        <li>The length of the line shows the length of a sequence relative to all the other sequences.</li>
+        <li>A block is shown where the <a
+          href="javascript:help_refine('pop_pos_pvalue')" >position
+          <i>p</i>-value</a>
+          of a motif is less (more significant) than the significance threshold,
+          which is 0.0001 by default.</li>
+        <li>If a significant motif match (as specified above) overlaps other
+        significant motif matches, then it is only displayed as a block if its
+        <a href="javascript:help_refine('pop_pos_pvalue')"
+          >position <i>p</i>-value</a> is less (more significant) then the
+        product of the <a href="javascript:help_refine('pop_pos_pvalue')"
+          >position <i>p</i>-values</a> of the significant matches that it
+        overlaps.</li>
+        <li>The position of a block shows where a motif has matched the sequence.</li>
+        <li><b>Complementable alphabets (like DNA) only:</b> Blocks displayed above the line are a match on the given sequence, whereas blocks 
+          displayed below the line are matches to the reverse-complement of the given sequence.</li>
+        <li><b>Complementable alphabets (like DNA) only:</b> When strands are scored separately, then blocks may overlap on opposing strands.</li>
+        <li>The width of a block shows the width of the motif relative to the length of the sequence.</li>
+        <li>The colour and border of a block identifies the matching motif as in the legend. 
+          <b>Note: You can change the color of a motif by clicking on the motif in the legend.</b></li>
+        <li>The height of a block gives an indication of the significance of the match as 
+          taller blocks are more significant. The height is calculated to be proportional 
+          to the negative logarithm of the <a href="javascript:help_refine('pop_pos_pvalue')" >position <i>p</i>-value</a>, 
+          truncated at the height for a <i>p</i>-value of 1e-10.</li>
+      </ul>
+    </div>
+    <div class="pop_content" id="pop_sequence_description">
+      <p>The description appearing after the identifier in the FASTA file used to specify the sequence.</p>
+    </div>
+    <div class="pop_content" id="pop_combined_pvalue">
+      <p>The <a href="javascript:help_refine('pop_seq_comb_pvalue')"
+        >combined <i>p</i>-value</a> of the sequence.<p>
+      <p>If strands were scored separately with a complementable alphabet then
+      there will be two <i>p</i>-values for the sequence separated by a slash (/). 
+      The score for the given sequence will be first and the score for the
+      reverse-complement will be second.</p>
+    </div>
+    <div class="pop_content" id="pop_frame">
+      <p>This indicates the offset used for translation of the DNA.</p>
+    </div>
+    <div class="pop_content" id="pop_annotated_sequence">
+      <p>The annotated sequence shows a portion of the sequence with the
+      matching motif sequences displayed above.</p>
+      <p>The displayed portion of the sequence can be modified by sliding the
+      two buttons below the sequence block diagram so that the portion you want
+      to see is between the two needles attached to the buttons. By default the
+      two buttons move together but you can drag one individually by holding
+      shift before you start the drag.<p>
+      <p>If the strands were scored separately then overlaps in motif sites may
+      occur so you can choose to display only one strand at a time. This is done
+      by selecting "Matches on given strand" or "Matches on opposite strand"
+      from the drop-down list.</p>
+    </div>
+    <div class="pop_content" id="pop_alph_name">
+      <p>The name of the alphabet symbol.</p>
+    </div>
+    <div class="pop_content" id="pop_alph_bg">
+      <p>The frequency of the alphabet symbol as defined by the background model.</p>
+    </div>
+
+    <div class="pop_content" id="pop_pos_score">
+      <p>The score for the match of a position in a sequence to a motif is
+      computed by by summing the appropriate entry from each column of the
+      position-dependent scoring matrix that represents the motif. Sequences
+      shorter than one or more of the motifs are skipped.</p>
+    </div>
+    <div class="pop_content" id="pop_pos_pvalue">
+      <p>The position <i>p</i>-value of a match is the probability of a single random
+      subsequence of the length of the motif <a 
+        href="javascript:help_refine('pop_pos_score')">scoring</a> at least as
+      well as the observed match.</p>
+    </div>
+    <div class="pop_content" id="pop_seq_pvalue">
+        <p>The sequence <i>p</i>-value of a score is defined as the probability of a
+        random sequence of the same length containing some match with as good or
+        better a <a href="javascript:help_refine('pop_pos_score')">score</a>.</p>
+    </div>
+    <div class="pop_content" id="pop_seq_comb_pvalue">
+        <p>The combined <i>p</i>-value of a sequence measures the strength of the match
+        of the sequence to all the motifs and is calculated by</p>
+        <ol>
+          <li>finding the <a href="javascript:help_refine('pop_pos_score')">score</a>
+          of the single best match of each motif to the sequence (best matches
+          may overlap),</li>
+          <li>calculating the <a href="javascript:help_refine('pop_seq_pvalue')">sequence <i>p</i>-value</a> 
+          of each score,</li>
+          <li>forming the product of the <i>p</i>-values,</li>
+          <li>taking the <i>p</i>-value of the product.</li>
+        </ol>
+    </div>
+    <div class="pop_content" id="pop_sequence_evalue">
+      <p>The <i>E</i>-value of a sequence is the expected number of sequences in a
+      random database of the same size that would match the motifs as well as
+      the sequence does and is equal to the <a
+        href="javascript:help_refine('pop_seq_comb_pvalue')">combined <i>p</i>-value</a> of
+      the sequence times the number of sequences in the database.</p>
+    </div>
+
+    <!-- TEMPLATES -->
+    <div class="template pop_block" id="t_hit_info">
+      <div>
+        <span class="tvar_logo_pad sequence flank" style="visibility:hidden;"></span>
+        <span class="tvar_logo"></span>
+      </div>
+      <div>
+        <span class="tvar_match_pad sequence flank" style="visibility:hidden;"></span>
+        <span class="tvar_match sequence"></span>
+      </div>
+      <div class="xlate">
+        <span class="tvar_xlate_pad sequence flank" style="visibility:hidden;"></span>
+        <span class="tvar_xlate sequence"></span>
+      </div>
+      <div class="block_sequence_fragment">
+        <span class="tvar_lflank sequence flank"></span>
+        <span class="tvar_hit sequence"></span>
+        <span class="tvar_rflank sequence flank"></span>
+      </div>
+      <table class="block_information">
+        <tr><th>Motif</th><td class="tvar_motif">1</td></tr>
+        <tr><th><i>p</i>-value</th><td class="tvar_pvalue">8.23e-7</td></tr>
+        <tr><th>Start</th><td class="tvar_start">23</td></tr>
+        <tr><th>End</th><td class="tvar_end">33</td></tr>
+      </table>
+    </div>
+
+    <div class="template box infobox" id="t_infobox">
+      <div>
+        Change the portion of annotated sequence by <b>dragging the buttons</b>; hold shift to drag them individually.
+      </div>
+      <div class="infoline">
+        <h5 class="inlineTitle">Sequence Comment:</h5> <span class="comment"></span> <div class="help" data-topic="pop_sequence_description"></div>
+      </div>
+      <div class="infoline">
+        <h5 class="inlineTitle">Combined <i>p</i>-value:</h5> 
+        <span class="pv_1"></span><span class="separate_pv"> / <span class="pv_2"></span></span> 
+        <div class="help" data-topic="pop_combined_pvalue"></div>
+      </div>
+      <h5>Annotated Sequence <div class="help" data-topic="pop_annotated_sequence"></div></h5>
+      <select class="strand_selector">
+        <option value="0">Matches on either strand</option>
+        <option value="1">Matches on given strand</option>
+        <option value="-1">Matches on opposite strand</option>
+      </select>
+      <div class="annotated_sequence_container">
+        <div class="annotated_sequence"></div>
+      </div>
+    </div>
+
+    <!-- PAGE START -->
+    <div id="top" class="pad1">
+      <div class="prog_logo big">
+        <img src="mast_icon.png" alt="MAST Logo"/>
+        <h1>MAST</h1>
+        <h2>Motif Alignment &amp; Search Tool</h2>
+      </div>
+      <p class="spaced">
+        For further information on how to interpret these results or to get a 
+        copy of the MEME software please access 
+        <a href="http://meme-suite.org/">http://meme-suite.org</a>. 
+      </p>
+      <p>If you use MAST in your research, please cite the following paper:<br />
+        <span class="citation">
+          Timothy L. Bailey and Michael Gribskov,
+          &quot;Combining evidence using p-values: application to sequence homology searches&quot;,
+          <i>Bioinformatics</i>, <b>14</b>(1):48-54, 1998.
+          <a href="http://bioinformatics.oxfordjournals.org/content/14/1/48">[pdf]</a>
+        </span>
+      </p>
+    </div>
+
+    <div id="navigation" class="pad2">
+      <a class="jump" href="#motifs">Motifs</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a class="jump" href="#results">Search Results</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a class="jump" href="#inputs">Inputs &amp; Settings</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a class="jump" href="#program">Program information</a>
+    </div>
+
+    <!-- alert the user when their browser is not up to the task -->
+    <noscript><h1 style="color:red">Javascript is required to view these results!</h1></noscript>
+    <h1 id="html5_warning" style="color:red; display:none;">Your browser does not support canvas!</h1>
+    <script> if (!window.HTMLCanvasElement) $("html5_warning").style.display = "block"; </script>
+
+    <div id="motifs" class="header">
+      <h2>Motifs</h2>
+      <span><a href="#results">Next</a>&nbsp;<a href="#">Top</a></span>
+    </div>
+    <div class="box">
+      <p id="remcorr_needed_msg">Motifs with a pale red background are very similar to other earlier
+      specified motifs and may be biasing the results.<br>
+      It is recommended that you re-run MAST and request it to remove redundant motifs.</p>
+      <p id="remcorr_used_msg">Motifs which are grayed-out were very similar to other earlier
+      specified motifs and were removed from the scan as you requested.</p>
+      <div id="motifs_table"></div>
+      <script>
+      $("remcorr_needed_msg").style.display = (data.bad_motif_count > 0 && !data.settings.remove_correlated ? "inline" : "none");
+      $("remcorr_used_msg").style.display = (data.bad_motif_count > 0 && data.settings.remove_correlated ? "inline" : "none");
+      $("motifs_table").appendChild(make_motifs_table());
+      </script>
+    </div>
+
+    <div id="results" class="header">
+      <h2>Search Results</h2>
+      <span><a href="#motifs">Prev</a>&nbsp;<a href="#inputs">Next</a>&nbsp;<a href="#">Top</a></span>
+    </div>
+    <div class="box">
+      <h4>Top Scoring Sequences</h4>
+      <div class="pad">
+        <script>
+          // Don't output a table if there are no significant sequences.
+          var string = '';
+	  if (data.sequences.length == 0) {
+            string += '<p><div class="help" data-topic="pop_sequence_evalue"></div>';
+            string += ' No sequences have an <i>E</i>-value</a> less than ' + data.settings.max_seq_evalue + '.</p>\n';
+            string += '<p>You might want to rerun the search with a higher <i>E</i>-value threshold </br \>\n';
+            string += '(under "Advanced options" in the MAST web input form or using <tt>-ev</tt> on the MAST command-line).</p>\n';
+	  } else {
+            string += '<p>Each of the following ' + data.sequences.length + ' sequences has an <i>E</i>-value less than\n';
+            string += data.settings.max_seq_evalue + '.<br />\n';
+            string += 'The motif matches shown have a position <i>p</i>-value less than ' + data.settings.max_weak_pvalue + '.<br />\n';
+            string += '<b>Hover the cursor</b> over the sequence name to view more information about a sequence.<br />\n';
+            string += '<b>Hover the cursor</b> over a motif for more information about the match.<br />\n';
+            string += '<b>Click on the arrow</b> (&#8615;) next to the <i>E</i>-value to see the sequence surrounding each match.</p>\n';
+          }
+          document.write(string);
+        </script>
+        <div id="seqs_legend_top" class="legend_container"></div>
+        <table id="seqs_table" class="seqs_table">
+        </table>
+        <div id="seqs_legend_bottom" class="legend_container"></div>
+      </div>
+      <script>if (data.sequences.length > 0) { make_seq_table(); }</script>
+    </div>
+
+    <div id="inputs" class="header">
+      <h2>Inputs &amp; Settings</h2>
+      <span><a href="#results">Prev</a>&nbsp;<a href="#program">Next</a>&nbsp;<a href="#">Top</a></span>
+    </div>
+    <div class="box">
+      <h4 id="motif_databases">Alphabet</h4>
+      <div class="pad" id="alph_container"></div>
+      <script> 
+        (function() {
+         var container = $("alph_container");
+         container.innerHTML = "";
+         container.appendChild(make_alpha_bg_table(mast_alphabet));
+        })();
+      </script>
+      <div id="seq_alph_sec" style="display:none">
+        <h4 id="motif_databases">Sequence Alphabet</h4>
+        <div class="pad" id="seq_alph_container"></div>
+      </div>
+      <script>(function() {
+        if (data.sequence_alphabet != null) {
+          var container = $("seq_alph_container");
+          container.innerHTML = "";
+          container.appendChild(make_alpha_bg_table(mast_seq_alphabet));
+          $("seq_alph_sec").style.display = "block"; 
+        }
+      })();
+      </script>
+      <h4 id="sequence_databases">Sequences</h4>
+      <div class="pad">
+        <p>The following sequence database<span id="sdb_plural">s were</span> supplied to MAST.</p>
+        <script> 
+          (function() {
+            var node = $("sdb_plural");
+            node.innerHTML = "";
+            if (data.sequence_dbs.length > 1) {
+              node.appendChild(document.createTextNode("s were"));
+            } else {
+              node.appendChild(document.createTextNode(" was"));
+            }
+          })();
+        </script>
+        <table class="padded-table" border="0" >
+          <thead>
+            <tr>
+              <th style="text-align:left;" >Database <div class="help" data-topic="pop_sdb_name"></div></th>
+              <th>Sequence Count <div class="help" data-topic="pop_sdb_count"></div></th>
+              <th>Residue Count <div class="help" data-topic="pop_sdb_residues"></div></th>
+              <th>Last Modified <div class="help" data-topic="pop_sdb_lastmod"></div></th>
+            </tr>
+          </thead>
+          <tbody id="sequence_db_stats"></tbody>
+          <tfoot id="sequence_db_summary"></tfoot>
+        </table>
+        <script>make_sequence_databases_table();</script>
+      </div>
+      <h4 id="motif_databases">Motifs</h4>
+      <div class="pad">
+        <p>The following motif database<span id="mdb_plural">s were</span> supplied to MAST.</p>
+        <script> 
+          (function() {
+            var node = $("mdb_plural");
+            node.innerHTML = "";
+            node.appendChild(document.createTextNode((data.motif_dbs.length > 1 ? "s were" : " was")));
+          })();
+        </script>
+        <table class="padded-table" border="0" >
+          <thead>
+            <tr>
+              <th style="text-align:left;" >Database <div class="help" data-topic="pop_mdb_name"></div></th>
+              <th>Last Modified <div class="help" data-topic="pop_mdb_lastmod"></div></th>
+            </tr>
+          </thead>
+          <tbody id="motif_db_stats"></tbody>
+        </table>
+        <script>make_motif_databases_table();</script>
+      </div>
+
+      <div id="nos_sec">
+        <h4 id="nos">Nominal Order and Spacing <div class="help" data-topic="pop_nos"></div></h4>
+        <div class="pad">
+          <p>The expected order and spacing of the motifs (as specified by you).</p>
+          <table class="nos_table" id="nos_table"></table>
+        </div>
+      </div>
+      <script>make_nos_diagram();</script>
+      
+      <h4>Other Settings</h4>
+      <table id="tbl_settings" class="inputs hide_advanced">
+        <tr>
+          <th>Strand Handling</th>
+          <td id="opt_strand_handling"></td>
+        </tr>
+        <tr>
+          <th>Max Correlation</th>
+          <td id="opt_max_correlation"></td>
+        </tr>
+        <tr>
+          <th>Remove Correlated</th>
+          <td id="opt_remove_correlated"></td>
+        </tr>
+        <tr>
+          <th>Max Sequence <i>E</i>-value</th>
+          <td id="opt_seq_evalue"></td>
+        </tr>
+        <tr>
+          <th>Adjust Hit <i>p</i>-value</th>
+          <td id="opt_adjust_hit"></td>
+        </tr>
+        <tr>
+          <th>Displayed Hits</th>
+          <td id="opt_max_hit_pvalue"></td>
+        </tr>
+        <tr>
+          <th>Displayed Weak Hits</th>
+          <td id="opt_weak_hit_pvalue"></td>
+        </tr>
+      </table>
+      <script>make_other_settings();</script>
+    </div>
+
+    <div id="program" class="bar">
+      <div style="text-align:right;"><a href="#inputs">Prev</a>&nbsp;<a href="#top">Top</a></div>
+      <div class="subsection">
+        <h5 id="version">MAST version <span id="release_version"></span></h5>
+        (Release date: <span id="release_date"></span>)
+      </div>
+      <script>
+      $("release_version").textContent = data.version;
+      $("release_date").textContent = data.release;
+      </script>
+      <div class="subsection">
+        <h5 id="reference">Reference</h5>
+        <span class="citation">
+          Timothy L. Bailey and Michael Gribskov,
+          &quot;Combining evidence using p-values: application to sequence homology searches&quot;,
+          <i>Bioinformatics</i>, <b>14</b>(1):48-54, 1998.
+        </span>
+      </div>
+      <div class="subsection">
+        <h5 id="command">Command line summary</h5>
+        <textarea id="cmd" rows="5" style="width:100%;" readonly="readonly"></textarea>
+        Ran in <span id="run_time"></span> on <span id="run_when"></span> on <span id="run_host"></span>
+      </div>      
+      <script>
+        $("cmd").value =  data.cmd.join(" ");
+        $("run_time").textContent = data.runtime.seconds + " seconds";
+        $("run_when").textContent = data.runtime.when;
+        $("run_host").textContent = data.runtime.host;
+      </script>
+    </div>
+  </body>
+</html>

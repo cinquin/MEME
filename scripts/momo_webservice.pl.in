@@ -1,0 +1,182 @@
+#!@WHICHPERL@
+=head1 NAME
+
+momo_webservice - Run MOMO program
+
+=head1 SYNOPSIS
+
+momo_webservice [options] [-psm <psm file> 
+                            [ -filter_field <encoded field name> 
+                              -filter_type lt|lteq|eq|gteq|gt 
+                              -filter_thresh <threshold> ]? ]+
+
+  PSM arguments:
+    -psm <psm file>                       Specify a PSM file for processing
+    -filter_field <encoded field name>    Specify a field of the previously
+                                           specified PSM file to filter on.
+    -filter_type lt|lteq|eq|gteq|gt       Specify the filtering type for the
+                                           previously specified PSM file as: 
+                                            lt   - less than,
+                                            le   - less than or equal,
+                                            eq   - equal,
+                                            ge   - greater than or equal, or
+                                            gt   - greater than.
+    -filter_thresh <threshold>            Specify the number used to filter the
+                                           previously specified PSM file.
+
+  Flank Sequence arguments:
+    -flank <FASTA file>                   Specify a protein FASTA file
+                                           containing flanking sequence;
+                                           any paths begining with db/ are
+                                           pre-existing databases.
+    -purge <score>                        Run purge on an uploaded flanking
+                                           sequence with the given threshold.
+  
+  Options: 
+    -occurs <num>     Set the minimum number of occurences.
+    -width <width>     Set the width of the motif.
+    -single_per_mass  A single motif will be generated for each distinct
+                       modification mass.
+    -help             Show this brief help message.
+
+=cut
+
+use strict;
+use warnings;
+# load standard perl libraries
+use Getopt::Long qw(:config permute auto_help);
+use Pod::Usage;
+# load custom perl libraries
+use lib qw(@PERLLIBDIR@);
+use StatusPage qw(arg_checks arg_end parse_uploaded opt_db_or_uploaded opt_choice opt_encoded opt_integer opt_number);
+
+# constants
+my $bin_dir = '@BINDIR@';
+my $fasta_db_dir = '@MEMEDB@/fasta_databases';
+# required parameters
+my @psms = (); # list of PSM objects with optional filters
+my ($filter_field, $filter_type, $filter_thresh);
+# Flank arguments
+my ($flank_file, $flank_purge);
+# option defaults
+my $eliminate_width = 0;
+my $width = 7;
+my $occurs;
+my $fg_filetype;
+my $psm_column_name;
+my $single_per_mass = 0; # FALSE
+my ($count_threshold, $score_threshold);
+my $algorithm;
+#status page
+my $status = new StatusPage('MOMO', \@ARGV);
+$status->add_message('Parsing arguments');
+# parse options
+my @arg_errors = ();
+my $opts_ok = do {
+  local $SIG{__WARN__} = sub { my ($msg) = @_; chomp($msg); push(@arg_errors, $msg); };
+  GetOptions(
+  '<>' => arg_checks(arg_end()),
+  'psm=s' => sub {
+    my ($opt, $value) = @_; my $file;
+    parse_uploaded($opt, $value, \$file);
+    push(@psms, {file => $file});
+  },
+#  'filter_field=s' => sub {
+#    my ($opt, $value) = @_;
+#    die("Option -$opt must only appear after a -psm option.") unless (@psms);
+#    die("Option -$opt must only be listed once per -psm option.") if (defined($psms[-1]->{field}));
+#    parse_encoded($opt, $value, \$psms[-1]->{field});
+#  },
+#  'filter_type=s' => sub {
+#    my ($opt, $value) = @_;
+#    die("Option -$opt must only appear after a -psm option.") unless (@psms);
+#    die("Option -$opt must only be listed once per -psm option.") if (defined($psms[-1]->{type}));
+#    parse_choice($opt, $value, \$psms[-1]->{type}, 'lt', 'le', 'eq', 'ge', 'gt');
+#  },
+#  'filter_thresh=f' => sub {
+#    my ($opt, $value) = @_;
+#    die("Option -$opt must only appear after a -psm option.") unless (@psms);
+#    die("Option -$opt must only be listed once per -psm option.") if (defined($psms[-1]->{thresh}));
+#    $psms[-1]->{thresh} = $value;
+#  },
+  'filter_field=s' => opt_encoded(\$filter_field),
+  'filter_type=s' => opt_choice(\$filter_type, 'lt', 'le', 'eq', 'ge', 'gt'),
+  'filter_thresh=f' => opt_number(\$filter_thresh, '>', 0),
+  'fg_filetype=s' => opt_choice(\$fg_filetype, 'psm', 'prealigned', 'fasta'),
+  'psm_column_name=s' => opt_encoded(\$psm_column_name),
+  'flank=s' => opt_db_or_uploaded(\$flank_file, $fasta_db_dir, 'db'),
+  'occurs=i' => opt_integer(\$occurs, 1),
+  'eliminate_width=i' => opt_integer(\$eliminate_width, 0, 50),
+  'width=i' => opt_integer(\$width, 1, 51),
+  'count_threshold=i' => opt_integer(\$count_threshold, 1, 50),
+  'score_threshold=f' => opt_number(\$score_threshold, '<', 1),
+  'score_threshold=f' => opt_number(\$score_threshold, '>', 0),
+  'algorithm=s' => opt_choice(\$algorithm, 'alg_simp', 'alg_mtfx', 'alg_modl'),
+  'single_per_mass' => \$single_per_mass
+  );
+};
+# add additional error messages for missing sequences and motifs
+push(@arg_errors, "No PSMs provided.") unless @psms;
+for (my $i = 0; $i < scalar(@psms); $i++) {
+  my $psm = $psms[$i];
+#  if (defined($psm->{field}) || defined($psm->{type}) || defined($psm->{thresh})) {
+#    unless (defined($psm->{field}) && defined($psm->{type}) && defined($psm->{thresh})) {
+#      push(@arg_errors, "Missing filter fields for \"" . $psm->{file} . "\".");
+#    }
+#  }
+}
+# display the error messages both to the status page and stdout
+foreach my $arg_error (@arg_errors) {
+  print STDERR $arg_error, "\n";
+  $status->add_message($arg_error);
+}
+$opts_ok = 0 if (scalar(@arg_errors) > 0);
+# setup status page
+
+$status->add_file('html', 'momo.html', 'MOMO HTML output');
+$status->add_file('txt', 'momo.txt', 'MOMO TXT output');
+
+for (my $i = 0; $i < scalar(@psms); $i++) {
+  $status->add_file('psm'.$i, $psms[$i]->{file}, 'Peptide-spectrum matches file ' . ($i + 1));
+}
+$status->add_file('flank', $flank_file, 'Match flanks');
+$status->add_message($opts_ok ? 'Arguments ok' : "Error parsing arguments");
+$status->update($opts_ok ? 'Starting' : 'Error');
+# exit if there was an error reading the arguments
+unless ($opts_ok) {
+  $status->write_log();
+  pod2usage(2);
+}
+
+#TODO put call to actual MOMO program here
+
+my $alg_string;
+$alg_string = "simple" if ($algorithm eq 'alg_simp');
+$alg_string = "motifx" if ($algorithm eq 'alg_mtfx');
+$alg_string = "modl" if ($algorithm eq 'alg_modl');
+
+my @momo_args = ($alg_string, '-oc', '.', '--verbosity', 1);
+push(@momo_args, '--protein-database', $flank_file) if (defined($flank_file));
+push(@momo_args, '--min-occurrences', $occurs) if (defined($occurs));
+push(@momo_args, '--width', $width);
+if (defined($filter_field) && defined($filter_type) && defined($filter_thresh)) {
+  my $filter_string = "$filter_field,$filter_type,$filter_thresh";
+  push(@momo_args, '--filter', $filter_string) 
+}
+push(@momo_args, '--count-threshold', $count_threshold) if (defined($count_threshold));
+push(@momo_args, '--score-threshold', $score_threshold) if (defined($score_threshold));
+push(@momo_args, '--fg-filetype', $fg_filetype) if (defined($fg_filetype));
+push(@momo_args, '--sequence-column', $psm_column_name) if (defined($psm_column_name));
+push(@momo_args, '--eliminate-repeats', $eliminate_width);
+push(@momo_args, '--single-motif-per-mass', 'T') if ($single_per_mass != 0);
+for (my $i = 0; $i < scalar(@psms); $i++) {
+  push(@momo_args, ($psms[$i])->{file});
+}
+$status->run(PROG => 'momo', BIN => $bin_dir, ARGS => \@momo_args);
+
+# done
+$status->add_message("Done");
+$status->update();
+$status->write_log();
+1;
+

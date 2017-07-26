@@ -1,0 +1,1328 @@
+#!@WHICHPERL@
+
+=head1 NAME
+
+mast_xml_to_txt - Make a MAST text output from a MAST XML output.
+
+=head1 SYNOPSIS
+
+mast_xml_to_txt <MAST XML file> <MAST text file>
+=cut
+
+use strict;
+use warnings;
+
+use Carp qw(confess);
+use Cwd qw(abs_path);
+use Data::Dumper;
+use Encode qw(encode_utf8 decode_utf8);
+use Fcntl qw(O_RDONLY O_WRONLY O_CREAT O_TRUNC SEEK_SET SEEK_CUR SEEK_END);
+use File::Basename qw(fileparse);
+use File::Copy;
+use File::Spec::Functions qw(tmpdir);
+use File::Temp qw(tempfile);
+use Getopt::Long;
+use Pod::Usage;
+use XML::Parser::Expat;
+
+use lib '@PERLLIBDIR@';
+
+my $INT_SIZE = length(pack('l', 0));
+my $DBL_SIZE = length(pack('d', 0));
+
+# some constants
+my $MAX_COMMENT_LINES = 10;
+my $PAGE_WIDTH = 80; # try to keep within this many columns
+my $NAME_WIDTH = 34; # length of the name column
+my $EV_WIDTH = 8; # length of the E-value column
+my $SLEN_WIDTH = 6; # length of the sequence length column
+my $STRAND_WIDTH = 6; # length of the strand column
+my $FRAME_WIDTH = 5; # length of the frame column
+my $COMMENT_WIDTH = $PAGE_WIDTH - ($NAME_WIDTH + 1) - 1 - ($EV_WIDTH + 1) - $SLEN_WIDTH;
+
+my $etc_dir;
+my $temp_dir;
+my $scripts_dir;
+
+#
+# initialise the global constants
+# 
+sub initialise {
+  # setup etc dir
+  $etc_dir = defined($ENV{MEME_ETC_DIR}) ? $ENV{MEME_ETC_DIR} : '@APPCONFIGDIR@';
+  # setup temporary directory
+  $temp_dir = '@TMP_DIR@';
+  # use the perl default if none is supplied or the replace fails
+  $temp_dir = tmpdir() if ($temp_dir eq '' || $temp_dir =~ m/^\@TMP[_]DIR\@$/);
+
+  # find the location of the script
+  my $script_name;
+  ($script_name, $scripts_dir) = fileparse(__FILE__);
+  $scripts_dir = abs_path($scripts_dir);
+
+  # add script location to search path
+  unshift(@INC, $scripts_dir);
+
+  require HtmlMonolithWr;
+  require MastSAX;
+}
+
+sub arguments {
+  # Set Option Defaults
+  my $options = {XML_PATH => undef, TXT_PATH => undef, DOC => 1};
+  # General Options
+  my $help = 0; # FALSE
+  my @errors = ();
+
+  # get the options from the arguments
+  my $options_success = 0; # FALSE
+  # redirect stderr to a temp file so we can get the error message from GetOptions
+  my $olderr;
+  my $tmperr = tempfile('GetOptions_XXXXXXXXXX', DIR => $temp_dir, UNLINK => 1);
+  open($olderr, ">&STDERR") or confess("Can't dup STDERR: $!");
+  open(STDERR, '>&', $tmperr) or confess("Can't redirect STDERR to temp file: $!");
+  # parse options
+  $options_success = GetOptions(
+    'help|?'          => \$help,
+  );
+  ($options->{XML_PATH}, $options->{TXT_PATH}) = @ARGV;
+  # display help
+  pod2usage(1) if $help;
+  # reset STDERR
+  open(STDERR, ">&", $olderr) or confess("Can't reset STDERR: $!");
+  # read argument parsing errors
+  seek($tmperr, 0, SEEK_SET);
+  while (<$tmperr>) {chomp; push(@errors, $_);}
+  close($tmperr);
+  # check source XML file
+  unless (defined($options->{XML_PATH})) {
+    push(@errors, "No MAST XML file specified");
+  } elsif (not -e $options->{XML_PATH}) {
+    push(@errors, "The MAST XML file specified does not exist");
+  }
+  unless (defined($options->{TXT_PATH})) {
+    push(@errors, "No output file specified");
+  }
+  # print errors
+  foreach my $error (@errors) {
+    print STDERR $error, "\n";
+  }
+  pod2usage(2) if @errors;
+  # return options
+  return $options;
+}
+
+sub _start_mast {
+  my ($info, $version, $release) = @_;
+  $info->{version} = $version;
+  $info->{release} = $release;
+}
+
+sub _handle_command_line {
+  my ($info, @args) = @_;
+  $info->{args} = \@args;
+}
+
+sub _handle_settings {
+  my ($info, $strand_handling, $max_correlation, $remove_correlated,
+    $max_seq_evalue, $adjust_hit, $max_hit_pvalue, $max_weak_pvalue) = @_;
+  $info->{strand_handling} = $strand_handling;
+  $info->{max_correlation} = $max_correlation;
+  $info->{remove_correlated} = $remove_correlated;
+  $info->{max_seq_evalue} = $max_seq_evalue;
+  $info->{max_hit_pvalue} = $max_hit_pvalue;
+  $info->{max_weak_pvalue} = $max_weak_pvalue;
+  $info->{adj_hit_pvalue} = $adjust_hit;
+}
+
+sub _handle_alphabet {
+  my ($info, $alph) = @_;
+  $info->{alph} = $alph;
+}
+
+sub _handle_sequence_alphabet {
+  my ($info, $seq_alph) = @_;
+  $info->{seq_alph} = $seq_alph;
+}
+
+sub _handle_translate {
+  my ($info, $num_seq, $num_mot) = @_;
+  $info->{xnum} = $num_seq;
+}
+
+sub _handle_background {
+  my ($info, $from, @probs) = @_;
+  $info->{bg_source} = $from;
+  $info->{bg_freqs} = [@probs];
+}
+
+sub _start_motif_dbs {
+  my ($info) = @_;
+  $info->{motif_dbs} = [];
+}
+
+sub _handle_motif_db {
+  my ($info, $source, $name, $last_mod_date) = @_;
+  my $motifdb = {
+    name => (defined $name ? $name : scalar fileparse($source))
+  };
+  push(@{$info->{motif_dbs}}, $motifdb);
+}
+
+sub _end_motif_dbs {
+  my ($info) = @_;
+}
+
+sub _start_motifs {
+  my ($info) = @_;
+  $info->{motifs} = [];
+}
+
+sub _handle_motif {
+  my ($info, $db, $id, $alt, $len, $nsites, $evalue, $bad, $url, $psm) = @_;
+  # convert the psm into the best match
+  my $alph = $info->{alph};
+  my @bg = @{$info->{bg_freqs}};
+  my $best_f = '';
+  for (my $i = 0; $i < scalar(@{$psm}); $i++) {
+    my $best_index = -1;
+    my $best_score = '-inf';
+    for (my $j = 0; $j < scalar(@{$psm->[$i]}); $j++) {
+      my $score = $psm->[$i]->[$j];
+      if ($score > $best_score) {
+        $best_index = $j;
+        $best_score = $score;
+      }
+    }
+    $best_f .= $alph->char($best_index);
+  }
+  my $best_r = undef;
+  if (defined $info->{seq_alph}) {
+    if ($info->{seq_alph}->has_complement()) {
+      # reverse but don't complement
+      $best_r = reverse $best_f;
+    }
+  } elsif ($alph->has_complement()) {
+    # reverse complement
+    $best_r = $alph->rc_seq($best_f); 
+  }
+  # create a motif object
+  $alt = "-" unless (defined $alt);	# Make sure "alt" is defined.
+  my $motif = {
+    db => $db,
+    id => $id,
+    alt => $alt,
+    bad => $bad,
+    len => $len,
+    best_f => $best_f,
+    best_r => $best_r
+  };
+  push(@{$info->{motifs}}, $motif);
+}
+
+sub _end_motifs {
+  my ($info) = @_;
+}
+
+sub _start_correlations {
+  my ($info) = @_;
+  $info->{correlation} = {};
+}
+
+sub _handle_correlation {
+  my ($info, $idx_a, $idx_b, $value) = @_;
+  if ($idx_a < $idx_b) {
+    my $tmp = $idx_a;
+    $idx_a = $idx_b;
+    $idx_b = $tmp;
+  }
+  my $set = $info->{correlation};
+  $set->{$idx_a} = {} unless defined $set->{$idx_a};
+  $set->{$idx_a}->{$idx_b} = $value;
+}
+
+sub _end_correlations {
+  my ($info) = @_;
+}
+
+sub _start_nos {
+  my ($info) = @_;
+  $info->{nos} = '';
+}
+
+sub _handle_expect {
+  my ($info, $gap, $idx) = @_;
+  $info->{nos} .= '_' . $gap if defined $gap;
+  $info->{nos} .= '_' if length($info->{nos});
+  $info->{nos} .= '[' . ($idx + 1) . ']';
+}
+
+sub _end_nos {
+  my ($info) = @_;
+}
+
+sub _start_sequence_dbs {
+  my ($info) = @_;
+  $info->{sequence_dbs} = [];
+}
+
+sub _handle_sequence_db {
+  my ($info, $source, $name, $last_mod_date, $sequence_count, $residue_count) = @_;
+  my $seqdb = {
+    name => (defined $name ? $name : scalar fileparse($source)),
+    timestamp => $last_mod_date,
+    nseq => $sequence_count,
+    nres => $residue_count
+  };
+  push(@{$info->{sequence_dbs}}, $seqdb);
+}
+
+sub _end_sequence_dbs {
+  my ($info) = @_;
+}
+
+sub _start_sequences {
+  my ($info) = @_;
+  $info->{matching_nseqs} = 0;
+  $info->{postponed_scores} = [];
+}
+
+sub _start_sequence {
+  my ($info, $db, $name, $comment, $length) = @_;
+  $info->{matching_nseqs} += 1 if ($info->{strand_handling} ne 'separate');
+  my $seq = {
+    db => $db,
+    name => $name,
+    comment => $comment,
+    length => $length,
+    scores => [],
+    segs => [],
+    hits => []
+  };
+  $info->{seq} = $seq;
+}
+
+sub _handle_score {
+  my ($info, $strand, $combined_pvalue, $evalue, $frame) = @_;
+  $info->{matching_nseqs} += 1 if ($info->{strand_handling} eq 'separate');
+  my $score = {
+    strand => ($strand eq 'both' ? 0 : ($strand eq 'forward' ? 1 : -1)),
+    pvalue => $combined_pvalue,
+    evalue => $evalue,
+    frame => defined $frame ? ord($frame) - ord('a') : undef
+  };
+  push(@{$info->{seq}->{scores}}, $score);
+}
+
+sub _start_seg {
+  my ($info, $start_pos) = @_;
+  my $seg = {
+    start_pos => $start_pos - 1, # change to zero indexed
+    sequence => undef,
+    hits => []
+  };
+  $info->{seg} = $seg;
+}
+
+sub _handle_data {
+  my ($info, $sequence) = @_;
+  $info->{seg}->{sequence} = $sequence;
+}
+
+sub _handle_hit {
+  my ($info, $pos, $idx, $rc, $pvalue, $match, $translation) = @_;
+  my $hit = {
+    pos => $pos - 1, # change to zero indexed
+    motif => $idx,
+    rc => $rc,
+    pvalue => $pvalue,
+    match => $match,
+    translation => $translation
+  };
+  push(@{$info->{seg}->{hits}}, $hit);
+}
+
+sub _end_seg {
+  my ($info) = @_;
+  push(@{$info->{seq}->{segs}}, $info->{seg});
+  push(@{$info->{seq}->{hits}}, @{$info->{seg}->{hits}});
+  $info->{seg} = undef;
+}
+
+
+sub _end_sequence {
+  my ($info) = @_;
+  my $seq = $info->{seq};
+  $info->{seq} = undef;
+  my ($good_score, $worse_score) = @{$seq->{scores}};
+  if (defined $worse_score) {
+    if (&compare_scores($good_score, $worse_score) > 0) {
+      my $tmp = $good_score;
+      $good_score = $worse_score;
+      $worse_score = $tmp;
+    }
+  }
+  # process any better scores that were postponed
+  if (scalar @{$info->{postponed_scores}} > 0) {
+    @{$info->{postponed_scores}} = sort { &compare_scores($a, $b) } @{$info->{postponed_scores}};
+    my $i;
+    for ($i = 0; $i < scalar @{$info->{postponed_scores}}; $i++) {
+      my $score = $info->{postponed_scores}->[$i];
+      if (&compare_scores($score, $good_score) <= 0) {
+        my $other_seq = &retrieve_seq($info, $score->{file_loc});
+        &process_seq($info, $other_seq, $score);
+      } else {
+        last;
+      }
+    }
+    # remove the used postponed scores
+    splice(@{$info->{postponed_scores}}, 0, $i)
+  }
+  # output the best existing score
+  &process_seq($info, $seq, $good_score);
+  if (defined $worse_score) {
+    # store the sequence for later retrieval
+    $worse_score->{file_loc} = &store_seq($info, $seq);
+    push(@{$info->{postponed_scores}}, $worse_score);
+  }
+}
+
+sub _end_sequences {
+  my ($info) = @_;
+  if (scalar @{$info->{postponed_scores}} > 0) {
+    @{$info->{postponed_scores}} = sort { &compare_scores($a, $b) } @{$info->{postponed_scores}};
+    for (my $i = 0; $i < scalar @{$info->{postponed_scores}}; $i++) {
+      my $score = $info->{postponed_scores}->[$i];
+      my $seq = &retrieve_seq($info, $score->{file_loc});
+      &process_seq($info, $seq, $score);
+    }
+    @{$info->{postponed_scores}} = ();
+  }
+}
+
+sub _handle_runtime {
+  my ($info, $host, $when, $cycles, $seconds) = @_;
+  $info->{host} = $host;
+  $info->{runtime} = $seconds;
+}
+
+sub _end_mast {
+  my ($info) = @_;
+}
+
+sub load_xml {
+  my ($xml_path) = @_;
+  my $data = {
+    xnum => 1
+  };
+
+  my $sax = new MastSAX($data,
+    start_mast => \&_start_mast,
+    handle_command_line => \&_handle_command_line,
+    handle_settings => \&_handle_settings,
+    handle_alphabet => \&_handle_alphabet,
+    handle_sequence_alphabet => \&_handle_sequence_alphabet,
+    handle_translate => \&_handle_translate,
+    handle_background => \&_handle_background,
+    start_motif_dbs => \&_start_motif_dbs,
+    handle_motif_db => \&_handle_motif_db,
+    end_motif_dbs => \&_end_motif_dbs,
+    start_motifs => \&_start_motifs,
+    handle_motif => \&_handle_motif,
+    end_motifs => \&_end_motifs,
+    start_correlations => \&_start_correlations,
+    handle_correlation => \&_handle_correlation,
+    end_correlations => \&_end_correlations,
+    start_nos => \&_start_nos,
+    handle_expect => \&_handle_expect,
+    end_nos => \&_end_nos,
+    start_sequence_dbs => \&_start_sequence_dbs,
+    handle_sequence_db => \&_handle_sequence_db,
+    end_sequence_dbs => \&_end_sequence_dbs,
+    start_sequences => \&_start_sequences,
+    start_sequence => \&_start_sequence,
+    handle_score => \&_handle_score,
+    start_seg => \&_start_seg,
+    handle_data => \&_handle_data,
+    handle_hit => \&_handle_hit,
+    end_seg => \&_end_seg,
+    end_sequence => \&_end_sequence,
+    end_sequences => \&_end_sequences,
+    handle_runtime => \&_handle_runtime,
+    end_mast => \&_end_mast
+  );
+  my $fh;
+  sysopen($fh, $xml_path, O_RDONLY) or confess("Failed to open file \"$xml_path\"\n");
+  while (<$fh>) {
+    $sax->parse_more($_);
+    if ($sax->has_errors()) {
+      confess("Failed to write text output due to errors processing the XML:\n" . join("\n", $sax->get_errors()));
+    }
+  }
+  $sax->parse_done();
+  if ($sax->has_errors()) {
+    confess("Failed to write text output due to errors processing the XML:\n" . join("\n", $sax->get_errors()));
+  }
+  return $data;
+}
+
+sub write_text {
+  my ($txt_path, $doc, $data) = @_;
+  my $stars = ("*" x 80) . "\n";
+  my $alph = $data->{alph};
+  my $seq_alph = (defined($data->{seq_alph}) ? $data->{seq_alph} : $alph);
+  my $seq_alph_name = (
+    $seq_alph->is_dna() ? "nucleotide" : (
+      $seq_alph->is_protein() ? "peptide" : $seq_alph->name()));
+  my $motif_alph_name = (
+    $alph->is_dna() ? "nucleotide" : (
+      $alph->is_protein() ? "peptide" : $alph->name()));
+  
+  my $fh;
+  sysopen($fh, $txt_path, O_WRONLY | O_CREAT | O_TRUNC) or confess("Failed to open file \"$txt_path\" for writing\n");
+  
+  print $fh
+    $stars,
+    "MAST - Motif Alignment and Search Tool\n",
+    $stars,
+    "\tMAST version $data->{version} (Release date: $data->{release})\n\n",
+    "\tFor further information on how to interpret these results or to get\n",
+    "\ta copy of the MAST software please access http://meme-suite.org .\n",
+    $stars,
+    "\n\n",
+    $stars,
+    "REFERENCE\n",
+    $stars,
+    "\tIf you use this program in your research, please cite:\n\n",
+    "\tTimothy L. Bailey and Michael Gribskov,\n",
+    "\t\"Combining evidence using p-values: application to sequence homology\n",
+    "\tsearches\", Bioinformatics, 14(48-54), 1998.\n",
+    $stars,
+    "\n\n",
+    $stars,
+    "DATABASE AND MOTIFS\n",
+    $stars;
+  # print info on sequence databases
+  for (my $i = 0; $i < scalar(@{$data->{sequence_dbs}}); $i++) {
+    my $seqdb = $data->{sequence_dbs}->[$i];
+    print $fh "\tDATABASE $seqdb->{name} ($seq_alph_name)\n",
+      "\tLast updated on $seqdb->{timestamp}\n",
+      "\tDatabase contains $seqdb->{nseq} sequences, $seqdb->{nres} residues\n\n";
+  }
+  # print handling of strands
+  # combine|separate|norc|unstranded
+  if ($data->{strand_handling} eq 'combine') {
+    print $fh "\tScores for positive and reverse complement strands are combined.\n\n";
+  } elsif ($data->{strand_handling} eq 'separate') {
+    print $fh "\tPositive and reverse complement strands are scored separately.\n\n";
+  } elsif ($data->{strand_handling} eq 'norc') {
+    print $fh "\tReverse complement strands are not scored.\n\n";
+  }
+  # get the maximum widths for the ID and ALT_ID
+  my $m_width = 5;
+  my $id_width = 2;
+  my $alt_id_width = 6;
+  my $w_width = 5;
+  my $bpm_width = 19;
+  for (my $j = 0; $j < scalar(@{$data->{motifs}}); $j++) {
+    my $motif = $data->{motifs}->[$j];
+    if (defined $motif->{id} && length($motif->{id}) > $id_width) { $id_width = length($motif->{id}); }
+    if (defined $motif->{alt} && length($motif->{alt}) > $alt_id_width) { $alt_id_width = length($motif->{alt}); }
+  }
+      
+  # print info on the motifs
+  for (my $i = 0; $i < scalar(@{$data->{motif_dbs}}); $i++) {
+    my $motifdb = $data->{motif_dbs}->[$i];
+    print $fh "\tMOTIFS $motifdb->{name} ($motif_alph_name)\n";
+    #print $fh "\tMOTIF WIDTH BEST POSSIBLE MATCH\n";
+    printf $fh "\t%-*s %-*s %-*s %-*s %-*s\n", 
+      $m_width, "MOTIF", 
+      $id_width, "ID", 
+      $alt_id_width, "ALT ID", 
+      $w_width, "WIDTH",
+      $bpm_width, "BEST POSSIBLE MATCH";
+    printf $fh "\t%s %s %s %s %s\n", 
+      '-' x $m_width,
+      '-' x $id_width,
+      '-' x $alt_id_width,
+      '-' x $w_width,
+      '-' x $bpm_width;
+    for (my $j = 0; $j < scalar(@{$data->{motifs}}); $j++) {
+      my $motif = $data->{motifs}->[$j];
+      # skip over motifs not for this database
+      next if $motif->{db} != $i;
+      next if ($motif->{bad} && $data->{remove_correlated});
+      #printf $fh "\t%3d   %3d   %s\n", ($j + 1), $motif->{len}, $motif->{best_f};
+      printf $fh "\t%*d %-*s %-*s %*d %-s\n", 
+        $m_width, ($j + 1), 
+        $id_width, $motif->{id}, 
+        $alt_id_width, $motif->{alt}, 
+        $w_width, $motif->{len},
+        $motif->{best_f};
+    }
+    print $fh "\n";
+  }
+  # print order and spacing of motifs
+  print $fh "\tNominal ordering and spacing of motifs:\n\t $data->{nos}\n\n" if (defined $data->{nos});
+  # print pairwise correlations as long as there are at least 2 motifs
+  my $bad_motif_count = 0;
+  for (my $i = 0; $i < scalar(@{$data->{motifs}}); $i++) {
+    $bad_motif_count++ if $data->{motifs}->[$i]->{bad};
+  }
+  if ((!$data->{remove_correlated} && scalar(@{$data->{motifs}}) >= 2) || (scalar(@{$data->{motifs}}) - $bad_motif_count >= 2)) {
+    print $fh 
+      "\tPAIRWISE MOTIF CORRELATIONS:\n", 
+      "\tMOTIF";
+    for (my $i = 0; $i < scalar(@{$data->{motifs}}) - 1; $i++) {
+      my $motif = $data->{motifs}->[$i];
+      next if ($data->{remove_correlated} && $motif->{bad});
+      printf $fh " %5d", ($i + 1);
+    }
+    print $fh "\n\t-----";
+    for (my $i = 0; $i < scalar(@{$data->{motifs}}) - 1; $i++) {
+      my $motif = $data->{motifs}->[$i];
+      next if ($data->{remove_correlated} && $motif->{bad});
+      printf $fh " -----";
+    }
+    print $fh "\n";
+    for (my $i = 1; $i < scalar(@{$data->{motifs}}); $i++) {
+      my $from = $data->{motifs}->[$i];
+      next if ($data->{remove_correlated} && $from->{bad});
+      printf $fh "\t  %2d ", ($i + 1);
+      for (my $j = 0; $j < $i; $j++) {
+        my $to = $data->{motifs}->[$j];
+        next if ($data->{remove_correlated} && $to->{bad});
+        printf $fh " %5.2f", $data->{correlation}->{$i}->{$j};
+      }
+      print $fh "\n";
+    }
+    if ($bad_motif_count) {
+      printf $fh 
+      "\tCorrelations above %4.2f may cause some combined p-values and\n" .
+      "\tE-values to be underestimates.\n", $data->{max_correlation};
+      if ($data->{remove_correlated}) {
+        print $fh "\tRemoved motif";
+      } else {
+        print $fh "\tRemoving motif";
+      }
+      print $fh ($bad_motif_count > 1 ? "s " : " ");
+      for (my $i = 0, my $j = 0; $i < scalar(@{$data->{motifs}}); $i++) {
+        my $motif = $data->{motifs}->[$i];
+        next unless $motif->{bad};
+        if (($j + 1) == $bad_motif_count) {
+          print $fh " and " if $j > 0;
+        } else {
+          print $fh ", " if $j > 0;
+        }
+        print $fh ($i + 1);
+        $j++;
+      }
+      if ($data->{remove_correlated}) {
+        printf $fh " because they have correlation > %4.2f\n\twith the remaining motifs.\n\n", $data->{max_correlation};
+      } else {
+        print $fh " from the query may be advisable.\n\n";
+      }
+    } else {
+      printf $fh "\tNo overly similar pairs (correlation > %4.2f) found.\n\n", $data->{max_correlation};
+    }
+  }
+  # print background frequencies
+  if ($data->{bg_source} ne 'sequence') {
+    printf $fh "\tRandom model letter frequencies (from %s):", $data->{bg_source} eq "--nrdb--" ? "non-redundant database" : $data->{bg_source};
+    for (my $i = 0, my $pcol = 80; $i < $alph->size_core(); $i++) {
+      $pcol += 8;
+      if ($pcol >= 80) {
+        $pcol = 15;
+        print $fh "\n\t";
+      }
+      printf $fh "%s %5.3f ", $alph->char($i), $data->{bg_freqs}->[$i];
+    }
+    print $fh "\n";
+  } else {
+    print $fh "\tUsing random model based on each target sequence composition.\n";
+  }
+  # end database and motif section
+  print $fh $stars;
+  # print table of hits documentation
+  print $fh "\n\n", $stars, "SECTION I: HIGH-SCORING SEQUENCES\n", $stars;
+  if ($doc) {
+    printf $fh "\t- Each of the following %d sequences has E-value less than %g.\n",
+      $data->{matching_nseqs}, $data->{max_seq_evalue};
+    print $fh 
+      "\t- The E-value of a sequence is the expected number of sequences\n",
+      "\t  in a random database of the same size that would match the motifs as\n",
+      "\t  well as the sequence does and is equal to the combined p-value of the\n",
+      "\t  sequence times the number of sequences in the database.\n",
+      "\t- The combined p-value of a sequence measures the strength of the\n",
+      "\t  match of the sequence to all the motifs and is calculated by\n",
+      "\t    o finding the score of the single best match of each motif\n",
+      "\t      to the sequence (best matches may overlap),\n",
+      "\t    o calculating the sequence p-value of each score,\n",
+      "\t    o forming the product of the p-values,\n";
+    if (defined $data->{nos}) {
+      print $fh
+        "\t    o multiplying by the p-value of the observed spacing of\n",
+        "\t      pairs of adjacent motifs (given the nominal spacing),\n";
+    }
+    my $fs1 = "";
+    my $fs2 = "";
+    if (defined $data->{seq_alph}) {
+      if ($data->{strand_handling} eq 'separate') {
+        $fs1 = "\t- The strand and frame of the (best) motif match(es) is shown.\n";
+      } else {
+        $fs1 = "\t- The frame of the (best) motif match(es) is shown.\n";
+      }
+      $fs2 = "\t  Frames 1, 2, and 3 are labeled a, b c, respectively.\n"
+    }
+    print $fh 
+      "\t    o taking the p-value of the product.\n",
+      "\t- The sequence p-value of a score is defined as the\n",
+      "\t  probability of a random sequence of the same length containing\n",
+      "\t  some match with as good or better a score.\n",
+      "\t- The score for the match of a position in a sequence to a motif\n",
+      "\t  is computed by by summing the appropriate entry from each column of\n",
+      "\t  the position-dependent scoring matrix that represents the motif.\n",
+      "\t- Sequences shorter than one or more of the motifs are skipped.\n",
+      $fs1,
+      $fs2,
+      "\t- The table is sorted by increasing E-value.\n",
+      $stars, "\n";
+  }
+  # print table of hits headings and data
+  {
+    my $x = defined $data->{seq_alph};
+    my $s = $data->{strand_handling} eq 'separate';
+    my $desc_len = $COMMENT_WIDTH - ($x ? ($FRAME_WIDTH + 1) : ($s ? ($STRAND_WIDTH + 1) : 0));
+    my $nf = '%-' . $NAME_WIDTH . 's';
+    my $df = '%-' . $desc_len . 's';
+    print $fh sprintf($nf,"SEQUENCE NAME")," ",sprintf($df,"DESCRIPTION")," ",($x?"FRAME ":($s?"STRAND ":"")),"E-VALUE  LENGTH\n";
+    print $fh sprintf($nf,"-------------")," ",sprintf($df,"-----------")," ",($x?"----- ":($s?"------ ":"")),"-------- ------\n";
+    if (defined $data->{hit_file}) {
+      my $file = $data->{hit_file};
+      seek($file, 0, SEEK_SET);
+      while (<$file>) {
+        print $fh $_;
+      }
+    }
+    print $fh "\n", $stars, "\n";
+  }
+  # print table of diagrams documentation
+  print $fh "\n\n", $stars, "SECTION II: MOTIF DIAGRAMS\n", $stars;
+  if ($doc) {
+    my $ptype = $data->{adj_hit_pvalue} ? "SEQUENCE" : "POSITION";
+    my $hit_pvalue = sprintf("%g", $data->{max_hit_pvalue});
+    my $weak_pvalue = sprintf("%g", $data->{max_weak_pvalue});
+    my $issep = $data->{strand_handling} eq 'separate';
+    my $s = $data->{strand_handling} eq 'combine' ? 's' : '';
+    my $f = defined $data->{seq_alph} ? 'f' : '';
+    print $fh 
+      "\t- The ordering and spacing of all non-overlapping motif occurrences\n",
+      "\t  are shown for each high-scoring sequence listed in Section I.\n",
+      "\t- A motif occurrence is defined as a position in the sequence whose\n",
+      "\t  match to the motif has $ptype p-value less than $weak_pvalue.\n",
+      "\t- The $ptype p-value of a match is the probability of\n",
+      ($data->{adj_hit_pvalue}
+      ? ("\t  some random subsequence in a set of n,\n",
+         "\t  where n is the sequence length minus the motif width plus 1,\n") 
+      : ("\t  a single random subsequence of the length of the motif\n")
+      ),
+      "\t  scoring at least as well as the observed match.\n",
+      "\t- For each sequence, all motif occurrences are shown unless there\n",
+      "\t  are overlaps.  In that case, a motif occurrence is shown only if its\n",
+      "\t  p-value is less than the product of the p-values of the other\n",
+      "\t  (lower-numbered) motif occurrences that it overlaps.\n",
+      "\t- The table also shows ", ($issep ? ("the strand and\n\t  ") : ()),
+      "the E-value of each sequence.\n",
+      "\t- Spacers and motif occurences are indicated by\n",
+      "\t   o -d-    `d' residues separate the end of the preceding motif \n",
+      "\t\t    occurrence and the start of the following motif occurrence\n",
+      "\t   o [${s}n$f]  occurrence of motif `n' with p-value less than $hit_pvalue",
+      (defined $data->{seq_alph}
+      ? ("\n\t\t    in frame f.  Frames 1, 2, and 3 are labeled a, b c.\n")
+      : (".\n")
+      ),
+      ($data->{strand_handling} eq 'combine'
+      ? ("\t\t    A minus sign indicates that the occurrence is on the\n",
+         "\t\t    reverse complement strand.\n")
+      : ()
+      ),
+      ($hit_pvalue < $weak_pvalue ?
+      (
+      "\t   o <${s}n$f>  occurrence of motif `n' with $hit_pvalue < p-value < $weak_pvalue",
+      (defined $data->{seq_alph}
+      ? ("\n\t\t    in frame f.  Frames 1, 2, and 3 are labeled a, b c.\n")
+      : (".\n")
+      ),
+      ($data->{strand_handling} eq 'combine'
+      ? ("\t\t    A minus sign indicates that the occurrence is on the\n",
+         "\t\t    reverse complement strand.\n")
+      : ()
+      )
+      ) : ()),
+      $stars, "\n";
+  }
+  # print table of diagrams headings and data
+  {
+    my $nf = "%-". $NAME_WIDTH . "s";
+    my $s = $data->{strand_handling} eq 'separate';
+    print $fh sprintf($nf,"SEQUENCE NAME"), ($s?" STRAND":""), " E-VALUE   MOTIF DIAGRAM\n";
+    print $fh sprintf($nf,"-------------"), ($s?" ------":""), " --------  -------------\n";
+    if (defined $data->{diag_file}) {
+      my $file = $data->{diag_file};
+      seek($file, 0, SEEK_SET);
+      while (<$file>) {
+        print $fh $_;
+      }
+    }
+    print $fh "\n", $stars, "\n";
+  }
+  # print table of annotated sequences documentation and data
+  print $fh "\n\n", $stars, "SECTION III: ANNOTATED SEQUENCES\n", $stars;
+  if ($doc) {
+    my $ptype = $data->{adj_hit_pvalue} ? "SEQUENCE" : "POSITION";
+    my $hit_pvalue = sprintf("%g", $data->{max_hit_pvalue});
+    my $weak_pvalue = sprintf("%g", $data->{max_weak_pvalue});
+    my $t = defined $data->{seq_alph};
+    my $c = $data->{strand_handling} eq 'combine';
+    print $fh
+      "\t- The positions and p-values of the non-overlapping motif occurrences\n",
+      "\t  are shown above the actual sequence for each of the high-scoring\n",
+      "\t  sequences from Section I.\n",
+      "\t- A motif occurrence is defined as a position in the sequence whose\n",
+      "\t  match to the motif has $ptype p-value less than $weak_pvalue as \n",
+      "\t  defined in Section II.\n",
+      "\t- For each sequence, the first line specifies the name of the sequence.\n",
+      "\t- The second (and possibly more) lines give a description of the \n",
+      "\t  sequence.\n",
+      "\t- Following the description line(s) is a line giving the length, \n",
+      "\t  combined p-value, and E-value of the sequence as defined in Section I.\n",
+      "\t- The next line reproduces the motif diagram from Section II.\n",
+      "\t- The entire sequence is printed on the following lines.\n",
+      "\t- Motif occurrences are indicated directly above their positions in the\n",
+      "\t  sequence on lines showing\n",
+      "\t   o the motif number", ($t ? ("/frame") : ()), " of the occurrence",
+      ($c ? (" (a minus sign indicates that\n",
+          "\t  the occurrence is on the reverse complement strand)") : ()),",\n",
+      "\t   o the position p-value of the occurrence,\n",
+      "\t   o the best possible match to the motif",
+      ($t && $c ? (" (or its reverse)") : ($c ? (" (or its reverse complement)") : ())),
+      ($t ? (",") : (", and")), "\n",
+      "\t   o columns whose match to the motif has a positive score (indicated \n",
+      "\t     by a plus sign)",
+      ($t && $c ? (", and\n",
+        "\t   o the protein translation of the match (or its reverse).\n") 
+      : ($t ? (", and\n",
+        "\t   o the protein translation of the match.\n") : (".\n"))),
+      $stars;
+  }
+  if (defined $data->{note_file}) {
+    my $file = $data->{note_file};
+    seek($file, 0, SEEK_SET);
+    while (<$file>) {
+      print $fh $_;
+    }
+  }
+  print $fh "\n", $stars, "\n\n",
+    "CPU: ", $data->{host}, "\n",
+    "Time ", sprintf("%s", $data->{runtime}), " secs.\n\n",
+    join(" ", @{$data->{args}}), "\n";
+  
+  close($fh);
+}
+
+sub compare_scores {
+  my ($score1, $score2) = @_;
+  if ($score1->{evalue} < $score2->{evalue}) {
+    return -1;
+  } elsif ($score1->{evalue} > $score2->{evalue}) {
+    return 1;
+  } elsif ($score1->{pvalue} < $score2->{pvalue}) {
+    return -1;
+  } elsif ($score1->{pvalue} > $score2->{pvalue}) {
+    return 1;
+  } elsif ($score1->{strand} > $score2->{strand}) {
+    return -1;
+  } elsif ($score1->{strand} < $score2->{strand}) {
+    return 1;
+  } elsif (defined($score1->{frame}) && defined($score2->{frame})) {
+    if ($score1->{frame} < $score2->{frame}) {
+      return -1;
+    } elsif ($score1->{frame} > $score2->{frame}) {
+      return 1;
+    } else {
+      return 0;
+    }
+  } elsif (defined($score1->{frame})) {
+    return -1;
+  } elsif (defined($score2->{frame})) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+#
+# Internal Only Function
+#
+# systell(
+#   $file_handle_ref
+#   );
+#
+#   Given a file returns the current position in the file.
+#
+#   Since I'm using syswrite then I must use sysseek
+#   to get the file position instead of tell.
+#
+#   Returns:
+#     1) The current file position or undefined on failure.
+#
+sub systell {
+  return (sysseek($_[0], 0, SEEK_CUR) or confess("sysseek (for systell implementation) failed!"));
+}
+
+#
+# Internal Only Function
+#
+# syswrite_int(
+#   $file_handle_ref,
+#   $int
+#   );
+#
+#   Given a file and a int writes the int to the file.
+#
+#   As I couldn't figure out the docs on write I used syswrite.
+#
+#   Returns nothing, though I should change this to check for error states.
+#
+sub syswrite_int {
+  confess("Missing arguments") unless defined $_[0] && defined $_[1];
+  confess("Not an int!") unless (int($_[1]) == $_[1]);
+  syswrite($_[0], pack('l', $_[1])) or confess("syswrite failed!");
+}
+
+#
+# Internal Only Function
+#
+# syswrite_dbl(
+#   $file_handle_ref,
+#   $double
+#   );
+#
+#   Given a file and a double writes the double to the file.
+#
+#   As I couldn't figure out the docs on write I used syswrite.
+#
+#   Returns nothing, though I should change this to check for error states.
+#
+sub syswrite_dbl {
+  confess("Missing arguments") unless defined $_[0] && defined $_[1];
+  syswrite($_[0], pack('d', $_[1])) or confess("syswrite failed!");
+}
+
+#
+# Internal Only Function
+#
+# syswrite_string(
+#   $file_handle_ref,
+#   $string
+#   );
+#
+#   Given a file and a string writes the string to the file.
+#
+#   As I couldn't figure out the docs on write I used syswrite.
+#   This converts the string to utf 8 and writes out its length
+#   in bigendian 32-bit int followed by the utf-8 octlets.
+#
+#   Returns nothing, though I should change this to check for error states.
+#
+sub syswrite_string {
+  confess("Missing arguments") unless defined $_[0] && defined $_[1];
+  my $octlets = encode_utf8($_[1]);
+  my $data = pack('la*', length($octlets), $octlets);
+  syswrite($_[0], $data) or confess("syswrite failed!");
+}
+#
+# Internal Only Function
+#
+# read_dbl (
+#   $file_handle_ref
+#   );
+#
+#   Given a file, read a double.
+#
+#   Returns:
+#     1) the double
+#
+sub read_dbl {
+  my $data;
+  my $read_len = sysread($_[0], $data, $DBL_SIZE);
+  confess("read failed!") if ($read_len != $DBL_SIZE);
+  my $num = unpack('d', $data);
+  return $num;
+}
+
+#
+# Internal Only Function
+#
+# read_int (
+#   $file_handle_ref
+#   );
+#
+#   Given a file, read a integer.
+#
+#   Returns:
+#     1) the integer
+#
+sub read_int {
+  my $data;
+  my $read_len = sysread($_[0], $data, $INT_SIZE);
+  confess("Read int failed! Read $read_len bytes but expected $INT_SIZE bytes.") if ($read_len != $INT_SIZE);
+  my $num = unpack('l', $data);
+  return $num;
+}
+
+#
+# Internal Only Function
+#
+# read_string(
+#   $file_handle_ref
+#   );
+#
+#   Given a file, read a string.
+#
+#   Reads a string written using syswrite_string.
+#   A string consists of:
+#   <string length (4 byte bigendian integer)><utf-8 encoded string>
+#
+#   Returns:
+#     1) The string.
+#
+sub read_string {
+  my $len = read_int(@_);
+  if ($len > 0) {
+    my $octlets;
+    my $read_len = sysread($_[0], $octlets, $len, 0);
+    confess("Read string failed! Read $read_len bytes but exptected $len bytes.") if ($read_len != $len);
+    my $str = decode_utf8($octlets);
+    return $str;
+  }
+  return '';
+}
+
+
+sub store_seq {
+  my ($info, $seq) = @_;
+  unless (defined $info->{store}) {
+    $info->{store} = tempfile();
+    binmode $info->{store};
+  }
+  my $fh = $info->{store};
+  my $file_pos = sysseek($fh, 0, SEEK_END);
+  confess("store_seq failure: sysseek to end of file failed") unless $file_pos;
+  &syswrite_int($fh, $seq->{db});
+  &syswrite_string($fh, $seq->{name});
+  &syswrite_string($fh, $seq->{comment});
+  &syswrite_int($fh, $seq->{length});
+  &syswrite_int($fh, scalar @{$seq->{scores}});
+  for (my $i = 0; $i < scalar @{$seq->{scores}}; $i++) {
+    my $score = $seq->{scores}->[$i];
+    &syswrite_int($fh, $score->{strand});
+    &syswrite_dbl($fh, $score->{pvalue});
+    &syswrite_dbl($fh, $score->{evalue});
+    &syswrite_int($fh, (defined $score->{frame} ? $score->{frame} : -1));
+  }
+  &syswrite_int($fh, scalar @{$seq->{segs}});
+  for (my $i = 0; $i < scalar @{$seq->{segs}}; $i++) {
+    my $seg = $seq->{segs}->[$i];
+    &syswrite_int($fh, $seg->{start_pos}); 
+    &syswrite_string($fh, $seg->{sequence});
+    &syswrite_int($fh, scalar @{$seg->{hits}});
+    for (my $j = 0; $j < scalar(@{$seg->{hits}}); $j++) {
+      my $hit = $seg->{hits}->[$j];
+      &syswrite_int($fh, $hit->{pos});
+      &syswrite_int($fh, $hit->{motif});
+      &syswrite_int($fh, $hit->{rc});
+      &syswrite_dbl($fh, $hit->{pvalue});
+      &syswrite_string($fh, $hit->{match});
+      &syswrite_string($fh, (defined $hit->{translation} ? $hit->{translation} : ''));
+    }
+  }
+  return $file_pos;
+}
+
+sub retrieve_seq {
+  my ($info, $file_pos) = @_;
+  confess("No file position specified!") unless defined $file_pos;
+  confess("No storage file initilised!") unless defined $info->{store};
+  my $fh = $info->{store};
+  sysseek($fh, $file_pos, SEEK_SET) or confess("retrieve_seq failure: sysseek to file offset $file_pos failed.");
+  my $seq = {
+    db => &read_int($fh),
+    name => &read_string($fh),
+    comment => &read_string($fh),
+    length => &read_int($fh),
+    scores => [],
+    segs => [],
+    hits => []
+  };
+  my $score_count = &read_int($fh);
+  for (my $i = 0; $i < $score_count; $i++) {
+    my $score = {
+      strand => &read_int($fh),
+      pvalue => &read_dbl($fh),
+      evalue => &read_dbl($fh),
+      frame => &read_int($fh)
+    };
+    $score->{frame} = undef if ($score->{frame} == -1);
+    push(@{$seq->{scores}}, $score);
+  }
+  my $seg_count = &read_int($fh);
+  for (my $i = 0; $i < $seg_count; $i++) {
+    my $seg = {
+      start_pos => &read_int($fh),
+      sequence => &read_string($fh),
+      hits => []
+    };
+    my $hit_count = &read_int($fh);
+    for (my $j = 0; $j < $hit_count; $j++) {
+      my $hit = {
+        pos => &read_int($fh),
+        motif => &read_int($fh),
+        rc => &read_int($fh),
+        pvalue => &read_dbl($fh),
+        match => &read_string($fh),
+        translation => &read_string($fh)
+      };
+      $hit->{translation} = undef if ($hit->{translation} eq '');
+      push(@{$seg->{hits}}, $hit);
+    }
+    push(@{$seq->{segs}}, $seg);
+    push(@{$seq->{hits}}, @{$seg->{hits}});
+  }
+  return $seq;
+}
+
+sub make_block {
+  my ($info, $hit, $print_pvalue) = @_;
+  my $pv = $hit->{pvalue};
+  my $ok_pv = $info->{max_hit_pvalue};
+  my $pvstr = ($print_pvalue ? sprintf("(%8.2e)", $pv) : '');
+  my $lbracket = $pv < $ok_pv ? '[' : '<';
+  my $rbracket = $pv < $ok_pv ? ']' : '>';
+  my $strand = ($info->{strand_handling} eq 'combine' ? ($hit->{rc} ? '-' : '+') : '');
+  my $motif = $hit->{motif} + 1;
+  my $frame = (defined $info->{seq_alph} ? chr(ord('a') + ($hit->{pos} % $info->{xnum})) : '');
+  return $lbracket . $strand . $motif . $frame . $pvstr . $rbracket;
+}
+
+sub make_diagram {
+  my ($info, $seq, $score) = @_;
+  my $out = '';
+  my $dash = "-";
+  my $prev_hit = undef;
+  for (my $i = 0; $i < scalar @{$seq->{hits}}; $i++) {
+    my $hit = $seq->{hits}->[$i];
+    next if ($score->{strand} != 0 && $hit->{rc} == ($score->{strand} == 1));
+    if (defined $prev_hit) {
+      my $ws = $info->{motifs}->[$prev_hit->{motif}]->{len} * $info->{xnum};
+      my $gap = $hit->{pos} - ($prev_hit->{pos} + $ws);
+      if ($gap > 0) {
+        $out .= $dash . $gap . $dash;
+      } else {
+        $out .= $dash;
+      }
+    } else { # first hit
+      my $gap = $hit->{pos};
+      $out .= $gap . $dash if $gap > 0;
+    }
+    $out .= &make_block($info, $hit, 0);
+    $prev_hit = $hit;
+  }
+  if (defined $prev_hit) {
+    my $ws = $info->{motifs}->[$prev_hit->{motif}]->{len} * $info->{xnum};
+    my $gap = $seq->{length} - ($prev_hit->{pos} + $ws);
+    $out .= $dash . $gap if $gap > 0;
+  } else {
+    my $gap = $seq->{length};
+    $out .= $seq->{length};
+  }
+}
+
+sub print_diagram {
+  my ($fh, $diagram, $header) = @_;
+  my $diagram_len = length($diagram);
+  my $header_len = length($header);
+  for (my $i = 0; $i < $diagram_len;) {
+    print $fh ($i == 0 ? $header : ' ' x $header_len);
+    my $remain = $diagram_len - $i;
+    my $print_len = $PAGE_WIDTH - $header_len - 6;
+    if ($remain <= $PAGE_WIDTH - $header_len) {
+      $print_len = $remain;
+    } else {
+      for (; $print_len < $remain; $print_len++) {
+        my $c = substr($diagram, $i + $print_len, 1);
+        last if ($c eq '_' || $c eq ',');
+      }
+    }
+    print $fh substr($diagram, $i, $print_len), "\n";
+    $i += $print_len;
+  }
+}
+
+sub space_seq {
+  my ($info, $best, $joiner) = @_;
+  return undef unless defined $best;
+  return $best unless $info->{xnum} > 1;
+  my @parts = split('', $best);
+  push(@parts, '');
+  return join($joiner x ($info->{xnum} - 1), @parts);
+}
+
+sub rtrim {
+  my ($str) = @_;
+  $str =~ s/\s+$//;
+  return $str;
+}
+
+sub process_seq {
+  my ($info, $seq, $score) = @_;
+  my $kmotifs = 0; # disabled
+  my $x = defined $info->{seq_alph};
+  my $s = $info->{strand_handling} eq 'separate';
+
+  my $diagram = make_diagram($info, $seq, $score);
+
+  my $strand = ($s ? ($score->{strand} == -1 ? "-" : "+") : "");
+  my $frame = ($x ? chr(ord('a') + $score->{frame}) : "");
+  my $strame = $strand . $frame;
+  my $strame_len = ($x ? $FRAME_WIDTH + 1 : ($s ? $STRAND_WIDTH + 1 : 0));
+
+  # print the hit in the hits section.
+  {
+    $info->{hit_file} = tempfile() unless (defined $info->{hit_file});
+    my $fh = $info->{hit_file};
+    my $desc_len = $COMMENT_WIDTH - $strame_len;
+    my $elipsis = '';
+    if (length($seq->{comment}) > $desc_len) {
+      $elipsis = "...";
+      $desc_len -= 3;
+    }
+    printf $fh "%-*.*s %-*.*s%s%*s %8.2g %6d\n", 
+        $NAME_WIDTH, $NAME_WIDTH, $seq->{name}, 
+        $desc_len, $desc_len, $seq->{comment}, $elipsis,
+        $strame_len, $strame, 
+        $score->{evalue}, $seq->{length};
+  }
+  # print the motif diagram in the diagrams section
+  {
+    $info->{diag_file} = tempfile() unless (defined $info->{diag_file});
+    my $fh = $info->{diag_file};
+    my $header = sprintf "%-*.*s%*s %8.2g  ",
+        $NAME_WIDTH, $NAME_WIDTH, $seq->{name},
+        ($s? $STRAND_WIDTH + 1 : 0), $strand, 
+        $score->{evalue};
+    &print_diagram($fh, $diagram, $header);
+  }
+  # print the note file
+  {
+    $info->{note_file} = tempfile() unless (defined $info->{note_file});
+    my $fh = $info->{note_file};
+    my $strand2 = ($s ? ($score->{strand} == -1 ? " (- strand)" : " (+ strand)") : "");
+    print $fh "\n\n", $seq->{name}, $strand2, "\n";
+    my $comment_lines = 0;
+    my $comment_len = length($seq->{comment});
+    my $offset = 0;
+    my $good_break = 0;
+    for (my $offset = 0, my $good_break = 0; $offset < $comment_len; $offset += $good_break + 1, $good_break = 0) {
+      for (my $i = 0; $i < $PAGE_WIDTH - 2; $i++) {
+        my $pos = $offset + $i;
+        $good_break = $i if ($pos >= $comment_len || substr($seq->{comment}, $pos, 1) eq ' ');
+        last if $pos >= $comment_len;
+      }
+      $good_break = $PAGE_WIDTH - 3 if ($good_break == 0);
+      print $fh '  ', substr($seq->{comment}, $offset, $good_break + 1), "\n";
+      $comment_lines++;
+      if ($comment_lines >= $MAX_COMMENT_LINES) {
+        print $fh "  ...\n";
+        last;
+      }
+    }
+    # print th elength, combined p-value and E-value
+    printf $fh "  LENGTH = %d  COMBINED P-VALUE = %8.2e  E-VALUE = %8.2g\n",
+      $seq->{length}, $score->{pvalue}, $score->{evalue};
+    # print the motif diagram
+    print_diagram($fh, $diagram, "  DIAGRAM: ");
+    my ($num_ln, $pv_ln, $best_ln, $match_ln, $tr_ln) = ('','','','','');
+    my $cols = $PAGE_WIDTH - 5;
+    my $spacer = ' ' x 5;
+    for (my $i = 0; $i < scalar(@{$seq->{segs}}); $i++) {
+      my $seg = $seq->{segs}->[$i];
+      my $start = $seg->{start_pos};
+      my $end = $seg->{start_pos} + length($seg->{sequence});
+      for (my $pos = $start, my $hit_i = 0; $pos < $end; $pos += $cols) {
+        for (;$hit_i < scalar @{$seg->{hits}}; $hit_i++) {
+          my $hit = $seg->{hits}->[$hit_i];
+          last if ($hit->{pos} >= ($pos + $cols));
+          next if ($score->{strand} != 0 && $hit->{rc} == ($score->{strand} == 1));
+          my $motif = $info->{motifs}->[$hit->{motif}];
+          $num_ln .= ' ' x (($hit->{pos} - $pos) - length($num_ln)) if (length($num_ln) < ($hit->{pos} - $pos));
+          $num_ln .= &make_block($info, $hit);
+          $pv_ln .= ' ' x (($hit->{pos} - $pos) - length($pv_ln)) if (length($pv_ln) < ($hit->{pos} - $pos));
+          $pv_ln .= sprintf("%.1e", $hit->{pvalue});
+          $best_ln .= ' ' x (($hit->{pos} - $pos) - length($best_ln)) if (length($best_ln) < ($hit->{pos} - $pos));
+          $best_ln .= &space_seq($info, $hit->{rc} ? $motif->{best_r} : $motif->{best_f}, '.');
+          $match_ln .= ' ' x (($hit->{pos} - $pos) - length($match_ln)) if (length($match_ln) < ($hit->{pos} - $pos));
+          $match_ln .= &space_seq($info, $hit->{match}, ' '); 
+          if (defined $info->{seq_alph}) {
+            $tr_ln .= ' ' x (($hit->{pos} - $pos) - length($tr_ln)) if (length($tr_ln) < ($hit->{pos} - $pos));
+            $tr_ln .= &space_seq($info, $hit->{translation}, '.');
+          }
+        }
+        # print only if there is something on the displayed strand
+        if (length $best_ln > 0) {
+          my $posstr = sprintf("%-5d", ($pos + 1));
+          print $fh "\n",
+            $spacer, (length $num_ln > $cols ? substr($num_ln, 0, $cols) : $num_ln), "\n",
+            $spacer, (length $pv_ln > $cols ? substr($pv_ln, 0, $cols) : $pv_ln), "\n",
+            $spacer, (length $best_ln > $cols ? substr($best_ln, 0, $cols) : $best_ln), "\n",
+            $spacer, rtrim(length $match_ln > $cols ? substr($match_ln, 0, $cols) : $match_ln), "\n",
+            (defined $info->{seq_alph} ?
+              ($spacer, (length $tr_ln > $cols ? substr($tr_ln, 0, $cols) : $tr_ln), "\n") : ()),
+            $posstr, substr($seg->{sequence}, $pos - $start, $cols), "\n";
+        }
+        # advance past the printed portion
+        $num_ln = (length $num_ln > $cols ? substr($num_ln, $cols) : '');
+        $pv_ln = (length $pv_ln > $cols ? substr($pv_ln, $cols) : '');
+        $best_ln = (length $best_ln > $cols ? substr($best_ln, $cols) : '');
+        $match_ln = (length $match_ln > $cols ? substr($match_ln, $cols) : '');
+        $tr_ln = (length $tr_ln > $cols ? substr($tr_ln, $cols) : '');
+      }
+    }
+
+  }
+}
+
+sub cleanup {
+  my ($data) = @_;
+  close($data->{hit_file}) if defined $data->{hit_file};
+  close($data->{diag_file}) if defined $data->{diag_file};
+  close($data->{note_file}) if defined $data->{note_file};
+  close($data->{store}) if defined $data->{store};
+}
+
+sub main {
+  &initialise();
+  my $opts = &arguments();
+
+  # load MAST XML
+  my $data = &load_xml($opts->{XML_PATH});
+
+  # write MAST text
+  &write_text($opts->{TXT_PATH}, $opts->{DOC}, $data);
+
+  # close temporary files
+  &cleanup($data);
+}
+
+&main();
+1;
+

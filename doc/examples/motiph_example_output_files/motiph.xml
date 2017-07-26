@@ -1,0 +1,173 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<!-- Document definition -->
+<!-- http://zlab.bu.edu/~phaverty/SupplementalData/CisML/cisml.dtd -->
+<!DOCTYPE cis-element-search[
+<!ELEMENT cis-element-search (program-name, parameters, (pattern | multi-pattern-scan)*)>
+<!ELEMENT program-name (#PCDATA)>
+<!ELEMENT parameters (
+  pattern-file, 
+  sequence-file, 
+  background-seq-file?,
+  pattern-pvalue-cutoff?,
+  sequence-pvalue-cutoff?,
+  site-pvalue-cutoff?,
+  sequence-filtering,
+  ANY*
+ )>
+<!ELEMENT command-line (#PCDATA)>
+<!ELEMENT pattern-file (#PCDATA)>
+<!ELEMENT sequence-file (#PCDATA)>
+<!ELEMENT background-seq-file (#PCDATA)>
+<!ELEMENT pattern-pvalue-cutoff (#PCDATA)>
+<!ELEMENT sequence-pvalue-cutoff (#PCDATA)>
+<!ELEMENT site-pvalue-cutoff (#PCDATA)>
+<!ELEMENT sequence-filtering EMPTY>
+<!ELEMENT multi-pattern-scan (pattern+, ANY*)>
+<!ELEMENT pattern (scanned-sequence+, ANY*)>
+<!ELEMENT scanned-sequence (matched-element*, ANY*)>
+<!ELEMENT matched-element (sequence)>
+<!ELEMENT sequence (#PCDATA)>
+<!ATTLIST cis-element-search
+xmlns:xsi CDATA #IMPLIED
+xmlns:mem CDATA #IMPLIED
+xsi:schemaLocation CDATA #IMPLIED
+>
+<!ATTLIST sequence-filtering
+on-off CDATA #REQUIRED
+type CDATA #IMPLIED
+>
+<!ATTLIST multi-pattern-scan
+score CDATA #IMPLIED
+pvalue CDATA #IMPLIED
+>
+<!ATTLIST pattern
+accession CDATA #REQUIRED
+name CDATA #REQUIRED
+pvalue CDATA #IMPLIED
+score CDATA #IMPLIED
+db CDATA #IMPLIED
+lsid CDATA #IMPLIED
+>
+<!ATTLIST scanned-sequence
+accession CDATA #REQUIRED
+name CDATA #REQUIRED
+score CDATA #IMPLIED
+pvalue CDATA #IMPLIED
+length CDATA #IMPLIED
+db CDATA #IMPLIED
+lsid CDATA #IMPLIED
+>
+<!ATTLIST matched-element
+start CDATA #REQUIRED
+stop CDATA #REQUIRED
+score CDATA #IMPLIED
+pvalue CDATA #IMPLIED
+clusterid CDATA #IMPLIED
+>
+
+]>
+<cis-element-search
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://zlab.bu.edu/schema/cisml cisml.xsd"
+  xmlns="http://zlab.bu.edu/schema/cisml"
+  xmlns:mem="http://noble.gs.washington.edu/meme"
+>
+<program-name>motiph</program-name>
+<parameters>
+<command-line>motiph -oc motiph_example_output_files --seed 0 --bg 2 --pseudocount 0.01 spiked.aln yeast.tree MCM1.meme.html</command-line>
+<pattern-file>MCM1.meme.html</pattern-file>
+<sequence-file>clustal-w alignment</sequence-file>
+<site-pvalue-cutoff>0.0001</site-pvalue-cutoff>
+<sequence-filtering on-off="off"/>
+</parameters>
+<pattern accession="+1" name="+1">
+<scanned-sequence accession="spiked.aln" name="spiked.aln" length="3144">
+<matched-element start="121" stop="133" score="12214" pvalue="8.14e-18">
+<sequence>TTTCCTAAATGGG</sequence>
+<mem:qvalue>6.15e-15</mem:qvalue>
+</matched-element>
+<matched-element start="2124" stop="2136" score="11530" pvalue="2.48e-08">
+<sequence>TAACCTCTTTGGG</sequence>
+<mem:qvalue>9.37e-06</mem:qvalue>
+</matched-element>
+<matched-element start="1915" stop="1927" score="10940" pvalue="6.79e-06">
+<sequence>GAGCCCGTTTAGG</sequence>
+<mem:qvalue>0.00171</mem:qvalue>
+</matched-element>
+<matched-element start="1977" stop="1989" score="10835" pvalue="1.48e-05">
+<sequence>CGACCGAATCAGG</sequence>
+<mem:qvalue>0.00279</mem:qvalue>
+</matched-element>
+<matched-element start="2222" stop="2234" score="10717" pvalue="3.32e-05">
+<sequence>TTTGCCAATTTAG</sequence>
+<mem:qvalue>0.00444</mem:qvalue>
+</matched-element>
+<matched-element start="122" stop="134" score="10708" pvalue="3.52e-05">
+<sequence>TTCCTAAATGGGT</sequence>
+<mem:qvalue>0.00444</mem:qvalue>
+</matched-element>
+<matched-element start="2223" stop="2235" score="10593" pvalue="7.36e-05">
+<sequence>TTGCCAATTTAGC</sequence>
+<mem:qvalue>0.00738</mem:qvalue>
+</matched-element>
+<matched-element start="1948" stop="1960" score="10569" pvalue="8.52e-05">
+<sequence>TAATCAAAAAAGG</sequence>
+<mem:qvalue>0.00738</mem:qvalue>
+</matched-element>
+<matched-element start="2104" stop="2116" score="10564" pvalue="8.79e-05">
+<sequence>TTTGCTCTTAATG</sequence>
+<mem:qvalue>0.00738</mem:qvalue>
+</matched-element>
+</scanned-sequence>
+<mem:has-qvalues>yes</mem:has-qvalues>
+</pattern>
+<pattern accession="-1" name="-1">
+<scanned-sequence accession="spiked.aln" name="spiked.aln" length="3144">
+<matched-element start="1930" stop="1918" score="12150" pvalue="8.37e-15">
+<sequence>CCCGTTTAGGAAA</sequence>
+<mem:qvalue>5.99e-12</mem:qvalue>
+</matched-element>
+<matched-element start="136" stop="124" score="11961" pvalue="3.04e-11">
+<sequence>CCTAAATGGGTAA</sequence>
+<mem:qvalue>1.09e-08</mem:qvalue>
+</matched-element>
+<matched-element start="2139" stop="2127" score="11791" pvalue="6.61e-10">
+<sequence>CCTCTTTGGGGAA</sequence>
+<mem:qvalue>1.58e-07</mem:qvalue>
+</matched-element>
+<matched-element start="2140" stop="2128" score="11745" pvalue="1.4e-09">
+<sequence>CTCTTTGGGGAAA</sequence>
+<mem:qvalue>2.5e-07</mem:qvalue>
+</matched-element>
+<matched-element start="1992" stop="1980" score="11635" pvalue="6.63e-09">
+<sequence>CCGAATCAGGAAA</sequence>
+<mem:qvalue>9.48e-07</mem:qvalue>
+</matched-element>
+<matched-element start="2120" stop="2108" score="11028" pvalue="3.42e-06">
+<sequence>CTCTTAATGGAAA</sequence>
+<mem:qvalue>0.000408</mem:qvalue>
+</matched-element>
+<matched-element start="2314" stop="2302" score="10771" pvalue="2.31e-05">
+<sequence>CCTCAAGAAGTAA</sequence>
+<mem:qvalue>0.00215</mem:qvalue>
+</matched-element>
+<matched-element start="2051" stop="2039" score="10765" pvalue="2.41e-05">
+<sequence>CCTCGAGGAAATA</sequence>
+<mem:qvalue>0.00215</mem:qvalue>
+</matched-element>
+<matched-element start="1887" stop="1875" score="10669" pvalue="4.55e-05">
+<sequence>CCAAATGCGGGTA</sequence>
+<mem:qvalue>0.00362</mem:qvalue>
+</matched-element>
+<matched-element start="137" stop="125" score="10640" pvalue="5.48e-05">
+<sequence>CTAAATGGGTAAA</sequence>
+<mem:qvalue>0.00392</mem:qvalue>
+</matched-element>
+<matched-element start="135" stop="123" score="10611" pvalue="6.58e-05">
+<sequence>TCCTAAATGGGTA</sequence>
+<mem:qvalue>0.00428</mem:qvalue>
+</matched-element>
+</scanned-sequence>
+<mem:has-qvalues>yes</mem:has-qvalues>
+</pattern>
+</cis-element-search>

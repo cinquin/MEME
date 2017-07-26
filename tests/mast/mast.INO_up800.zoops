@@ -1,0 +1,184 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<mast version="4.11.3" release="Fri Feb 19 13:23:06 2016 -0800">
+	<command_line><arg>mast</arg><arg>-oc</arg><arg>results/mast5</arg><arg>-nostatus</arg><arg>meme/meme.INO_up800.zoops.txt</arg><arg>common/INO_up800.s</arg></command_line>
+	<settings strand_handling="combine" max_correlation="0.60" remove_correlated="n" max_seq_evalue="10" adjust_hit="n" max_hit_pvalue="0.0001" max_weak_pvalue="0.0001"/>
+	<alphabet name="DNA" like="dna">
+		<letter id="A" symbol="A" complement="T" name="Adenine" colour="CC0000"/>
+		<letter id="C" symbol="C" complement="G" name="Cytosine" colour="0000CC"/>
+		<letter id="G" symbol="G" complement="C" name="Guanine" colour="FFB300"/>
+		<letter id="T" symbol="T" aliases="U" complement="A" name="Thymine" colour="008000"/>
+		<letter id="N" symbol="N" aliases="X." equals="ACGT" name="Any base"/>
+		<letter id="V" symbol="V" equals="ACG" name="Not T"/>
+		<letter id="H" symbol="H" equals="ACT" name="Not G"/>
+		<letter id="D" symbol="D" equals="AGT" name="Not C"/>
+		<letter id="B" symbol="B" equals="CGT" name="Not A"/>
+		<letter id="M" symbol="M" equals="AC" name="Amino"/>
+		<letter id="R" symbol="R" equals="AG" name="Purine"/>
+		<letter id="W" symbol="W" equals="AT" name="Weak"/>
+		<letter id="S" symbol="S" equals="CG" name="Strong"/>
+		<letter id="Y" symbol="Y" equals="CT" name="Pyrimidine"/>
+		<letter id="K" symbol="K" equals="GT" name="Keto"/>
+	</alphabet>
+	<background source="--nrdb--" A="0.274262" C="0.22521" G="0.22521" T="0.274262"/>
+	<motif_dbs>
+		<motif_db source="meme/meme.INO_up800.zoops.txt" last_mod_date="Wed Mar  1 17:39:04 2017">
+			<background A="0.324" C="0.176" G="0.176" T="0.324"/>
+		</motif_db>
+	</motif_dbs>
+	<motifs>
+		<motif db="0" id="KGSKGCATGTGAAAABT" alt="MEME-1" length="17" nsites="7" evalue="2.6e-002">
+			<pos A="-945" C="-30" G="170" T="-18"/>
+			<pos A="-118" C="-945" G="229" T="-945"/>
+			<pos A="-945" C="129" G="129" T="-118"/>
+			<pos A="-118" C="-945" G="170" T="-18"/>
+			<pos A="-945" C="70" G="202" T="-945"/>
+			<pos A="-945" C="251" G="-945" T="-945"/>
+			<pos A="162" C="-945" G="-945" T="-945"/>
+			<pos A="-945" C="-945" G="-945" T="162"/>
+			<pos A="-945" C="-945" G="251" T="-945"/>
+			<pos A="-118" C="-945" G="-945" T="140"/>
+			<pos A="-945" C="-945" G="251" T="-945"/>
+			<pos A="140" C="-945" G="-30" T="-945"/>
+			<pos A="162" C="-945" G="-945" T="-945"/>
+			<pos A="114" C="-945" G="70" T="-945"/>
+			<pos A="114" C="-945" G="-30" T="-118"/>
+			<pos A="-945" C="70" G="129" T="-18"/>
+			<pos A="-945" C="-945" G="-30" T="140"/>
+		</motif>
+		<motif db="0" id="CAMGSSCNCATCRCYACTSTC" alt="MEME-2" length="21" nsites="6" evalue="8.3e+001">
+			<pos A="-923" C="224" G="-7" T="-923"/>
+			<pos A="136" C="-923" G="-7" T="-923"/>
+			<pos A="62" C="92" G="-7" T="-923"/>
+			<pos A="-923" C="-7" G="224" T="-923"/>
+			<pos A="-96" C="92" G="151" T="-923"/>
+			<pos A="-96" C="151" G="92" T="-923"/>
+			<pos A="-96" C="192" G="-7" T="-923"/>
+			<pos A="4" C="92" G="-7" T="-96"/>
+			<pos A="-923" C="224" G="-7" T="-923"/>
+			<pos A="104" C="-7" G="-923" T="-96"/>
+			<pos A="-923" C="-923" G="-923" T="162"/>
+			<pos A="-923" C="224" G="-923" T="-96"/>
+			<pos A="104" C="-923" G="92" T="-923"/>
+			<pos A="-923" C="224" G="-7" T="-923"/>
+			<pos A="-923" C="151" G="-7" T="4"/>
+			<pos A="136" C="-7" G="-923" T="-923"/>
+			<pos A="-923" C="251" G="-923" T="-923"/>
+			<pos A="-923" C="-7" G="-923" T="136"/>
+			<pos A="-923" C="92" G="151" T="-96"/>
+			<pos A="-923" C="-7" G="-7" T="104"/>
+			<pos A="-923" C="224" G="-7" T="-923"/>
+		</motif>
+	</motifs>
+	<correlations>
+		<correlation idx_a="0" idx_b="1" value="0.22"/>
+	</correlations>
+	<sequence_dbs>
+		<sequence_db source="common/INO_up800.s" last_mod_date="Wed Jan 20 14:03:15 2016" seq_count="7" residue_count="5600"/>
+	</sequence_dbs>
+	<sequences>
+		<sequence db="0" name="INO1" comment="sequence of the region upstream from YJL153C" length="800">
+			<score strand="both" combined_pvalue="3.33e-10" evalue="2.3e-09"/>
+			<seg start="301">
+				<data>
+GTGACCTGGAAGCTCACCCTGCAGAGGAATCTCAAGCACAGCCTCCAGCATATGATGAAGACGATGAGGCCGGTG
+CCGATGTGCCCTTGATGGACAACAAACAACAGCTCTCTTCCGGCCGTACTTAGTGATCGGAACGAGCTCTTTATC
+				</data>
+				<hit pos="369" idx="1" rc="y" pvalue="4.7e-09" match="+ + +++ +++++++++++++"/>
+			</seg>
+			<seg start="526">
+				<data>
+TGAAATACGTGCCGGTGTTCCGGGGTTGGATGCGGAATCGAAAGTGTTGAATGTGAAATATGCGGAGGCCAAGTA
+				</data>
+				<hit pos="570" idx="0" rc="n" pvalue="8.5e-05" match=" +  + ++++++++  +"/>
+			</seg>
+			<seg start="601">
+				<data>
+TGCGCTTCGGCGGCTAAATGCGGCATGTGAAAAGTATTGTCTATTTTATCTTCATCCTTCTTTCCCAGAATATTG
+				</data>
+				<hit pos="619" idx="0" rc="n" pvalue="1.1e-09" match=" ++++++++++++++++"/>
+			</seg>
+		</sequence>
+		<sequence db="0" name="FAS2" comment="sequence of the region upstream from YPL231W" length="800">
+			<score strand="both" combined_pvalue="1.21e-09" evalue="8.5e-09"/>
+			<seg start="526">
+				<data>
+GCTTAGCAAAATCCAACCATTTTTTTTTTATCTCCCGCGTTTTCACATGCTACCTCATTCGCCTCGTAACGTTAC
+				</data>
+				<hit pos="563" idx="0" rc="y" pvalue="1.1e-07" match=" ++++++++++++  ++"/>
+			</seg>
+			<seg start="676">
+				<data>
+TGCCTCATATATAACTTGTTAACTGAAGGTTACACAAGACCACATCACCACTGTCGTGCTTTTCTAATAACCGCT
+				</data>
+				<hit pos="710" idx="1" rc="n" pvalue="1.7e-10" match="++++ ++++++++++++++++"/>
+			</seg>
+		</sequence>
+		<sequence db="0" name="OPI3" comment="sequence of the region upstream from YJR073C" length="800">
+			<score strand="both" combined_pvalue="3.26e-08" evalue="2.3e-07"/>
+			<seg start="451">
+				<data>
+TGTGTATCGGGGACTTCTCTTAGAGTAGAAGCGTCTATAAACCCAGGTGGGACGACAGTAGTGATGGCGCCGCCG
+				</data>
+				<hit pos="504" idx="1" rc="y" pvalue="7.8e-09" match="++++++++++++++ ++++  "/>
+			</seg>
+			<seg start="526">
+				<data>
+TATAATTCGACTTCCTTGTTGTTCATGCTTCCTTGATGACCAGGGTAGGTGTCAATGAGAGTGCATGTGGAAAGT
+				</data>
+				<hit pos="584" idx="0" rc="n" pvalue="8.1e-08" match="+ + +++++++ +++++"/>
+			</seg>
+			<seg start="601">
+				<data>
+TGCACCGGTTGTGAAATATGAGAAGCCTTTTCAATCTTCATATGCAAACCCACACATGCATCGTTGGTTTCTGTC
+				</data>
+				<hit pos="633" idx="0" rc="y" pvalue="5.9e-05" match="+ ++++++ ++++   +"/>
+			</seg>
+		</sequence>
+		<sequence db="0" name="ACC1" comment="sequence of the region upstream from YNR016C" length="800">
+			<score strand="both" combined_pvalue="6.29e-08" evalue="4.4e-07"/>
+			<seg start="76">
+				<data>
+TAAAATCTTCACATGGCCCGGCCGCGCGCGCGTTGTGCCAACAAGTCGCAGTCGAAATTCAACCGCTCATTGCCA
+CTCTCTCTACTGCTTGGTGAACTAGGCTATACGCTCAATCAGCGCCAAGATATATAAGAAGAACAGCACTCCCAG
+				</data>
+				<hit pos="79" idx="0" rc="y" pvalue="2.7e-08" match="+ ++++++++++++++ "/>
+				<hit pos="135" idx="1" rc="n" pvalue="4.6e-08" match="+++ +++ +++ +++++++++"/>
+			</seg>
+		</sequence>
+		<sequence db="0" name="FAS1" comment="sequence of the region upstream from YKL182W" length="800">
+			<score strand="both" combined_pvalue="1.38e-07" evalue="9.7e-07"/>
+			<seg start="1">
+				<data>
+CCGGGTTATAGCAGCGTCTGCTCCGCATCACGATACACGAGGTGCAGGCACGGTTCACTACTCCCCTGGCCTCCA
+				</data>
+				<hit pos="45" idx="1" rc="n" pvalue="2.0e-07" match="++ ++ +   +++++++++ +"/>
+			</seg>
+			<seg start="76">
+				<data>
+ACAAACGACGGCCAAAAACTTCACATGCCGCCCAGCCAAGCATAATTACGCAACAGCGATCTTTCCGTCGCACAA
+				</data>
+				<hit pos="91" idx="0" rc="y" pvalue="1.4e-08" match="+  ++++++++++++++"/>
+			</seg>
+		</sequence>
+		<sequence db="0" name="CHO1" comment="sequence of the region upstream from YER026C" length="800">
+			<score strand="both" combined_pvalue="1.94e-07" evalue="1.4e-06"/>
+			<seg start="601">
+				<data>
+ACTTTGAACGTTCACACGGCACCCTCACGCCTTTGAGCTTTCACATGGACCCATCTAAAGATGAAGATCCGTATT
+				</data>
+				<hit pos="615" idx="1" rc="n" pvalue="1.5e-07" match="++++++ ++ ++++  ++ + "/>
+				<hit pos="636" idx="0" rc="y" pvalue="2.7e-08" match="++ ++++++++++ +++"/>
+			</seg>
+		</sequence>
+		<sequence db="0" name="CHO2" comment="sequence of the region upstream from YGR157W" length="800">
+			<score strand="both" combined_pvalue="2.76e-04" evalue="0.0019"/>
+			<seg start="301">
+				<data>
+ATATATATTTTTGCCTTGGTTTAAATTGGTCAAGACAGTCAATTGCCACACTTTTCTCATGCCGCATTCATTATT
+				</data>
+				<hit pos="350" idx="0" rc="y" pvalue="1.5e-08" match="+++++++ ++++++++ "/>
+			</seg>
+		</sequence>
+	</sequences>
+	<runtime host="Timothys-iMac.rd.unr.edu" when="Wed Mar  1 17:58:27 2017" cycles="7112" seconds="0.007"/>
+</mast>

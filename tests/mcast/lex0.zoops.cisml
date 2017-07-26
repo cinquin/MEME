@@ -1,0 +1,257 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<!-- Document definition -->
+<!-- http://zlab.bu.edu/~phaverty/SupplementalData/CisML/cisml.dtd -->
+<!DOCTYPE cis-element-search[
+<!ELEMENT cis-element-search (program-name, parameters, (pattern | multi-pattern-scan)*)>
+<!ELEMENT program-name (#PCDATA)>
+<!ELEMENT parameters (
+  pattern-file, 
+  sequence-file, 
+  background-seq-file?,
+  pattern-pvalue-cutoff?,
+  sequence-pvalue-cutoff?,
+  site-pvalue-cutoff?,
+  sequence-filtering,
+  ANY*
+ )>
+<!ELEMENT command-line (#PCDATA)>
+<!ELEMENT pattern-file (#PCDATA)>
+<!ELEMENT sequence-file (#PCDATA)>
+<!ELEMENT background-seq-file (#PCDATA)>
+<!ELEMENT pattern-pvalue-cutoff (#PCDATA)>
+<!ELEMENT sequence-pvalue-cutoff (#PCDATA)>
+<!ELEMENT site-pvalue-cutoff (#PCDATA)>
+<!ELEMENT sequence-filtering EMPTY>
+<!ELEMENT multi-pattern-scan (pattern+, ANY*)>
+<!ELEMENT pattern (scanned-sequence+, ANY*)>
+<!ELEMENT scanned-sequence (matched-element*, ANY*)>
+<!ELEMENT matched-element (sequence)>
+<!ELEMENT sequence (#PCDATA)>
+<!ATTLIST cis-element-search
+xmlns:xsi CDATA #IMPLIED
+xmlns:mem CDATA #IMPLIED
+xsi:schemaLocation CDATA #IMPLIED
+>
+<!ATTLIST sequence-filtering
+on-off CDATA #REQUIRED
+type CDATA #IMPLIED
+>
+<!ATTLIST multi-pattern-scan
+score CDATA #IMPLIED
+pvalue CDATA #IMPLIED
+>
+<!ATTLIST pattern
+accession CDATA #REQUIRED
+name CDATA #REQUIRED
+pvalue CDATA #IMPLIED
+score CDATA #IMPLIED
+db CDATA #IMPLIED
+lsid CDATA #IMPLIED
+>
+<!ATTLIST scanned-sequence
+accession CDATA #REQUIRED
+name CDATA #REQUIRED
+score CDATA #IMPLIED
+pvalue CDATA #IMPLIED
+length CDATA #IMPLIED
+db CDATA #IMPLIED
+lsid CDATA #IMPLIED
+>
+<!ATTLIST matched-element
+start CDATA #REQUIRED
+stop CDATA #REQUIRED
+score CDATA #IMPLIED
+pvalue CDATA #IMPLIED
+clusterid CDATA #IMPLIED
+>
+
+]>
+<cis-element-search
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://zlab.bu.edu/schema/cisml cisml.xsd"
+  xmlns="http://zlab.bu.edu/schema/cisml"
+  xmlns:mem="http://noble.gs.washington.edu/meme"
+>
+<program-name>mcast</program-name>
+<parameters>
+<pattern-file>meme/meme.lex0.zoops.txt</pattern-file>
+<sequence-file>common/lex0.s</sequence-file>
+<pattern-pvalue-cutoff>0.0005</pattern-pvalue-cutoff>
+<sequence-pvalue-cutoff>1</sequence-pvalue-cutoff>
+</parameters>
+<multi-pattern-scan score="26.0762" pvalue="0.21643">
+<pattern accession="WACTGTATATATATACAGTW" name="WACTGTATATATATACAGTW">
+<scanned-sequence accession="recn" name="recn">
+<matched-element start="71" stop="90" pvalue="2.2942e-09">
+<sequence>tactgtatataaaaccagtt</sequence>
+</matched-element>
+</scanned-sequence>
+</pattern>
+<pattern accession="WACTGTATATATATACAGTW" name="WACTGTATATATATACAGTW">
+<scanned-sequence accession="recn" name="recn">
+<matched-element start="111" stop="130" pvalue="7.0073e-07">
+<sequence>taatggtttttcatacagga</sequence>
+</matched-element>
+</scanned-sequence>
+</pattern>
+<mem:match cluster-id="cluster-6" seq-name="recn" start="71" stop="130" evalue="3.03" qvalue="0.53722">tactgtatataaaaccagtttatactgtacacaataacagtaatggtttttcatacagga
+</mem:match>
+</multi-pattern-scan>
+<multi-pattern-scan score="23.7281" pvalue="0.24404">
+<pattern accession="WACTGTATATATATACAGTW" name="WACTGTATATATATACAGTW">
+<scanned-sequence accession="cloacin-df13" name="cloacin-df13">
+<matched-element start="97" stop="116" pvalue="3.5983e-11">
+<sequence>tactgtgtatatatacagta</sequence>
+</matched-element>
+</scanned-sequence>
+</pattern>
+<mem:match cluster-id="cluster-1" seq-name="cloacin-df13" start="97" stop="116" evalue="3.4166" qvalue="0.53722">tactgtgtatatatacagta
+</mem:match>
+</multi-pattern-scan>
+<multi-pattern-scan score="20.2864" pvalue="0.30789">
+<pattern accession="WACTGTATATATATACAGTW" name="WACTGTATATATATACAGTW">
+<scanned-sequence accession="umu-operon" name="umu-operon">
+<matched-element start="91" stop="110" pvalue="3.9098e-10">
+<sequence>tactgtatataaaaacagta</sequence>
+</matched-element>
+</scanned-sequence>
+</pattern>
+<mem:match cluster-id="cluster-8" seq-name="umu-operon" start="91" stop="110" evalue="4.3104" qvalue="0.53722">tactgtatataaaaacagta
+</mem:match>
+</multi-pattern-scan>
+<multi-pattern-scan score="19.166" pvalue="0.32036">
+<pattern accession="WACTGTATATATATACAGTW" name="WACTGTATATATATACAGTW">
+<scanned-sequence accession="lexA" name="lexA">
+<matched-element start="14" stop="33" pvalue="9.497e-05">
+<sequence>ctctggtttattgtgcagtt</sequence>
+</matched-element>
+</scanned-sequence>
+</pattern>
+<pattern accession="WACTGTATATATATACAGTW" name="WACTGTATATATATACAGTW">
+<scanned-sequence accession="lexA" name="lexA">
+<matched-element start="55" stop="74" pvalue="9.9433e-06">
+<sequence>tgctgtatatactcacagca</sequence>
+</matched-element>
+</scanned-sequence>
+</pattern>
+<pattern accession="WACTGTATATATATACAGTW" name="WACTGTATATATATACAGTW">
+<scanned-sequence accession="lexA" name="lexA">
+<matched-element start="76" stop="95" pvalue="9.4626e-08">
+<sequence>aactgtatatacacccaggg</sequence>
+</matched-element>
+</scanned-sequence>
+</pattern>
+<mem:match cluster-id="cluster-13" seq-name="lexA" start="14" stop="95" evalue="4.4851" qvalue="0.53722">ctctggtttattgtgcagtttatggttccaaaatcgccttttgctgtatatactcacagcataactgtatatacacccaggg
+</mem:match>
+</multi-pattern-scan>
+<multi-pattern-scan score="18.6768" pvalue="0.34072">
+<pattern accession="WACTGTATATATATACAGTW" name="WACTGTATATATATACAGTW">
+<scanned-sequence accession="muc-operon" name="muc-operon">
+<matched-element start="49" stop="68" pvalue="1.1931e-09">
+<sequence>tactgtataaataaacagtt</sequence>
+</matched-element>
+</scanned-sequence>
+</pattern>
+<mem:match cluster-id="cluster-14" seq-name="muc-operon" start="49" stop="68" evalue="4.77" qvalue="0.53722">tactgtataaataaacagtt
+</mem:match>
+</multi-pattern-scan>
+<multi-pattern-scan score="14.9837" pvalue="0.42312">
+<pattern accession="WACTGTATATATATACAGTW" name="WACTGTATATATATACAGTW">
+<scanned-sequence accession="reca" name="reca">
+<matched-element start="71" stop="90" pvalue="1.5432e-08">
+<sequence>tactgtatgagcatacagta</sequence>
+</matched-element>
+</scanned-sequence>
+</pattern>
+<mem:match cluster-id="cluster-5" seq-name="reca" start="71" stop="90" evalue="5.9236" qvalue="0.53722">tactgtatgagcatacagta
+</mem:match>
+</multi-pattern-scan>
+<multi-pattern-scan score="15.2076" pvalue="0.43643">
+<pattern accession="WACTGTATATATATACAGTW" name="WACTGTATATATATACAGTW">
+<scanned-sequence accession="uvrb" name="uvrb">
+<matched-element start="71" stop="90" pvalue="1.3214e-08">
+<sequence>aactgtttttttatccagta</sequence>
+</matched-element>
+</scanned-sequence>
+</pattern>
+<mem:match cluster-id="cluster-10" seq-name="uvrb" start="71" stop="90" evalue="6.1101" qvalue="0.53722">aactgtttttttatccagta
+</mem:match>
+</multi-pattern-scan>
+<multi-pattern-scan score="12.7984" pvalue="0.47912">
+<pattern accession="WACTGTATATATATACAGTW" name="WACTGTATATATATACAGTW">
+<scanned-sequence accession="uvrd" name="uvrd">
+<matched-element start="102" stop="121" pvalue="7.019e-08">
+<sequence>atctgtatatatacccagct</sequence>
+</matched-element>
+</scanned-sequence>
+</pattern>
+<mem:match cluster-id="cluster-11" seq-name="uvrd" start="102" stop="121" evalue="6.7077" qvalue="0.53722">atctgtatatatacccagct
+</mem:match>
+</multi-pattern-scan>
+<multi-pattern-scan score="12.7366" pvalue="0.49555">
+<pattern accession="WACTGTATATATATACAGTW" name="WACTGTATATATATACAGTW">
+<scanned-sequence accession="colicin-a" name="colicin-a">
+<matched-element start="34" stop="53" pvalue="7.3262e-08">
+<sequence>tactgtatataaacacatgt</sequence>
+</matched-element>
+</scanned-sequence>
+</pattern>
+<mem:match cluster-id="cluster-12" seq-name="colicin-a" start="34" stop="53" evalue="6.9377" qvalue="0.53722">tactgtatataaacacatgt
+</mem:match>
+</multi-pattern-scan>
+<multi-pattern-scan score="12.9589" pvalue="0.49616">
+<pattern accession="WACTGTATATATATACAGTW" name="WACTGTATATATATACAGTW">
+<scanned-sequence accession="sula" name="sula">
+<matched-element start="85" stop="104" pvalue="6.28e-08">
+<sequence>tactgtacatccatacagta</sequence>
+</matched-element>
+</scanned-sequence>
+</pattern>
+<mem:match cluster-id="cluster-7" seq-name="sula" start="85" stop="104" evalue="6.9463" qvalue="0.53722">tactgtacatccatacagta
+</mem:match>
+</multi-pattern-scan>
+<multi-pattern-scan score="12.7366" pvalue="0.5187">
+<pattern accession="WACTGTATATATATACAGTW" name="WACTGTATATATATACAGTW">
+<scanned-sequence accession="colicin-ia" name="colicin-ia">
+<matched-element start="99" stop="118" pvalue="7.3262e-08">
+<sequence>tactgtatatgtatccatat</sequence>
+</matched-element>
+</scanned-sequence>
+</pattern>
+<mem:match cluster-id="cluster-3" seq-name="colicin-ia" start="99" stop="118" evalue="7.2617" qvalue="0.53722">tactgtatatgtatccatat
+</mem:match>
+</multi-pattern-scan>
+<multi-pattern-scan score="11.9789" pvalue="0.5209">
+<pattern accession="WACTGTATATATATACAGTW" name="WACTGTATATATATACAGTW">
+<scanned-sequence accession="uvra" name="uvra">
+<matched-element start="60" stop="79" pvalue="1.2386e-07">
+<sequence>tactgtatattcattcaggt</sequence>
+</matched-element>
+</scanned-sequence>
+</pattern>
+<mem:match cluster-id="cluster-9" seq-name="uvra" start="60" stop="79" evalue="7.2926" qvalue="0.53722">tactgtatattcattcaggt
+</mem:match>
+</multi-pattern-scan>
+<multi-pattern-scan score="12.7366" pvalue="0.52227">
+<pattern accession="WACTGTATATATATACAGTW" name="WACTGTATATATATACAGTW">
+<scanned-sequence accession="colicin-ib" name="colicin-ib">
+<matched-element start="99" stop="118" pvalue="7.3262e-08">
+<sequence>tactgtatatgtatccatat</sequence>
+</matched-element>
+</scanned-sequence>
+</pattern>
+<mem:match cluster-id="cluster-4" seq-name="colicin-ib" start="99" stop="118" evalue="7.3118" qvalue="0.53722">tactgtatatgtatccatat
+</mem:match>
+</multi-pattern-scan>
+<multi-pattern-scan score="12.3066" pvalue="0.53722">
+<pattern accession="WACTGTATATATATACAGTW" name="WACTGTATATATATACAGTW">
+<scanned-sequence accession="colicin-e1" name="colicin-e1">
+<matched-element start="97" stop="116" pvalue="9.8699e-08">
+<sequence>tgctgtatataaaaccagtg</sequence>
+</matched-element>
+</scanned-sequence>
+</pattern>
+<mem:match cluster-id="cluster-2" seq-name="colicin-e1" start="97" stop="116" evalue="7.5211" qvalue="0.53722">tgctgtatataaaaccagtg
+</mem:match>
+</multi-pattern-scan>
+</cis-element-search>

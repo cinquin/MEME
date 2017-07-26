@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>CentriMo Tutorial - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+  </head>
+  <body>
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <h2>CentriMo Tutorial</h2>
+    <h3>What CentriMo does</h3>
+    <div class="indent">
+       <span class="tut blurb" data-id="centrimo"></span>
+    </div>
+    <h3>Typical CentriMo applications</h3>
+       <ul>
+         <li>Determining which motif(s) are enriched in a set of transcription factor ChIP-seq peaks.
+         <li>Determining which motif(s) are enriched in one set of transcription factor (TF) ChIP-seq peaks compared with
+		another set of peaks for the same TF, perhaps in a difference cell type or after some treatment.
+         <li>Determining which motif(s) are enriched in a set of promoters of co-regulated genes.
+         <li>Determining which motif(s) are relatively enriched in one set of promoters compared to another set of promoters.
+	 <li><b>Note:</b> In all cases, the sequences input to CentriMo should be the same length, and aligned
+	on some landmark such as a ChIP-seq peak or a TSS.  If your sequences need to be of different lengths,
+	or if there is no obvious landmark to align them on, <a href=ame.html>AME</a> may be a more appropriate tool to use.
+       </ul>
+    <h3>How CentriMo works</h3>
+    <p>Note the following refers to the sequence set in which you are finding
+      motifs as the primary sequences and to the comparative sequence
+      set as the control sequences. In all cases, an <i>E</i>-value refers to a
+      <i>p</i>-value corrected for multiple tests by multiplying by the number of motifs
+      in all the databases used.
+    </p>
+      CentriMo can perform either central or local motif enrichment analysis.
+      Central enrichment is determined by finding the highest likelihood ('best') site
+      for the motif in each sequence in a given set. Central enrichment is quantified by
+      a binomial <i>p</i>-value based on the a uniform distribution of best sites within or
+      outside a central bin. CentriMo searches for the bin width that with the maximum
+      signficance.  The same procedure is used for local motif enrichment analysis, except
+      the center of the optimal bin may be anywhere along the sequences, not just aligned
+      to their centers.  CentriMo reports the postion, width and signficance of the most
+      enriched bin, and it plots the distribution of 'best' sites.  The algorithm
+      proceeds as follows:
+      <ol>
+	<li>For each motif, scan each sequence and record the 'best' site; in the event
+	of <i>k</i> ties for the 'best' score in a sequence, <i>k</i> &gt; 1, count each
+	tie as 1/<i>k</i> sites rather than 1.</li>
+	<li>For each bin size (increased in steps of 2 to maintain symmetry), calculate
+	the binomial <i>p</i>-value</li>.
+	<li>Select the bin size with lowest <i>p</i>-value, and plot the site probability
+	for the distribution of location of 'best' sites.</li>
+	<li>If control sequences are provided, repeat the motif scan for the control sequences
+	and count how many 'best' sites fall in the optimal bin determined from the primary sequences.
+	Then compute the <i>E</i>-value for a Fisher's exact test comparing the counts
+	in that bin in the primary and control sequences.</li>
+      </ol>
+    </p>
+    <h3>Sequence and Motif Alphabets</h3>
+    <p>
+    	CentriMo supports DNA, RNA, protein and custom sequence alphabets.  The alphabet is specified in the motif file, 
+	and the sequences being searched must be compatible with that alphabet.  (DNA motifs can be used to search
+	RNA sequences and vice-versa.)  If the motif alphabet is "complementable" (e.g., DNA-like alphabets),
+	You can also override the the alphabet specified in the motif file with an alphabet that contains all 
+	the core symbols specified in the motif alphabet but which may contain additional core symbols. 
+	The motifs will be expanded to match this new alphabet with 0's filling in the probabilities for the 
+	new symbols (prior to applying pseudocounts).
+    </p>
+    <h3>Primary Sequence set</h3>
+    <p>
+	These sequences should all be in the same sequence alphabet and be of the same length. 
+	<b>CentriMo will ignore all sequences whose lengths don't match the first sequence.</b>
+	They can, for example, a set of ChIP-seq regions aligned on the summits or centers of the peaks, or
+	be a set of promoters thought to be co-regulated aligned on the TSS.
+	By default, CentriMo detects motifs enriched in the centers of these sequences, relative to the flanks.
+	CentriMo can also search for motifs aligned locally (non-centrally) within the primary sequences.
+    </p>
+    <p>
+	CentriMo requires sequences derived using a method that causes motif sites to
+	be distributed with a bias to be near (or at a fixed distance) from some landmark.
+	Sequences should have sufficient flanking data around the likely binding site to
+	achieve statistical significance. For ChIP-seq sequences centered on the peak
+	summit (or peak center), a sequence length of 500 works well.
+    </p>
+    <h3>Control sequence set</h3>
+    <p>
+	CentriMo can perform differential local motif enrichment if you provide a control set.
+        These sequences should be the same length as the primary sequences, and aligned on the same type of landmark.
+	After determining if a motif is enriched in the primary sequences, CentriMo will then
+	test the relative enrichment of the motif in the same region in the control sequences.
+	CentriMo reports two <i>p</i>-values for all the motifs that are enriched in the primary sequences--their
+	primary enrichment and their relative enrichment.
+    </p>
+    </p>
+	A typical use case is comparing different ChIP-seq cell lines that may differ in one
+	or more variables (e.g., karotype, development stage, tissue type). It is best to run
+	this sort of study twice as a reality check, reversing the roles of the positive and
+	negative set, since it is possible that statistical significance arising from the
+	comparison of the positive and negative sets could be an artefact of the two sequence
+	sets achieving their highest central enrichment with different central bin widths.
+    </p>
+    <h3>Motif file(s)</h3>
+    <p>
+      You must specify one or more files containing motifs <a href=meme-format.html>MEME Motif Format</a>.
+      CentriMo is fast enough to use a large numbers of motifs for general motif enrichment studies.
+      You can achieve higher statistical power by using a more specific set of motifs if
+      you have prior knowledge of what motifs might be enriched in your sequences.
+    </p>
+    <h2>Interpreting Results</h2>
+    <p>
+      The primary basis for determining central (local) enrichment is the central (local) enrichment
+      <i>E</i>-value. It is also useful to examine the shape of the site probability
+      plot and the width of the bin with lowest <i>E</i>-value.
+    </p>
+    <p>
+      Note, however, that it is dangerous to directly compare the <i>E</i>-values of two
+      motifs unless the motifs have approximately the same information content.
+      This is because motifs with higher information content are more likely to 
+      accurately pin-point the actual binding site in a ChIP-seq experiment, for example.
+      So a more specific version of the "true" binding motif can receive a
+      lower <i>E</i>-value, even though it is not a "better" motif.
+    </p>
+    <p>
+      Note also that CentriMo is extremely sensitive, and when your sequence set is large,
+      even motifs that are only slightly similar to the actual motif can show 
+      significant enrichment.
+    </p>
+    <p>
+      With ChIP-seq peaks, the width of the bin with lowest <i>E</i>-value is also an indication of a tendency
+      to central enrichment; typically a best bin width of about 100 bases indicates
+      direct binding, especially if the <i>E</i>-value is low and the plot has a clear
+      peak.
+    </p>
+    <p>
+      With ChIP-seq peaks, if the maximum of the plot is off-center, that may indicate an offset inherent in the peak-calling
+      method used in the ChIP-seq experiment. If the primary binding TF's motif is sharply
+      centered, and other motifs have less clearly centered maxima, that may indicate binding
+      partners. If there is no clear central enrichment, that may indicate a failure of
+      the ChIP-seq method, the absence of a motif in the motif file(s) used that accurately
+      represents binding, or indirect binding of the TF via some motif not contained in the motif file(s).
+    </p>
+    <p>
+      The shape of the graph and the best bin width are subjective, so we prefer to use
+      the <i>E</i>-value as a discriminator between different degrees of central (local) enrichment.
+    </p>
+    <h3>FAQ</h3>
+      <ul>
+	Under construction...
+      </ul>
+    <p>
+  </body>
+</html>
+

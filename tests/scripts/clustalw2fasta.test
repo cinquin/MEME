@@ -1,0 +1,38 @@
+&test('clustalw2fasta1', '',
+  'clustalw2fasta', '',
+  ['common/test.aln'],
+  [
+    {
+      output => '-', 
+      reference => 'clustalw2fasta/test.fasta',
+      type => 'text'
+    }
+  ],
+  'results/clustalw2fasta1'
+);
+
+&test('clustalw2fasta2', '',
+  'clustalw2fasta', '',
+  ['-nogap', 'common/test.aln'],
+  [
+    {
+      output => '-',
+      reference => 'clustalw2fasta/test.nogap.fasta',
+      type => 'text'
+    }
+  ],
+  'results/clustalw2fasta2'
+);
+
+&test('clustalw2fasta3', '',
+  'clustalw2fasta', '',
+  ['-consensus', 100, 'common/test.aln'],
+  [
+    {
+      output => '-',
+      type => 'text', 
+      reference => 'clustalw2fasta/test.consensus.fasta'
+    }
+  ], 
+  'results/clustalw2fasta3'
+);

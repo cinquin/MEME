@@ -1,0 +1,129 @@
+#!@WHICHPERL@
+
+use strict;
+use warnings;
+
+=head1 NAME
+
+rsat-retrieve-seq - Downloads the requested sequence from RSAT and writes it to standard out.
+
+=head1 SYNOPSIS
+
+rsat-retrieve-seq [options] <organism>
+
+ Options: 
+  -help               Display this help message.
+  -server <WSDL URL>  Select the server.
+  -start <pos>        Sequence read starting position relative to predicted TSS; default -1000
+  -end <pos>          Sequence read end position relative to predicted TSS; default 200
+ 
+ Reads the sequence specified from RSAT and writes it to standard out.
+
+ Writes standard output.
+
+=cut
+
+use Getopt::Long;
+use Pod::Usage;
+use XML::Compile::SOAP11;
+use XML::Compile::WSDL11;
+use XML::Compile::Transport::SOAPHTTP;
+
+use Data::Dumper;
+
+sub main {
+  my $help = 0; # FALSE
+  my $server = 'http://pedagogix-tagc.univ-mrs.fr/rsat/web_services/RSATWS.wsdl';
+  my $start = -1000;
+  my $end = 200;
+  GetOptions("help|?" => \$help, "server=s" => \$server, "start=i" => \$start, "end=i" => \$end) or pod2usage(2);
+  pod2usage(0) if $help;
+  my ($organism) = @ARGV;
+  pod2usage(-msg => "Organism must be specified", -exitval => 2) unless defined $organism;
+  pod2usage(-msg => "Start must be less than end", -exitval => 2) if $start > $end;
+
+  #
+  # output
+  #     Return type.
+  #     Accepted values: 'server' (result is stored on a file on the server),
+  #     'client' (result is directly transferred to the client),
+  #     'both' (result is stored on the server and transferred to the client), 
+  #     and ticket (an identifier, allowing to monitor the job status and
+  #     retrieve the result when it is done, is returned to the client).
+  #     Default is 'both'.
+  # organism
+  #     Organism. Words need to be underscore separated (example: Escherichia_coli_K12).
+  # query
+  #     A list of query genes.
+  # all
+  #     Return sequences for all the genes of the organism if value = 1. Incompatible with query.
+  # noorf
+  #     Prevent overlap with upstream open reading frames (ORF) if value = 1.
+  # from
+  #     Inferior limit of the region to retrieve.
+  #     Default is organism dependant (example: Saccharomyces cerevisiae = -800).
+  # to
+  #     Superior limit of the region to retrieve. Default is '-1'.
+  # feattype
+  #     Type of genome features to load. Supported: CDS, mRNA, tRNA, rRNA. 
+  # type
+  #     Sequence type. Supported: upstream, downstream, ORF (unspliced open reading frame).
+  # format
+  #     Sequence format. Supported: IG (Intelligenetics), WC (wconsensus), raw, FastA
+  # lw
+  #     Line width (0 for whole sequence on one line).
+  # label
+  #     Field(s) to be used in the sequence label. 
+  #     Multiple fields can be specified, separated by commas. 
+  #     Supported: id, name, organism_name, sequence_type, current_from, 
+  #     current_to, ctg, orf_strand, reg_left, reg_right. 
+  #     Default: name.
+  # label_sep
+  #     Separator between the label fields. Default: | (pipe character).
+  # nocom
+  #     No comments if value = 1. Only the identifier and the sequence are returned. 
+  #     By default, the comment indicates the ORF and upstream sequence coordinates.
+  # repeat
+  #     Use the repeat masked version of the genome if value = 1.
+  #     Warning: repeated regions are annotated for some genomes only.
+  # imp_pos
+  #     Admit imprecise positions if value = 1.
+  #
+  my %args = (
+    'output' => 'client',
+    'organism' => $organism,
+    'all' => 1,
+    'noorf' => 1,
+    'from' => $start,
+    'to' => $end,
+    'feattype' => '',
+    'type' => 'upstream',
+    'format' => 'fasta',
+    'lw' => 50,
+    'label' => 'id,name',
+    'label_sep' => '',
+    'nocom' => 0,
+    'repeat' => 0,
+    'imp_pos' => 0
+  );
+
+  my $wsdl = XML::LibXML->new->parse_file($server);
+  my $proxy = XML::Compile::WSDL11->new($wsdl);
+  # Generating a request message based on the WSDL
+  my $client = $proxy->compileClient('retrieve_seq');
+
+  my $answer = $client->( request => {%args});
+
+  if ( defined $answer ) {
+    if ($answer->{output}->{response}->{client}) {
+      print $answer->{output}->{response}->{client};
+      exit 0;
+    } else {
+      print STDERR Dumper($answer);
+      exit 1;
+    }
+  } else {
+    die("No answer?!");
+  }
+}
+main(); 1;

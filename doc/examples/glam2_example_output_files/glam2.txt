@@ -1,0 +1,1243 @@
+GLAM2: Gapped Local Alignment of Motifs
+Version 1056
+
+glam2 -O glam2_example_output_files -M p At.faa
+Sequences: 19
+Greatest sequence length: 1112
+Residue counts: A=538 C=175 D=553 E=721 F=419 G=664 H=244 I=516 K=663 L=1000 M=235 N=484 P=466 Q=340 R=623 S=922 T=503 V=633 W=108 Y=326 x=0
+
+Score: 1277.07  Columns: 50  Sequences: 19
+
+                  ********************...*********************........*********
+At1g01140.1_  116 EDEARRYFQQLINAVDYCHS...RGVYHRDLKPENLILDANGVL........KVSDFGLSA  165 + 120.
+At1g01140.2_  116 EDEARRYFQQLINAVDYCHS...RGVYHRDLKPENLILDANGVL........KVSDFGLSA  165 + 120.
+At1g01140.3_  116 EDEARRYFQQLINAVDYCHS...RGVYHRDLKPENLILDANGVL........KVSDFGLSA  165 + 120.
+At1g01450.1_  123 LPVAVDLMLQIALGMEYLHS...KRIYHGELNPSNILVKPRSNQSGDGYLLGKIFGFGLNS  180 + 44.0
+At1g01540.1_  251 WDIRMNIILGMAKGLAYLHEGLEPKVVHRDIKSSNILLDRQWNA........KVSDFGLAK  303 + 106.
+At1g01540.2_  251 WDIRMNIILGMAKGLAYLHEGLEPKVVHRDIKSSNILLDRQWNA........KVSDFGLAK  303 + 106.
+At1g01560.1_  140 DDHSRFFLYQLLRGLKYVHS...ANVLHRDLKPSNLLLNANCDL........KIGDFGLAR  189 + 84.9
+At1g01740.1_  151 WAMRLRVALYISEALEYCSNNG.HTLYH.DLNAYRVLFDEECNP........RLSTFGLMK  201 + 12.2
+At1g02970.1_  346 EREILVIMHQIAKALHFVHE...KGIAHLDVKPDNIYIK.NGVC........KLGDFGCAT  394 + 69.3
+At1g03740.1_  311 EPQVKCYMRQLLSGLEHCHS...RGVLHRDIKGSNLLIDSKGVL........KIADFGLAT  360 + 100.
+At1g03920.1_  234 EDEAKFYIAESVLAIESIHN...RNYIHRDIKPDNLLLDRYGHL........RLSDFGLCK  283 + 79.2
+At1g03930.1_  102 LKTVLMLADQLINRVEFMHT...RGFLHRDIKPDNFLMGLGRKANQV.....YIIDFGLGK  154 + 86.4
+At1g04210.1_  901 MDLALSIARDISGALMELHS...KDIIHRDIKSENVLID.LDNQSANGEPIVKLCDFDRAV  957 + 49.6
+At1g04440.1_  102 LKTVLMLADQMINRVEYMHV...KGFLHRDIKPDNFLMGLGRKANQV.....YIIDYGLAK  154 + 81.5
+At1g04700.1_  869 RRKKLMITLDSAFGMEYLHM...KNIVHFDLKCDNLLVNLRDPQRPIC....KVGDFGLSR  922 + 65.3
+At1g05100.1_  104 EARVVKYTRQILLGLEYIHNS..KGIAHCDIKGSNVLVGENGEA........KIADFGCAK  154 + 90.7
+At1g05700.1_  655 WRQRLQIALDAAQGLEYLHCGCKPPIVHRDVKTSNILLNEKNRA........KLADFGLSR  707 + 78.3
+At1g06390.1_  168 IFYVKLYTYQIFRGLAYIHTV..PGVCHRDVKPQNLLVDPLTHQV.......KLCDFGSAK  219 + 105.
+At1g06390.2_  168 IFYVKLYTYQIFRGLAYIHTV..PGVCHRDVKPQNLLVDPLTHQV.......KLCDFGSAK  219 + 105.
+
+                  EDEALRYALQIANGLEYLHS   KGVYHRDIKPSNLLLDANGNA        KLSDFGLAK
+                  W  VK IT  LI AVA C     R IL   L  D I V    VL         I     S 
+                     RR            I     P  V   V  E         Q         V       
+
+ A  C  D  E  F  G  H  I  K  L  M  N  P  Q  R  S  T  V  W  Y Del Ins Score
+ 0  0  1  7  0  0  0  2  0  3  1  0  0  0  1  0  0  0  4  0   0      13.1
+                                                                  0 -0.102
+ 2  0  8  0  2  0  0  0  2  0  0  0  2  0  3  0  0  0  0  0   0      12.7
+                                                                  0 -0.102
+ 0  0  0  5  0  0  1  2  1  1  1  0  0  2  1  0  2  1  0  2   0     -0.396
+                                                                  0 -0.102
+ 6  0  0  0  0  0  0  1  1  0  0  0  0  0  4  1  0  6  0  0   0      11.9
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  0  4  7  2  0  0  0  4  0  0  2  0  0   0      14.7
+                                                                  0 -0.102
+ 0  1  1  0  2  0  0  0  1  2  3  2  0  1  4  1  0  1  0  0   0     -1.45
+                                                                  0 -0.102
+ 0  0  0  0  1  0  0  6  0  3  0  0  0  0  0  0  0  1  0  8   0      32.2
+                                                                  0 -0.102
+ 5  0  0  0  3  0  0  3  0  1  3  0  0  0  0  0  4  0  0  0   0      14.2
+                                                                  0 -0.102
+ 1  0  2  0  0  0  1  0  0  6  0  0  0  3  3  0  0  0  0  3   0      6.60
+                                                                  0 -0.102
+ 0  0  3  1  0  2  0  0  0  0  0  0  0 12  0  0  0  0  0  1   0      30.6
+                                                                  0 -0.102
+ 1  0  0  0  0  0  0  7  0  6  3  0  0  0  0  2  0  0  0  0   0      21.8
+                                                                  0 -0.102
+ 6  0  0  0  2  0  0  5  0  3  0  0  0  0  0  2  0  1  0  0   0      12.0
+                                                                  0 -0.102
+ 0  0  0  1  1  1  0  0  3  3  0  5  0  1  3  1  0  0  0  0   0      2.11
+                                                                  0 -0.102
+ 7  0  0  0  0 10  0  0  0  0  0  0  0  0  2  0  0  0  0  0   0      31.2
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  1  0 11  2  0  0  0  0  0  0  5  0  0   0      32.8
+                                                                  0 -0.102
+ 4  0  3  9  0  0  1  0  1  0  1  0  0  0  0  0  0  0  0  0   0      18.2
+                                                                  0 -0.102
+ 0  0  0  1  2  0  1  0  0  0  0  0  0  0  0  1  0  0  0 14   0      48.3
+                                                                  0 -0.102
+ 0  5  0  0  0  0  0  4  0  6  2  0  0  0  0  0  0  2  0  0   0      27.8
+                                                                  0 -0.102
+ 0  0  0  0  0  0 18  0  0  0  0  0  0  0  0  1  0  0  0  0   0      83.9
+                                                                  0 -0.102
+ 0  1  0  3  0  0  0  0  0  0  1  3  0  0  0  7  3  1  0  0   0      8.69
+                                                                 14 -39.1
+ 1  0  0  0  0  0  1  0  6  0  0  0  5  0  6  0  0  0  0  0   0      24.0
+                                                                  0 -0.102
+ 0  0  1  0  0 10  0  0  2  0  0  3  1  0  1  0  1  0  0  0   0      16.3
+                                                                  0 -0.102
+ 0  0  0  0  2  0  0  6  0  1  0  0  0  0  0  0  0  9  0  1   0      30.5
+                                                                  0 -0.102
+ 2  2  0  0  0  0  0  2  0  4  0  0  0  0  0  0  0  4  0  5   0      16.1
+                                                                  0 -0.102
+ 0  0  0  0  0  0 19  0  0  0  0  0  0  0  0  0  0  0  0  0   0      95.3
+                                                                  0 -0.102
+ 0  1  0  0  1  1  0  0  0  1  0  0  0  0 14  0  0  0  0  0   1      23.5
+                                                                  0 -0.102
+ 0  0 18  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0   0      61.1
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  8  0  7  0  0  0  0  0  0  0  4  0  0   0      35.8
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  0 17  0  0  2  0  0  0  0  0  0  0  0   0      54.1
+                                                                  0 -0.102
+ 1  1  0  0  0  2  0  0  0  0  0  0 11  0  0  3  1  0  0  0   0      23.5
+                                                                  0 -0.102
+ 0  0  5  4  0  0  0  0  0  0  0  0  0  2  0  7  0  0  0  1   0      19.0
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  0  0  0  0 18  0  0  1  0  0  0  0  0   0      64.3
+                                                                  0 -0.102
+ 0  0  0  0  2  0  0  5  0  9  0  0  0  0  0  0  0  3  0  0   0      29.3
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  3  0 15  0  0  0  0  0  0  0  0  0  1   0      39.2
+                                                                  0 -0.102
+ 0  0  0  0  1  0  0  3  0  8  2  0  0  0  0  0  0  5  0  0   0      26.3
+                                                                  0 -0.102
+ 0  0 11  0  0  3  0  0  2  0  0  3  0  0  0  0  0  0  0  0   0      32.3
+                                                                  0 -0.102
+ 4  0  0  3  0  0  0  0  0  3  0  0  3  0  3  1  0  0  0  0   2     -8.23
+                                                                  0 -0.102
+ 0  0  0  1  0  2  0  0  2  3  0  6  0  2  2  0  0  0  0  1   0      4.86
+                                                                  0 -0.102
+ 0  2  2  0  0  7  0  0  0  0  0  1  0  0  2  1  2  0  2  0   0      7.17
+                                                                  0 -0.102
+ 0  0  1  1  0  0  3  0  2  0  0  5  1  0  1  0  0  5  0  0   0      9.66
+                                                                  0 -0.102
+ 6  1  0  0  0  0  0  0  0  6  0  0  1  5  0  0  0  0  0  0   0      13.7
+                                                                 28 -53.1
+ 0  0  0  0  0  0  0  0 15  0  0  0  0  0  2  0  0  0  0  2   0      45.5
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  6  0  7  0  0  0  0  0  0  0  6  0  0   0      34.3
+                                                                  0 -0.102
+ 3  3  0  0  1  3  0  2  0  0  0  0  0  0  0  7  0  0  0  0   0      12.3
+                                                                  0 -0.102
+ 0  0 17  0  0  1  0  0  0  0  0  0  0  0  0  0  1  0  0  0   0      52.7
+                                                                  0 -0.102
+ 0  0  0  0 18  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1   0      71.7
+                                                                  0 -0.102
+ 0  0  1  0  0 18  0  0  0  0  0  0  0  0  0  0  0  0  0  0   0      56.6
+                                                                  0 -0.102
+ 0  2  0  0  0  0  0  0  0 14  0  0  0  0  1  2  0  0  0  0   0      25.3
+                                                                  0 -0.102
+10  1  0  0  0  1  0  0  0  0  1  1  0  0  0  5  0  0  0  0   0      19.9
+                                                                  0 -0.102
+ 3  0  0  0  0  0  0  0  9  0  0  0  0  0  3  1  2  1  0  0   0      17.1
+
+Score: 1271.22  Columns: 50  Sequences: 19
+
+                  *****************...*****************........****************
+At1g01140.1_  119 ARRYFQQLINAVDYCHS...RGVYHRDLKPENLILDA........NGVLKVSDFGLSAFSR  168 + 120.
+At1g01140.2_  119 ARRYFQQLINAVDYCHS...RGVYHRDLKPENLILDA........NGVLKVSDFGLSAFSR  168 + 120.
+At1g01140.3_  119 ARRYFQQLINAVDYCHS...RGVYHRDLKPENLILDA........NGVLKVSDFGLSAFSR  168 + 120.
+At1g01450.1_  126 AVDLMLQIALGMEYLHS...KRIYHGELNPSNILVKPRSNQSGDGYLLGKIFGFGLNSVKG  183 + 33.9
+At1g01540.1_  254 RMNIILGMAKGLAYLHEGLEPKVVHRDIKSSNILLDR........QWNAKVSDFGLAKLLG  306 + 101.
+At1g01540.2_  254 RMNIILGMAKGLAYLHEGLEPKVVHRDIKSSNILLDR........QWNAKVSDFGLAKLLG  306 + 101.
+At1g01560.1_  143 SRFFLYQLLRGLKYVHS...ANVLHRDLKPSNLLLNA........NCDLKIGDFGLARTKS  192 + 83.0
+At1g01740.1_  154 RLRVALYISEALEYCSNNG.HTLYH.DLNAYRVLFDE........ECNPRLSTFGLMKNSR  204 + 12.4
+At1g02970.1_  349 ILVIMHQIAKALHFVHE...KGIAHLDVKPDNIYIK.........NGVCKLGDFGCATRLD  397 + 66.3
+At1g03740.1_  314 VKCYMRQLLSGLEHCHS...RGVLHRDIKGSNLLIDS........KGVLKIADFGLATFFD  363 + 102.
+At1g03920.1_  237 AKFYIAESVLAIESIHN...RNYIHRDIKPDNLLLDR........YGHLRLSDFGLCKPLD  286 + 75.7
+At1g03930.1_  105 VLMLADQLINRVEFMHT...RGFLHRDIKPDNFLMGLGRK.....ANQVYIIDFGLGKKYR  157 + 91.4
+At1g04210.1_  904 ALSIARDISGALMELHS...KDIIHRDIKSENVLIDLDNQSANG.EPIVKLCDFDRAVPLR  960 + 56.1
+At1g04440.1_  105 VLMLADQMINRVEYMHV...KGFLHRDIKPDNFLMGLGRK.....ANQVYIIDYGLAKKYR  157 + 86.5
+At1g04700.1_  872 KLMITLDSAFGMEYLHM...KNIVHFDLKCDNLLVNLRDPQ....RPICKVGDFGLSRIKR  925 + 69.9
+At1g05100.1_  107 VVKYTRQILLGLEYIHNS..KGIAHCDIKGSNVLVGE........NGEAKIADFGCAKWVE  157 + 85.9
+At1g05700.1_  658 RLQIALDAAQGLEYLHCGCKPPIVHRDVKTSNILLNE........KNRAKLADFGLSRSFH  710 + 73.0
+At1g06390.1_  171 VKLYTYQIFRGLAYIHTV..PGVCHRDVKPQNLLVDPL.......THQVKLCDFGSAKVLV  222 + 106.
+At1g06390.2_  171 VKLYTYQIFRGLAYIHTV..PGVCHRDVKPQNLLVDPL.......THQVKLCDFGSAKVLV  222 + 106.
+
+                  ALRYALQIANGLEYLHS   KGVYHRDIKPSNLLLDA        NGVLKLSDFGLAKFLR
+                  VK IT  LI AVA C     R IL   L  D I V L          QV I     S  S 
+                  RR            I     P  V   V  E                 A V          
+
+ A  C  D  E  F  G  H  I  K  L  M  N  P  Q  R  S  T  V  W  Y Del Ins Score
+ 6  0  0  0  0  0  0  1  1  0  0  0  0  0  4  1  0  6  0  0   0      11.9
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  0  4  7  2  0  0  0  4  0  0  2  0  0   0      14.7
+                                                                  0 -0.102
+ 0  1  1  0  2  0  0  0  1  2  3  2  0  1  4  1  0  1  0  0   0     -1.45
+                                                                  0 -0.102
+ 0  0  0  0  1  0  0  6  0  3  0  0  0  0  0  0  0  1  0  8   0      32.2
+                                                                  0 -0.102
+ 5  0  0  0  3  0  0  3  0  1  3  0  0  0  0  0  4  0  0  0   0      14.2
+                                                                  0 -0.102
+ 1  0  2  0  0  0  1  0  0  6  0  0  0  3  3  0  0  0  0  3   0      6.60
+                                                                  0 -0.102
+ 0  0  3  1  0  2  0  0  0  0  0  0  0 12  0  0  0  0  0  1   0      30.6
+                                                                  0 -0.102
+ 1  0  0  0  0  0  0  7  0  6  3  0  0  0  0  2  0  0  0  0   0      21.8
+                                                                  0 -0.102
+ 6  0  0  0  2  0  0  5  0  3  0  0  0  0  0  2  0  1  0  0   0      12.0
+                                                                  0 -0.102
+ 0  0  0  1  1  1  0  0  3  3  0  5  0  1  3  1  0  0  0  0   0      2.11
+                                                                  0 -0.102
+ 7  0  0  0  0 10  0  0  0  0  0  0  0  0  2  0  0  0  0  0   0      31.2
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  1  0 11  2  0  0  0  0  0  0  5  0  0   0      32.8
+                                                                  0 -0.102
+ 4  0  3  9  0  0  1  0  1  0  1  0  0  0  0  0  0  0  0  0   0      18.2
+                                                                  0 -0.102
+ 0  0  0  1  2  0  1  0  0  0  0  0  0  0  0  1  0  0  0 14   0      48.3
+                                                                  0 -0.102
+ 0  5  0  0  0  0  0  4  0  6  2  0  0  0  0  0  0  2  0  0   0      27.8
+                                                                  0 -0.102
+ 0  0  0  0  0  0 18  0  0  0  0  0  0  0  0  1  0  0  0  0   0      83.9
+                                                                  0 -0.102
+ 0  1  0  3  0  0  0  0  0  0  1  3  0  0  0  7  3  1  0  0   0      8.69
+                                                                 14 -39.1
+ 1  0  0  0  0  0  1  0  6  0  0  0  5  0  6  0  0  0  0  0   0      24.0
+                                                                  0 -0.102
+ 0  0  1  0  0 10  0  0  2  0  0  3  1  0  1  0  1  0  0  0   0      16.3
+                                                                  0 -0.102
+ 0  0  0  0  2  0  0  6  0  1  0  0  0  0  0  0  0  9  0  1   0      30.5
+                                                                  0 -0.102
+ 2  2  0  0  0  0  0  2  0  4  0  0  0  0  0  0  0  4  0  5   0      16.1
+                                                                  0 -0.102
+ 0  0  0  0  0  0 19  0  0  0  0  0  0  0  0  0  0  0  0  0   0      95.3
+                                                                  0 -0.102
+ 0  1  0  0  1  1  0  0  0  1  0  0  0  0 14  0  0  0  0  0   1      23.5
+                                                                  0 -0.102
+ 0  0 18  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0   0      61.1
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  8  0  7  0  0  0  0  0  0  0  4  0  0   0      35.8
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  0 17  0  0  2  0  0  0  0  0  0  0  0   0      54.1
+                                                                  0 -0.102
+ 1  1  0  0  0  2  0  0  0  0  0  0 11  0  0  3  1  0  0  0   0      23.5
+                                                                  0 -0.102
+ 0  0  5  4  0  0  0  0  0  0  0  0  0  2  0  7  0  0  0  1   0      19.0
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  0  0  0  0 18  0  0  1  0  0  0  0  0   0      64.3
+                                                                  0 -0.102
+ 0  0  0  0  2  0  0  5  0  9  0  0  0  0  0  0  0  3  0  0   0      29.3
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  3  0 15  0  0  0  0  0  0  0  0  0  1   0      39.2
+                                                                  0 -0.102
+ 0  0  0  0  1  0  0  3  0  8  2  0  0  0  0  0  0  5  0  0   0      26.3
+                                                                  0 -0.102
+ 0  0 11  0  0  3  0  0  2  0  0  3  0  0  0  0  0  0  0  0   0      32.3
+                                                                  0 -0.102
+ 4  0  0  3  0  0  0  0  0  4  0  0  3  0  3  1  0  0  0  0   1     -3.57
+                                                                 27 -52.3
+ 2  0  0  2  0  0  0  0  2  0  0  6  0  2  1  0  2  0  0  2   0      8.05
+                                                                  0 -0.102
+ 0  2  0  0  0  7  2  0  0  1  0  3  2  0  0  0  0  0  2  0   0      8.17
+                                                                  0 -0.102
+ 0  0  1  1  0  0  1  2  0  1  0  3  0  4  1  0  0  5  0  0   0      3.29
+                                                                  0 -0.102
+ 4  2  0  0  0  1  0  0  0  6  0  0  1  0  0  0  0  5  0  0   0      11.0
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  0 15  0  0  0  0  0  2  0  0  0  0  2   0      45.5
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  6  0  7  0  0  0  0  0  0  0  6  0  0   0      34.3
+                                                                  0 -0.102
+ 3  3  0  0  1  3  0  2  0  0  0  0  0  0  0  7  0  0  0  0   0      12.3
+                                                                  0 -0.102
+ 0  0 17  0  0  1  0  0  0  0  0  0  0  0  0  0  1  0  0  0   0      52.7
+                                                                  0 -0.102
+ 0  0  0  0 18  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1   0      71.7
+                                                                  0 -0.102
+ 0  0  1  0  0 18  0  0  0  0  0  0  0  0  0  0  0  0  0  0   0      56.6
+                                                                  0 -0.102
+ 0  2  0  0  0  0  0  0  0 14  0  0  0  0  1  2  0  0  0  0   0      25.3
+                                                                  0 -0.102
+10  1  0  0  0  1  0  0  0  0  1  1  0  0  0  5  0  0  0  0   0      19.9
+                                                                  0 -0.102
+ 3  0  0  0  0  0  0  0  9  0  0  0  0  0  3  1  2  1  0  0   0      17.1
+                                                                  0 -0.102
+ 0  0  0  0  4  0  0  1  2  2  0  1  2  0  1  1  1  3  1  0   0     -1.83
+                                                                  0 -0.102
+ 0  0  0  0  2  0  0  0  3  7  0  0  0  0  0  4  0  1  0  2   0      8.98
+                                                                  0 -0.102
+ 0  0  3  1  0  3  1  0  0  0  0  0  0  0  8  1  0  2  0  0   0      11.8
+
+Score: 1250.03  Columns: 50  Sequences: 19
+
+                  ***************...******************........*****************
+At1g01140.1_  120 RRYFQQLINAVDYCH...SRGVYHRDLKPENLILDA........NGV.LKVSDFGLSAFSR  168 + 118.
+At1g01140.2_  120 RRYFQQLINAVDYCH...SRGVYHRDLKPENLILDA........NGV.LKVSDFGLSAFSR  168 + 118.
+At1g01140.3_  120 RRYFQQLINAVDYCH...SRGVYHRDLKPENLILDA........NGV.LKVSDFGLSAFSR  168 + 118.
+At1g01450.1_  127 VDLMLQIALGMEYLH...SKRIYHGELNPSNILVKPRSNQSGDGYLL.GKIFGFGLNSVKG  183 + 31.8
+At1g01540.1_  255 MNIILGMAKGLAYLHEGLEPKVVHRDIKSSNILLDR........QWN.AKVSDFGLAKLLG  306 + 100.
+At1g01540.2_  255 MNIILGMAKGLAYLHEGLEPKVVHRDIKSSNILLDR........QWN.AKVSDFGLAKLLG  306 + 100.
+At1g01560.1_  144 RFFLYQLLRGLKYVH...SANVLHRDLKPSNLLLNA........NCD.LKIGDFGLARTKS  192 + 85.3
+At1g01740.1_  155 LRVALYISEALEYCSNN.GHTLYH.DLNAYRVLFDE........ECN.PRLSTFGLMKNSR  204 + 7.66
+At1g02970.1_  350 LVIMHQIAKALHFVH...EKGIAHLDVKPDNIYIK.........NGV.CKLGDFGCATRLD  397 + 68.7
+At1g03740.1_  315 KCYMRQLLSGLEHCH...SRGVLHRDIKGSNLLIDS........KGV.LKIADFGLATFFD  363 + 100.
+At1g03920.1_  238 KFYIAESVLAIESIH...NRNYIHRDIKPDNLLLDR........YGH.LRLSDFGLCKPLD  286 + 74.6
+At1g03930.1_  106 LMLADQLINRVEFMH...TRGFLHRDIKPDNFLMGLGR......KANQVYIIDFGLGKKYR  157 + 90.4
+At1g04210.1_  905 LSIARDISGALMELH...SKDIIHRDIKSENVLIDLDNQSANG.EPI.VKLCDFDRAVPLR  960 + 53.1
+At1g04440.1_  106 LMLADQMINRVEYMH...VKGFLHRDIKPDNFLMGLGR......KANQVYIIDYGLAKKYR  157 + 91.5
+At1g04700.1_  873 LMITLDSAFGMEYLH...MKNIVHFDLKCDNLLVNLRDPQ....RPI.CKVGDFGLSRIKR  925 + 72.9
+At1g05100.1_  108 VKYTRQILLGLEYIHN..SKGIAHCDIKGSNVLVGE........NGE.AKIADFGCAKWVE  157 + 84.4
+At1g05700.1_  659 LQIALDAAQGLEYLHCGCKPPIVHRDVKTSNILLNE........KNR.AKLADFGLSRSFH  710 + 69.9
+At1g06390.1_  172 KLYTYQIFRGLAYIHT..VPGVCHRDVKPQNLLVDP........LTHQVKLCDFGSAKVLV  222 + 105.
+At1g06390.2_  172 KLYTYQIFRGLAYIHT..VPGVCHRDVKPQNLLVDP........LTHQVKLCDFGSAKVLV  222 + 105.
+
+                  LRYALQIANGLEYLH   SKGVYHRDIKPSNLLLDA        NGNQLKLSDFGLAKFLR
+                  K IT  LI AVA C     R IL   L  D I V L        K V V I     S  S 
+                  R            I     P  V   V  E                  A V          
+
+ A  C  D  E  F  G  H  I  K  L  M  N  P  Q  R  S  T  V  W  Y Del Ins Score
+ 0  0  0  0  0  0  0  0  4  7  2  0  0  0  4  0  0  2  0  0   0      14.7
+                                                                  0 -0.102
+ 0  1  1  0  2  0  0  0  1  2  3  2  0  1  4  1  0  1  0  0   0     -1.45
+                                                                  0 -0.102
+ 0  0  0  0  1  0  0  6  0  3  0  0  0  0  0  0  0  1  0  8   0      32.2
+                                                                  0 -0.102
+ 5  0  0  0  3  0  0  3  0  1  3  0  0  0  0  0  4  0  0  0   0      14.2
+                                                                  0 -0.102
+ 1  0  2  0  0  0  1  0  0  6  0  0  0  3  3  0  0  0  0  3   0      6.60
+                                                                  0 -0.102
+ 0  0  3  1  0  2  0  0  0  0  0  0  0 12  0  0  0  0  0  1   0      30.6
+                                                                  0 -0.102
+ 1  0  0  0  0  0  0  7  0  6  3  0  0  0  0  2  0  0  0  0   0      21.8
+                                                                  0 -0.102
+ 6  0  0  0  2  0  0  5  0  3  0  0  0  0  0  2  0  1  0  0   0      12.0
+                                                                  0 -0.102
+ 0  0  0  1  1  1  0  0  3  3  0  5  0  1  3  1  0  0  0  0   0      2.11
+                                                                  0 -0.102
+ 7  0  0  0  0 10  0  0  0  0  0  0  0  0  2  0  0  0  0  0   0      31.2
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  1  0 11  2  0  0  0  0  0  0  5  0  0   0      32.8
+                                                                  0 -0.102
+ 4  0  3  9  0  0  1  0  1  0  1  0  0  0  0  0  0  0  0  0   0      18.2
+                                                                  0 -0.102
+ 0  0  0  1  2  0  1  0  0  0  0  0  0  0  0  1  0  0  0 14   0      48.3
+                                                                  0 -0.102
+ 0  5  0  0  0  0  0  4  0  6  2  0  0  0  0  0  0  2  0  0   0      27.8
+                                                                  0 -0.102
+ 0  0  0  0  0  0 18  0  0  0  0  0  0  0  0  1  0  0  0  0   0      83.9
+                                                                 14 -39.1
+ 0  0  0  3  0  1  0  0  1  0  1  1  0  0  0  8  1  3  0  0   0      5.81
+                                                                  0 -0.102
+ 1  0  0  0  0  0  1  0  6  0  0  0  5  0  6  0  0  0  0  0   0      24.0
+                                                                  0 -0.102
+ 0  0  1  0  0 10  0  0  2  0  0  3  1  0  1  0  1  0  0  0   0      16.3
+                                                                  0 -0.102
+ 0  0  0  0  2  0  0  6  0  1  0  0  0  0  0  0  0  9  0  1   0      30.5
+                                                                  0 -0.102
+ 2  2  0  0  0  0  0  2  0  4  0  0  0  0  0  0  0  4  0  5   0      16.1
+                                                                  0 -0.102
+ 0  0  0  0  0  0 19  0  0  0  0  0  0  0  0  0  0  0  0  0   0      95.3
+                                                                  0 -0.102
+ 0  1  0  0  1  1  0  0  0  1  0  0  0  0 14  0  0  0  0  0   1      23.5
+                                                                  0 -0.102
+ 0  0 18  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0   0      61.1
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  8  0  7  0  0  0  0  0  0  0  4  0  0   0      35.8
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  0 17  0  0  2  0  0  0  0  0  0  0  0   0      54.1
+                                                                  0 -0.102
+ 1  1  0  0  0  2  0  0  0  0  0  0 11  0  0  3  1  0  0  0   0      23.5
+                                                                  0 -0.102
+ 0  0  5  4  0  0  0  0  0  0  0  0  0  2  0  7  0  0  0  1   0      19.0
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  0  0  0  0 18  0  0  1  0  0  0  0  0   0      64.3
+                                                                  0 -0.102
+ 0  0  0  0  2  0  0  5  0  9  0  0  0  0  0  0  0  3  0  0   0      29.3
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  3  0 15  0  0  0  0  0  0  0  0  0  1   0      39.2
+                                                                  0 -0.102
+ 0  0  0  0  1  0  0  3  0  8  2  0  0  0  0  0  0  5  0  0   0      26.3
+                                                                  0 -0.102
+ 0  0 11  0  0  3  0  0  2  0  0  3  0  0  0  0  0  0  0  0   0      32.3
+                                                                  0 -0.102
+ 4  0  0  3  0  0  0  0  0  4  0  0  3  0  3  1  0  0  0  0   1     -3.57
+                                                                 23 -48.9
+ 0  0  0  2  0  0  0  0  4  2  0  6  0  2  1  0  0  0  0  2   0      9.95
+                                                                  0 -0.102
+ 2  2  0  0  0  7  0  0  0  1  0  1  2  0  0  0  2  0  2  0   0      3.27
+                                                                  0 -0.102
+ 0  0  1  1  0  0  3  2  0  1  0  5  0  0  1  0  0  5  0  0   0      7.97
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  0  0  0  0  0  0  4  0  0  0  0  0  0  15     -11.6
+                                                                  0 -0.102
+ 4  2  0  0  0  1  0  0  0  6  0  0  1  0  0  0  0  5  0  0   0      11.0
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  0 15  0  0  0  0  0  2  0  0  0  0  2   0      45.5
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  6  0  7  0  0  0  0  0  0  0  6  0  0   0      34.3
+                                                                  0 -0.102
+ 3  3  0  0  1  3  0  2  0  0  0  0  0  0  0  7  0  0  0  0   0      12.3
+                                                                  0 -0.102
+ 0  0 17  0  0  1  0  0  0  0  0  0  0  0  0  0  1  0  0  0   0      52.7
+                                                                  0 -0.102
+ 0  0  0  0 18  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1   0      71.7
+                                                                  0 -0.102
+ 0  0  1  0  0 18  0  0  0  0  0  0  0  0  0  0  0  0  0  0   0      56.6
+                                                                  0 -0.102
+ 0  2  0  0  0  0  0  0  0 14  0  0  0  0  1  2  0  0  0  0   0      25.3
+                                                                  0 -0.102
+10  1  0  0  0  1  0  0  0  0  1  1  0  0  0  5  0  0  0  0   0      19.9
+                                                                  0 -0.102
+ 3  0  0  0  0  0  0  0  9  0  0  0  0  0  3  1  2  1  0  0   0      17.1
+                                                                  0 -0.102
+ 0  0  0  0  4  0  0  1  2  2  0  1  2  0  1  1  1  3  1  0   0     -1.83
+                                                                  0 -0.102
+ 0  0  0  0  2  0  0  0  3  7  0  0  0  0  0  4  0  1  0  2   0      8.98
+                                                                  0 -0.102
+ 0  0  3  1  0  3  1  0  0  0  0  0  0  0  8  1  0  2  0  0   0      11.8
+
+Score: 946.511  Columns: 50  Sequences: 19
+
+                  ***************.........***********************************
+At1g01140.1_  179 ACGTPNYVAPEVLSD.........KGYDGAAADVWSCGVILFVLMAGYLPFDEPNLMTL  228 + 106.
+At1g01140.2_  179 ACGTPNYVAPEVLSD.........KGYDGAAADVWSCGVILFVLMAGYLPFDEPNLMTL  228 + 106.
+At1g01140.3_  179 ACGTPNYVAPEVLSD.........KGYDGAAADVWSCGVILFVLMAGYLPFDEPNLMTL  228 + 106.
+At1g01450.1_  197 NF.PFIWYSPEVLEEQEQSGTAGSLKY.SDKSDVYSFGMVSFELLTGKVPFEDSHLQGD  253 + 31.2
+At1g01540.1_  316 VMGTFGYVAPE.YAC.........TGMLNEKSDIYSFGILIMEIITGRNPVDYSRPQGE  364 + 88.2
+At1g01540.2_  316 VMGTFGYVAPE.YAC.........TGMLNEKSDIYSFGILIMEIITGRNPVDYSRPQGE  364 + 88.2
+At1g01560.1_  201 VV.TRWYRAPELLLNC........SEY.TAAIDIWSVGCILGEIMTREPLFPGRDYVQQ  249 + 78.8
+At1g01740.1_  210 ST.NLAFTPPE.YLR.........TGRITAESVIYSFGTLLLDLLTGKH.IPPSHALDL  256 + 25.7
+At1g02970.1_  403 EEGDARYMPQEILNED........YEH.LDKVDIFSLGVTVYELIKGSP.LTESRNQSL  451 + 32.1
+At1g03740.1_  374 VV.TLWYRPPELLLGA........SHY.GVGVDLWSTGCILGELYAGKPILPGKTEVEQ  422 + 54.0
+At1g03920.1_  335 TVGTPDYIAPEVLLK.........KGY.GMECDWWSLGAIMYEMLVGYPPFYADDPMST  383 + 62.9
+At1g03930.1_  173 LTGTARYASVNTHLG.........VEQ.SRRDDLEALGYVLMYFLKGSLPWQGLKAGTK  221 + 55.5
+At1g04210.1_  979 CVGTPRWMSPEVFRAMHEQ.....NFY.GLEVDIWSFGCLIFELLTLQNPYFDLSELQI 1031 + 56.0
+At1g04440.1_  173 LTGTARYASVNTHLG.........IEQ.SRRDDLESLGYLLMYFLRGSLPWQGLRAGTK  221 + 57.5
+At1g04700.1_  933 VRGTLPWMAPELLNGS........SNRVSEKVDVFSFGIVMWEILTGEEPYANLHCGAI  983 + 65.2
+At1g05100.1_  164 VRGTPAFMAPEAARG.........ERQ.GKESDIWAVGCTVIEMVTGSQPWIGADFTDP  212 + 54.0
+At1g05700.1_  721 VAGTPGYLDP.LCFE.........TNGLNEKSDIYSFGVVLLEMITGKT.VIKE.SQTK  767 + 42.9
+At1g06390.1_  231 IC.SRYYRAPELIFGA........TEY.TASIDIWSAGCVLAELLLGQPLFPGENSVDQ  279 + 86.7
+At1g06390.2_  231 IC.SRYYRAPELIFGA........TEY.TASIDIWSAGCVLAELLLGQPLFPGENSVDQ  279 + 86.7
+
+                  VCGTPRYVAPELLLG         TGYDGAKSDIWSFGCILFELLTGKPPFDGSNLQTL
+                   V     MS  V            KE LSEAV VY L VV M IIA SL  PELR MDQ
+                         R                    T E        L    M  Y        V  
+
+ A  C  D  E  F  G  H  I  K  L  M  N  P  Q  R  S  T  V  W  Y Del Ins Score
+ 3  1  0  1  0  0  0  2  0  2  0  1  0  0  0  1  1  7  0  0   0      3.69
+                                                                  0 -0.102
+ 1  5  0  1  1  0  0  0  0  0  2  0  0  0  2  0  3  4  0  0   0      10.9
+                                                                  0 -0.102
+ 0  0  0  0  0 13  0  0  0  0  0  0  0  0  0  0  0  0  0  0   6      21.1
+                                                                  0 -0.102
+ 0  0  1  0  0  0  0  0  0  0  0  1  1  0  0  2 14  0  0  0   0      35.5
+                                                                  0 -0.102
+ 3  0  0  0  3  0  0  0  0  3  0  0  7  0  3  0  0  0  0  0   0      13.5
+                                                                  0 -0.102
+ 2  0  1  0  0  3  0  1  0  0  0  3  1  0  4  0  0  0  2  2   0      0.396
+                                                                  0 -0.102
+ 0  0  0  0  2  0  0  0  0  0  0  0  0  0  0  0  0  0  3 14   0      63.5
+                                                                  0 -0.102
+ 2  0  0  0  0  0  0  1  0  1  4  0  0  0  4  0  1  5  0  1   0      11.2
+                                                                  0 -0.102
+11  0  1  0  0  0  0  0  0  0  0  0  3  0  0  4  0  0  0  0   0      24.8
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  0  0  0  0  0 16  1  0  0  0  2  0  0   0      51.1
+                                                                  0 -0.102
+ 0  0  0 16  0  0  0  0  0  0  0  2  0  0  0  0  0  0  0  0   1      41.0
+                                                                  0 -0.102
+ 1  0  0  0  0  0  0  1  0  6  0  0  0  0  0  0  2  6  0  0   3      2.58
+                                                                  0 -0.102
+ 1  1  0  0  1  0  2  2  0  9  0  0  0  0  0  0  0  0  0  3   0      13.9
+                                                                  0 -0.102
+ 2  0  0  1  3  0  0  0  0  6  0  2  0  0  2  3  0  0  0  0   0      3.15
+                                                                  0 -0.102
+ 1  2  3  3  0  7  0  0  1  0  0  1  0  0  1  0  0  0  0  0   0      8.63
+                                                                 19 -45.0
+ 0  0  0  1  0  0  0  1  4  1  0  1  0  0  0  3  6  1  0  1   0      3.27
+                                                                  0 -0.102
+ 0  0  0  6  1  7  1  0  1  0  0  2  0  0  1  0  0  0  0  0   0      12.4
+                                                                  0 -0.102
+ 0  0  0  0  0  1  1  0  0  0  2  0  0  3  2  0  0  0  0 10   0      27.5
+                                                                  0 -0.102
+ 0  0  3  0  0  0  0  1  0  3  0  0  0  0  0  0  0  1  0  0  11     -21.4
+                                                                  0 -0.102
+ 0  0  0  0  0  7  0  0  0  1  0  3  0  0  0  4  4  0  0  0   0      14.8
+                                                                  0 -0.102
+ 7  0  2  4  0  0  0  0  1  1  1  0  0  0  2  0  0  1  0  0   0      6.36
+                                                                  0 -0.102
+ 4  0  0  4  0  1  0  0  6  0  0  0  0  0  2  2  0  0  0  0   0      12.2
+                                                                  0 -0.102
+ 3  1  2  0  0  0  0  3  0  0  0  0  0  0  0  6  0  4  0  0   0      8.57
+                                                                  0 -0.102
+ 0  0 18  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0   0      59.2
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0 10  0  3  0  0  0  0  0  0  0  5  1  0   0      34.2
+                                                                  0 -0.102
+ 0  0  0  2  2  0  0  0  0  0  0  0  0  0  0  0  0  0 10  5   0      54.4
+                                                                  0 -0.102
+ 2  0  0  0  0  0  0  0  0  0  0  0  0  0  0 17  0  0  0  0   0      48.7
+                                                                  0 -0.102
+ 2  3  0  0  7  0  0  0  0  4  0  0  0  0  0  0  1  2  0  0   0      18.7
+                                                                  0 -0.102
+ 0  0  0  0  0 19  0  0  0  0  0  0  0  0  0  0  0  0  0  0   0      64.0
+                                                                  0 -0.102
+ 1  6  0  0  0  0  0  3  0  0  1  0  0  0  0  0  1  5  0  2   0      22.1
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  6  0  5  0  0  0  0  0  0  2  6  0  0   0      26.6
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  3  0 11  2  0  0  0  0  1  0  2  0  0   0      25.2
+                                                                  0 -0.102
+ 2  0  0  0  5  2  0  1  0  2  4  0  0  0  0  0  0  0  1  2   0      10.8
+                                                                  0 -0.102
+ 0  0  1 13  0  0  0  0  0  0  0  0  0  0  0  0  0  3  0  2   0      30.7
+                                                                  0 -0.102
+ 0  0  0  0  2  0  0  4  0 10  3  0  0  0  0  0  0  0  0  0   0      33.4
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  4  0  9  4  0  0  0  0  0  0  1  0  1   0      29.1
+                                                                  0 -0.102
+ 4  0  0  0  0  0  0  0  2  2  0  0  0  0  1  0  9  1  0  0   0      13.8
+                                                                  0 -0.102
+ 0  0  0  0  0 17  0  0  0  1  0  0  0  0  1  0  0  0  0  0   0      45.9
+                                                                  0 -0.102
+ 0  0  0  2  0  0  0  0  4  0  0  0  0  3  2  4  0  0  0  4   0      12.6
+                                                                  0 -0.102
+ 0  0  0  1  0  0  1  0  0  5  0  3  6  1  0  0  1  1  0  0   0      5.25
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  1  0  3  0  0 12  0  0  0  0  0  0  0   3      19.8
+                                                                  0 -0.102
+ 0  0  0  0  8  0  0  1  0  2  0  0  0  0  0  0  0  3  3  2   0      29.7
+                                                                  0 -0.102
+ 1  0  5  1  1  0  0  2  0  0  0  0  5  2  0  0  1  0  0  1   0      2.48
+                                                                  0 -0.102
+ 1  0  2  4  0  7  0  0  1  0  0  1  1  0  0  0  0  0  0  2   0      8.62
+                                                                  0 -0.102
+ 1  0  1  3  0  0  0  0  1  4  0  0  3  0  1  5  0  0  0  0   0      2.39
+                                                                  0 -0.102
+ 0  0  3  0  0  0  3  0  1  0  0  5  0  0  4  1  1  0  0  0   1      7.76
+                                                                  0 -0.102
+ 3  1  0  2  1  0  0  0  0  4  0  1  3  0  0  3  0  0  0  1   0     -3.43
+                                                                  0 -0.102
+ 0  0  0  0  0  3  0  0  0  2  4  0  0  5  0  0  1  4  0  0   0      12.1
+                                                                  0 -0.102
+ 1  0  4  1  0  3  0  0  0  0  0  0  0  2  0  2  6  0  0  0   0      10.2
+                                                                  0 -0.102
+ 0  0  1  2  0  0  0  2  3  5  0  0  1  4  0  0  1  0  0  0   0      3.60
+
+Score: 922.481  Columns: 50  Sequences: 19
+
+                  ****.....***********........***********************************
+At1g01140.1_  177 HTAC.....GTPNYVAPEVLS.......DKG.Y.DGAA.ADVWSCGVILFVLMAGYLPFDEPN  224 + 100.
+At1g01140.2_  177 HTAC.....GTPNYVAPEVLS.......DKG.Y.DGAA.ADVWSCGVILFVLMAGYLPFDEPN  224 + 100.
+At1g01140.3_  177 HTAC.....GTPNYVAPEVLS.......DKG.Y.DGAA.ADVWSCGVILFVLMAGYLPFDEPN  224 + 100.
+At1g01450.1_  196 ENFP......FIWY.SPEVLEEQEQSGTAGSLK..YSDKSDVYSFGMVSFELLTGKVPFEDSH  249 + 33.3
+At1g01540.1_  310 SYVTTRVM.GTFGYVAPEYA........CTG.M..LNEKSDIYSFGILIMEIITGRNPVDYSR  360 + 90.4
+At1g01540.2_  310 SYVTTRVM.GTFGYVAPEYA........CTG.M..LNEKSDIYSFGILIMEIITGRNPVDYSR  360 + 90.4
+At1g01560.1_  199 EYVV......TRWYRAPELLLN......CSE.Y..TAA.IDIWSVGCILGEIMTRE.PLFPGR  244 + 78.9
+At1g01740.1_  208 SYST......NLAFTPPEYL........RTG.RI.TAE.SVIYSFGTLLLDLLTGK.HIPPSH  252 + 38.9
+At1g02970.1_  398 KSLPVEE..GDARYMPQEIL........NED.Y.EHLDKVDIFSLGVTVYELIKGS.PLTESR  447 + 48.2
+At1g03740.1_  372 SHVV......TLWYRPPELLLG......ASH.Y..GVG.VDLWSTGCILGELYAGK.PILPGK  417 + 57.6
+At1g03920.1_  332 AYSTV....GTPDYIAPEVLL.......KKG.Y..GME.CDWWSLGAIMYEMLVGY.PPFYAD  378 + 58.2
+At1g03930.1_  171 KNLT.....GTARY.AS.V.........NTHLGVEQSRRDDLEALGYVLMYFLKGSLPWQGLK  217 + 51.6
+At1g04210.1_  976 PNICV....GTPRWMSPEVFRAMH....EQNFY..GLE.VDIWSFGCLIFELLTLQNPYFDLS 1027 + 70.7
+At1g04440.1_  171 KNLT.....GTARY.AS.V.........NTHLGIEQSRRDDLESLGYLLMYFLRGSLPWQGLR  217 + 54.0
+At1g04700.1_  926 NTLVSGGVRGTLPWMAPELLNG......SSN.R..VSEKVDVFSFGIVMWEILTGEEPYANLH  979 + 61.4
+At1g05100.1_  158 PEITEPVR.GTPAFMAPEAA........RGE.R.QGKE.SDIWAVGCTVIEMVTGSQPWIGAD  208 + 49.1
+At1g05700.1_  718 STLVA....GTPGYLDP.LCF.......ETN.G..LNEKSDIYSFGVVLLEMITGKTVIKESQ  765 + 55.5
+At1g06390.1_  229 SYIC......SRYYRAPELIFG......ATE.Y..TAS.IDIWSAGCVLAELLLGQ.PLFPGE  274 + 79.8
+At1g06390.2_  229 SYIC......SRYYRAPELIFG......ATE.Y..TAS.IDIWSAGCVLAELLLGQ.PLFPGE  274 + 79.8
+
+                  SYLT     GTPRYVAPEVL        ATGLYIDGAEKSDIWSFGCILFELLTGKLPFDESR
+                   TIC          M   L          KEF VETSARV VY L VV M IIA SN LFPG 
+                   NVV          R                                L    M  Y     L 
+
+ A  C  D  E  F  G  H  I  K  L  M  N  P  Q  R  S  T  V  W  Y Del Ins Score
+ 1  0  0  2  0  0  3  0  3  0  0  1  2  0  0  7  0  0  0  0   0      12.6
+                                                                  0 -0.102
+ 0  0  0  1  0  0  1  0  0  0  0  4  0  0  0  1  5  0  0  7   0      21.0
+                                                                  0 -0.102
+ 3  0  0  0  1  0  0  4  0  5  0  0  0  0  0  2  0  4  0  0   0      11.0
+                                                                  0 -0.102
+ 0  6  0  0  0  0  0  0  0  0  0  0  2  0  0  0  7  4  0  0   0      29.6
+                                                                 23 -48.9
+ 0  0  0  0  0 13  0  0  0  0  0  0  0  0  0  0  0  0  0  0   6      21.1
+                                                                  0 -0.102
+ 0  0  1  0  1  0  0  0  0  0  0  1  0  0  0  2 14  0  0  0   0      34.4
+                                                                  0 -0.102
+ 3  0  0  0  2  0  0  1  0  3  0  0  7  0  3  0  0  0  0  0   0      10.2
+                                                                  0 -0.102
+ 2  0  1  0  0  3  0  0  0  0  0  3  1  0  4  0  0  0  3  2   0      6.76
+                                                                  0 -0.102
+ 0  0  0  0  2  0  0  0  0  0  0  0  0  0  0  0  0  0  2 15   0      64.9
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  1  0  1  4  0  0  0  4  0  1  5  0  0   3     -0.341
+                                                                  0 -0.102
+13  0  1  0  0  0  0  0  0  0  0  0  3  0  0  2  0  0  0  0   0      28.8
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  0  0  0  0  0 16  1  0  2  0  0  0  0   0      51.7
+                                                                  0 -0.102
+ 0  0  0 16  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0   3      40.6
+                                                                  0 -0.102
+ 1  0  0  0  0  0  0  1  0  6  0  0  0  0  0  0  0  8  0  3   0      22.9
+                                                                  0 -0.102
+ 3  1  0  0  1  0  0  2  0 10  0  0  0  0  0  0  0  0  0  0   2      7.69
+                                                                 27 -52.3
+ 4  3  3  2  0  0  0  0  1  0  0  3  0  0  2  1  0  0  0  0   0      6.81
+                                                                  0 -0.102
+ 0  0  0  1  0  2  0  0  4  0  0  0  0  1  0  3  8  0  0  0   0      15.0
+                                                                  0 -0.102
+ 0  0  1  4  0  7  3  0  0  0  0  3  0  0  0  1  0  0  0  0   0      17.6
+                                                                  0 -0.102
+ 0  0  0  0  1  0  0  0  0  3  0  0  0  0  0  0  0  0  0  0  15     -16.3
+                                                                  0 -0.102
+ 0  0  0  0  0  3  0  0  1  0  2  0  0  0  3  0  0  0  0 10   0      27.8
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  2  0  0  0  0  0  0  0  0  0  1  0  0  16     -15.5
+                                                                  0 -0.102
+ 0  0  3  3  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  12     -14.2
+                                                                  0 -0.102
+ 0  0  0  0  0  7  1  0  0  3  0  0  0  2  0  0  4  1  0  1   0      6.02
+                                                                  0 -0.102
+ 7  0  0  0  0  0  0  0  1  2  1  3  0  0  0  4  0  1  0  0   0      5.80
+                                                                  0 -0.102
+ 4  0  2  8  0  1  0  0  0  0  0  0  0  0  2  2  0  0  0  0   0      14.1
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  0  6  0  0  0  0  0  2  0  0  0  0  0  11     -7.07
+                                                                  0 -0.102
+ 3  1  2  0  0  0  0  3  0  0  0  0  0  0  0  6  0  4  0  0   0      8.57
+                                                                  0 -0.102
+ 0  0 18  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0   0      59.2
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0 10  0  3  0  0  0  0  0  0  0  5  1  0   0      34.2
+                                                                  0 -0.102
+ 0  0  0  2  2  0  0  0  0  0  0  0  0  0  0  0  0  0 10  5   0      54.4
+                                                                  0 -0.102
+ 2  0  0  0  0  0  0  0  0  0  0  0  0  0  0 17  0  0  0  0   0      48.7
+                                                                  0 -0.102
+ 2  3  0  0  7  0  0  0  0  4  0  0  0  0  0  0  1  2  0  0   0      18.7
+                                                                  0 -0.102
+ 0  0  0  0  0 19  0  0  0  0  0  0  0  0  0  0  0  0  0  0   0      64.0
+                                                                  0 -0.102
+ 1  6  0  0  0  0  0  3  0  0  1  0  0  0  0  0  1  5  0  2   0      22.1
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  6  0  5  0  0  0  0  0  0  2  6  0  0   0      26.6
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  3  0 11  2  0  0  0  0  1  0  2  0  0   0      25.2
+                                                                  0 -0.102
+ 2  0  0  0  5  2  0  1  0  2  4  0  0  0  0  0  0  0  1  2   0      10.8
+                                                                  0 -0.102
+ 0  0  1 13  0  0  0  0  0  0  0  0  0  0  0  0  0  3  0  2   0      30.7
+                                                                  0 -0.102
+ 0  0  0  0  2  0  0  4  0 10  3  0  0  0  0  0  0  0  0  0   0      33.4
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  4  0  9  4  0  0  0  0  0  0  1  0  1   0      29.1
+                                                                  0 -0.102
+ 4  0  0  0  0  0  0  0  2  2  0  0  0  0  1  0  9  1  0  0   0      13.8
+                                                                  0 -0.102
+ 0  0  0  0  0 17  0  0  0  1  0  0  0  0  1  0  0  0  0  0   0      45.9
+                                                                  0 -0.102
+ 0  0  0  2  0  0  0  0  4  0  0  0  0  3  2  4  0  0  0  4   0      12.6
+                                                                  0 -0.102
+ 0  0  0  1  0  0  0  0  0  5  0  3  0  1  0  0  1  1  0  0   7     -19.9
+                                                                  0 -0.102
+ 0  0  0  0  0  0  1  0  0  0  0  0 17  0  0  0  0  1  0  0   0      55.5
+                                                                  0 -0.102
+ 0  0  0  0  4  0  0  3  0  4  0  0  1  0  0  0  0  2  3  2   0      14.6
+                                                                  0 -0.102
+ 1  0  5  1  5  0  0  1  1  1  0  0  1  2  0  0  1  0  0  0   0      2.44
+                                                                  0 -0.102
+ 0  0  2  5  0  3  0  0  0  0  0  1  5  0  0  0  0  0  0  3   0      12.7
+                                                                  0 -0.102
+ 2  0  0  0  0  4  0  0  0  4  0  0  3  0  0  6  0  0  0  0   0      10.1
+                                                                  0 -0.102
+ 0  0  2  2  0  0  3  0  2  0  0  3  0  1  5  1  0  0  0  0   0      12.3
+
+Score: 887.989  Columns: 50  Sequences: 19
+
+                  ****.....****..**************.........****************************
+At1g01140.1_  177 HTAC.....GTPN..YVAPEVLSDKGYDGA........AADVWSCGVILFVLMAGYLP.FDEPNLM  226 + 104.
+At1g01140.2_  177 HTAC.....GTPN..YVAPEVLSDKGYDGA........AADVWSCGVILFVLMAGYLP.FDEPNLM  226 + 104.
+At1g01140.3_  177 HTAC.....GTPN..YVAPEVLSDKGYDGA........AADVWSCGVILFVLMAGYLP.FDEPNLM  226 + 104.
+At1g01450.1_  189 ASLTSQNE..NFPFIWYSPEVLEEQEQSGTAGSLKYSDKSDVYSFGMVSFELLTGKVP.FEDSHLQ  251 + 41.4
+At1g01540.1_  310 SYVTTRVM.GTFG..YVAPEYACTGMLNE.........KSDIYSFGILIMEIITGRNP.VDYSRPQ  362 + 91.3
+At1g01540.2_  310 SYVTTRVM.GTFG..YVAPEYACTGMLNE.........KSDIYSFGILIMEIITGRNP.VDYSRPQ  362 + 91.3
+At1g01560.1_  199 EYVV......TRW..YRAPELLLNCSEYTA........AIDIWSVGCILGEIMTRE.PLFPGRDYV  247 + 72.1
+At1g01740.1_  208 SYST......NLA..FTPPEYLRTGRI.TA........ESVIYSFGTLLLDLLTGK.H.IPPSHAL  254 + 31.0
+At1g02970.1_  398 KSLPVEE..GDAR..YMPQEIL.NEDY.EHLD......KVDIFSLGVTVYELIKGS.P.LTESRNQ  449 + 38.3
+At1g03740.1_  372 SHVV......TLW..YRPPELLLGASHYGV........GVDLWSTGCILGELYAGK.PILPGKTEV  420 + 55.6
+At1g03920.1_  332 AYSTV....GTPD..YIAPEVLLKKGY.GM........ECDWWSLGAIMYEMLVGYPP.FYADDPM  381 + 59.7
+At1g03930.1_  171 KNLT.....GTARYASVNTHLGVEQS..R.........RDDLEALGYVLMYFLKGSLP.WQGLKAG  219 + 40.5
+At1g04210.1_  976 PNICV....GTPR..WMSPEVF.RAMH.EQNFYGL...EVDIWSFGCLIFELLTLQNPYFDLSELQ 1030 + 67.4
+At1g04440.1_  171 KNLT.....GTARYASVNTHLGIEQS..R.........RDDLESLGYLLMYFLRGSLP.WQGLRAG  219 + 42.6
+At1g04700.1_  926 NTLVSGGVRGTLP..WMAPELL.NGSSNRVSE......KVDVFSFGIVMWEILTGEEP.YANLHCG  981 + 57.6
+At1g05100.1_  158 PEITEPVR.GTPA..FMAPEAARGERQ.GK........ESDIWAVGCTVIEMVTGSQP.WIGADFT  210 + 47.7
+At1g05700.1_  718 STLVA....GTPG..YLDPLCFETNGLNE.........KSDIYSFGVVLLEMITGKTV.IKESQTK  767 + 52.5
+At1g06390.1_  229 SYIC......SRY..YRAPELIFGATEYTA........SIDIWSAGCVLAELLLGQ.PLFPGENSV  277 + 81.1
+At1g06390.2_  229 SYIC......SRY..YRAPELIFGATEYTA........SIDIWSAGCVLAELLLGQ.PLFPGENSV  277 + 81.1
+
+                  SYLT     GTPR  YVAPELL GAGYNG         KSDIWSFGCILFELLTGKLPLFDGSNLQ
+                   TIC            M   V  TGS YE         AV VY L VV M IIA SN I PE R M
+                    VV            R       K  DT         E        L    M  Y  Y      V
+
+ A  C  D  E  F  G  H  I  K  L  M  N  P  Q  R  S  T  V  W  Y Del Ins Score
+ 2  0  0  1  0  0  3  0  3  0  0  1  2  0  0  7  0  0  0  0   0      12.0
+                                                                  0 -0.102
+ 0  0  0  1  0  0  1  0  0  0  0  3  0  0  0  2  5  0  0  7   0      19.3
+                                                                  0 -0.102
+ 3  0  0  0  0  0  0  4  0  6  0  0  0  0  0  2  0  4  0  0   0      15.0
+                                                                  0 -0.102
+ 0  6  0  0  0  0  0  0  0  0  0  0  1  0  0  0  8  4  0  0   0      32.3
+                                                                 27 -52.3
+ 0  0  0  0  0 13  0  0  0  0  0  0  0  0  0  0  0  0  0  0   6      21.1
+                                                                  0 -0.102
+ 0  0  1  0  0  0  0  0  0  0  0  2  0  0  0  2 14  0  0  0   0      39.7
+                                                                  0 -0.102
+ 3  0  0  0  3  0  0  0  0  3  0  0  7  0  3  0  0  0  0  0   0      13.5
+                                                                  0 -0.102
+ 2  0  1  0  0  3  0  0  0  0  0  3  2  0  4  0  0  0  2  2   0      4.34
+                                                                  6 -25.7
+ 0  0  0  0  2  0  0  0  0  0  0  0  0  0  0  2  0  0  3 12   0      49.8
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  1  0  1  4  0  0  0  4  0  1  7  0  1   0      16.7
+                                                                  0 -0.102
+11  0  1  0  0  0  0  0  0  0  0  2  3  0  0  2  0  0  0  0   0      19.8
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  0  0  0  0  0 16  1  0  0  2  0  0  0   0      51.3
+                                                                  0 -0.102
+ 0  0  0 16  0  0  2  0  0  1  0  0  0  0  0  0  0  0  0  0   0      44.6
+                                                                  0 -0.102
+ 1  1  0  0  0  0  0  1  0  7  0  0  0  0  0  0  0  6  0  3   0      18.1
+                                                                  0 -0.102
+ 3  0  0  0  2  2  0  2  0 10  0  0  0  0  0  0  0  0  0  0   0      16.5
+                                                                  0 -0.102
+ 0  2  0  2  2  0  0  1  0  3  0  0  0  0  2  3  0  1  0  0   3     -15.1
+                                                                  0 -0.102
+ 0  0  3  3  0  4  0  0  1  0  0  3  0  0  1  0  4  0  0  0   0      9.97
+                                                                  0 -0.102
+ 4  1  0  2  0  4  0  0  4  0  0  1  0  3  0  0  0  0  0  0   0      5.88
+                                                                  0 -0.102
+ 0  0  1  1  0  5  0  0  0  0  3  0  0  0  2  5  2  0  0  0   0      7.97
+                                                                  0 -0.102
+ 0  0  0  3  0  0  2  1  0  3  0  0  0  2  0  1  0  0  0  5   2     -3.88
+                                                                  0 -0.102
+ 0  0  3  0  0  0  0  0  0  0  0  4  0  0  0  1  0  0  0  4   7     -6.51
+                                                                  0 -0.102
+ 0  0  0  5  0  7  0  0  0  0  0  0  0  0  3  0  4  0  0  0   0      17.7
+                                                                 31 -55.4
+ 4  0  0  4  0  1  0  0  6  0  0  0  0  0  2  2  0  0  0  0   0      12.2
+                                                                  0 -0.102
+ 3  1  2  0  0  0  0  3  0  0  0  0  0  0  0  6  0  4  0  0   0      8.57
+                                                                  0 -0.102
+ 0  0 18  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0   0      59.2
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0 10  0  3  0  0  0  0  0  0  0  5  1  0   0      34.2
+                                                                  0 -0.102
+ 0  0  0  2  2  0  0  0  0  0  0  0  0  0  0  0  0  0 10  5   0      54.4
+                                                                  0 -0.102
+ 2  0  0  0  0  0  0  0  0  0  0  0  0  0  0 17  0  0  0  0   0      48.7
+                                                                  0 -0.102
+ 2  3  0  0  7  0  0  0  0  4  0  0  0  0  0  0  1  2  0  0   0      18.7
+                                                                  0 -0.102
+ 0  0  0  0  0 19  0  0  0  0  0  0  0  0  0  0  0  0  0  0   0      64.0
+                                                                  0 -0.102
+ 1  6  0  0  0  0  0  3  0  0  1  0  0  0  0  0  1  5  0  2   0      22.1
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  6  0  5  0  0  0  0  0  0  2  6  0  0   0      26.6
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  3  0 11  2  0  0  0  0  1  0  2  0  0   0      25.2
+                                                                  0 -0.102
+ 2  0  0  0  5  2  0  1  0  2  4  0  0  0  0  0  0  0  1  2   0      10.8
+                                                                  0 -0.102
+ 0  0  1 13  0  0  0  0  0  0  0  0  0  0  0  0  0  3  0  2   0      30.7
+                                                                  0 -0.102
+ 0  0  0  0  2  0  0  4  0 10  3  0  0  0  0  0  0  0  0  0   0      33.4
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  4  0  9  4  0  0  0  0  0  0  1  0  1   0      29.1
+                                                                  0 -0.102
+ 4  0  0  0  0  0  0  0  2  2  0  0  0  0  1  0  9  1  0  0   0      13.8
+                                                                  0 -0.102
+ 0  0  0  0  0 17  0  0  0  1  0  0  0  0  1  0  0  0  0  0   0      45.9
+                                                                  0 -0.102
+ 0  0  0  2  0  0  0  0  4  0  0  0  0  3  2  4  0  0  0  4   0      12.6
+                                                                  0 -0.102
+ 0  0  0  1  0  0  0  0  0  5  0  3  1  1  0  0  1  1  0  0   6     -20.4
+                                                                  0 -0.102
+ 0  0  0  0  0  0  1  0  0  0  0  0 17  0  0  0  0  1  0  0   0      55.5
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  1  0  3  0  0  0  0  0  0  0  0  0  1  14     -18.7
+                                                                  0 -0.102
+ 0  0  0  0  9  0  0  2  0  2  0  0  0  0  0  0  0  2  3  1   0      31.5
+                                                                  0 -0.102
+ 1  0  6  1  0  0  0  1  1  0  0  0  5  2  0  0  1  0  0  1   0      5.72
+                                                                  0 -0.102
+ 1  0  1  5  0  7  0  0  0  1  0  1  1  0  0  0  0  0  0  2   0      6.84
+                                                                  0 -0.102
+ 1  0  1  2  0  0  0  0  1  3  0  0  3  0  1  7  0  0  0  0   0      4.40
+                                                                  0 -0.102
+ 0  0  3  1  0  0  3  0  1  0  0  5  0  1  4  0  1  0  0  0   0      14.4
+                                                                  0 -0.102
+ 3  1  0  1  1  0  0  0  0  5  0  1  3  0  0  2  1  0  0  1   0     -3.65
+                                                                  0 -0.102
+ 0  0  0  0  0  3  0  0  1  1  4  0  0  5  0  0  1  4  0  0   0      10.4
+
+Score: 848.504  Columns: 50  Sequences: 19
+
+                  *********************........*****************************
+At1g01140.1_  175 LLHTACGTPNYVAPEVLSDKG........YDGAAADVWSCGVILFVLMAGYLPFDEPN  224 + 101.
+At1g01140.2_  175 LLHTACGTPNYVAPEVLSDKG........YDGAAADVWSCGVILFVLMAGYLPFDEPN  224 + 101.
+At1g01140.3_  175 LLHTACGTPNYVAPEVLSDKG........YDGAAADVWSCGVILFVLMAGYLPFDEPN  224 + 101.
+At1g01450.1_  194 QNEN.F.PFIWYSPEVLEEQEQSGTAGSLKYSDKSDVYSFGMVSFELLTGKVP.FEDS  248 + 20.7
+At1g01540.1_  312 VTTRVMGTFGYVAPEYACT.G........MLNEKSDIYSFGILIMEIITGRNPVDYSR  360 + 91.9
+At1g01540.2_  312 VTTRVMGTFGYVAPEYACT.G........MLNEKSDIYSFGILIMEIITGRNPVDYSR  360 + 91.9
+At1g01560.1_  197 MTEYVV.TRWYRAPELLLNCS........EYTAAIDIWSVGCILGEIMT.REPLFPGR  244 + 78.5
+At1g01740.1_  207 KSYS.T.NLAFTPPEYLRT.G........RITAESVIYSFGTLLLDLLTGKHI.PPSH  252 + 25.8
+At1g02970.1_  400 LPVE.EGDARYMPQEILNE.DYE......HLD.KVDIFSLGVTVYELIKGS.PLTESR  447 + 24.4
+At1g03740.1_  370 LTSHVV.TLWYRPPELLLGAS........HYGVGVDLWSTGCILGELYAGK.PILPGK  417 + 63.7
+At1g03920.1_  331 LAYSTVGTPDYIAPEVLLK.K........GYGMECDWWSLGAIMYEMLVGYPPFYADD  379 + 55.0
+At1g03930.1_  105 VLMLAD.QLINRV.EFMHTRGFL......HRDIKPDNFLMGLGRKANQV.Y.IIDFGL  152 + 26.5
+At1g04210.1_  975 PPNICVGTPRWMSPEVFRAMHEQN.....FYGLEVDIWSFGCLIFELLTLQNP.YFDL 1026 + 52.4
+At1g04440.1_  105 VLMLAD.QMINRV.EYMHVKGFL......HRDIKPDNFLMGLGRKANQV.Y.IIDYGL  152 + 25.8
+At1g04700.1_  929 VSGGVRGTLPWMAPELLNGSSN.......RVSEKVDVFSFGIVMWEILTGEEP.YANL  978 + 61.2
+At1g05100.1_  160 ITEPVRGTPAFMAPEAARG.E........RQGKESDIWAVGCTVIEMVTGSQP.WIGA  207 + 45.6
+At1g05700.1_  717 VSTLVAGTPGYLDP.LCFETN........GLNEKSDIYSFGVVLLEMITGKTVIKESQ  765 + 48.4
+At1g06390.1_  228 ISYI.C.SRYYRAPELIFGAT........EYTASIDIWSAGCVLAELLLGQ.PLFPGE  274 + 80.1
+At1g06390.2_  228 ISYI.C.SRYYRAPELIFGAT........EYTASIDIWSAGCVLAELLLGQ.PLFPGE  274 + 80.1
+
+                  LLY VCGTP YRAPELL GKG        HYGAKSDIWSFGCILFELLTGYLPFDEGL
+                  VS  AV  L  V   V  TA          LTEAV VY   VV   IIA KN IFPSR
+                   T         M   Y                 E   F    L    M     L    
+
+ A  C  D  E  F  G  H  I  K  L  M  N  P  Q  R  S  T  V  W  Y Del Ins Score
+ 0  0  0  0  0  0  0  3  1  6  1  0  1  1  0  0  0  6  0  0   0      9.99
+                                                                  0 -0.102
+ 1  0  0  0  0  0  0  0  0  5  0  1  2  0  0  5  5  0  0  0   0      9.43
+                                                                  0 -0.102
+ 0  0  0  3  0  1  3  0  0  0  2  1  0  0  0  1  3  1  0  4   0      5.35
+                                                                  0 -0.102
+ 0  0  0  1  0  1  1  3  0  3  0  1  1  0  2  2  3  0  0  1   0     -5.58
+                                                                  0 -0.102
+ 5  1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  7  0  0   5      0.218
+                                                                  0 -0.102
+ 1  5  2  1  1  0  0  0  0  0  2  0  0  0  2  0  1  4  0  0   0      7.45
+                                                                  0 -0.102
+ 0  0  0  0  0 11  0  0  0  0  0  0  0  0  0  0  0  0  0  0   8      11.7
+                                                                  0 -0.102
+ 0  0  1  0  0  0  0  0  0  0  0  1  1  2  0  2 12  0  0  0   0      25.4
+                                                                  0 -0.102
+ 1  0  0  0  3  0  0  0  0  4  1  0  7  0  3  0  0  0  0  0   0      12.3
+                                                                  0 -0.102
+ 2  0  1  0  0  3  0  3  0  0  0  3  1  0  2  0  0  0  2  2   0     -0.963
+                                                                  0 -0.102
+ 0  0  0  0  2  0  0  0  0  0  0  2  0  0  0  0  0  0  3 12   0      51.0
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  1  0  1  4  0  0  0  6  0  1  5  0  1   0      16.5
+                                                                  0 -0.102
+11  0  1  0  0  0  0  0  0  0  0  0  3  0  0  2  0  2  0  0   0      20.0
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  0  0  0  0  0 16  1  0  0  0  0  0  0   2      43.1
+                                                                  0 -0.102
+ 0  0  0 18  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0   1      55.8
+                                                                  0 -0.102
+ 1  0  0  0  1  0  0  1  0  6  0  0  0  0  0  0  0  6  0  4   0      18.7
+                                                                  0 -0.102
+ 3  1  0  0  1  0  0  2  0 10  2  0  0  0  0  0  0  0  0  0   0      20.5
+                                                                  0 -0.102
+ 0  2  0  1  3  0  2  0  0  3  0  2  0  0  3  3  0  0  0  0   0      2.29
+                                                                  0 -0.102
+ 1  0  3  3  0  5  0  0  1  0  0  1  0  0  0  0  4  1  0  0   0      5.10
+                                                                  0 -0.102
+ 3  1  0  0  0  0  0  0  4  0  1  0  0  1  1  1  1  0  0  0   6     -21.8
+                                                                  0 -0.102
+ 0  0  1  2  0  8  1  0  1  0  0  1  0  0  0  3  2  0  0  0   0      10.6
+                                                                 18 -43.9
+ 0  0  0  3  1  2  4  0  1  0  2  0  0  0  3  0  0  0  0  3   0      7.33
+                                                                  0 -0.102
+ 0  0  3  0  0  0  0  1  0  4  0  0  0  1  2  0  0  1  0  7   0      12.9
+                                                                  0 -0.102
+ 0  0  3  0  0  7  0  0  0  0  0  3  0  0  0  2  4  0  0  0   0      17.6
+                                                                  0 -0.102
+ 7  0  1  4  0  0  0  2  1  1  1  0  0  0  0  0  0  1  0  0   1     -2.92
+                                                                  0 -0.102
+ 4  0  0  4  0  1  0  0  8  0  0  0  0  0  0  2  0  0  0  0   0      17.5
+                                                                  0 -0.102
+ 3  1  0  0  0  0  0  3  0  0  0  0  2  0  0  6  0  4  0  0   0      10.2
+                                                                  0 -0.102
+ 0  0 18  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0   0      59.2
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0 10  0  1  0  2  0  0  0  0  0  5  1  0   0      27.0
+                                                                  0 -0.102
+ 0  0  0  0  4  0  0  0  0  0  0  0  0  0  0  0  0  0 10  5   0      64.4
+                                                                  0 -0.102
+ 1  0  0  0  0  0  0  0  0  2  0  0  0  0  0 16  0  0  0  0   0      39.4
+                                                                  0 -0.102
+ 2  3  0  0  7  0  0  0  0  2  2  0  0  0  0  0  1  2  0  0   0      17.1
+                                                                  0 -0.102
+ 0  0  0  0  0 19  0  0  0  0  0  0  0  0  0  0  0  0  0  0   0      64.0
+                                                                  0 -0.102
+ 1  6  0  0  0  0  0  3  0  2  1  0  0  0  0  0  1  5  0  0   0      23.8
+                                                                  0 -0.102
+ 0  0  0  0  0  2  0  6  0  4  0  0  0  0  0  0  2  5  0  0   0      17.1
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  3  0  9  2  0  0  0  2  1  0  2  0  0   0      14.8
+                                                                  0 -0.102
+ 2  0  0  0  5  2  0  1  2  2  2  0  0  0  0  0  0  0  1  2   0      4.42
+                                                                  0 -0.102
+ 2  0  1 13  0  0  0  0  0  0  0  0  0  0  0  0  0  3  0  0   0      31.3
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  4  0 10  3  2  0  0  0  0  0  0  0  0   0      28.0
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  4  0  7  4  0  0  2  0  0  0  1  0  1   0      19.6
+                                                                  0 -0.102
+ 4  0  0  0  0  0  0  0  1  2  0  0  0  0  0  0  9  3  0  0   0      18.1
+                                                                  0 -0.102
+ 0  0  0  0  0 15  0  0  0  1  0  0  0  0  0  0  0  0  0  0   3      28.4
+                                                                  0 -0.102
+ 0  0  0  1  0  0  0  0  4  0  0  0  0  3  3  2  0  0  0  6   0      17.2
+                                                                  0 -0.102
+ 0  0  0  2  0  0  1  0  0  3  0  3  1  1  0  0  1  1  0  0   6     -23.2
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  3  0  0  0  0 15  0  0  0  0  1  0  0   0      47.9
+                                                                  0 -0.102
+ 0  0  0  0  4  0  0  4  0  4  0  0  0  0  0  0  0  2  0  0   5      0.262
+                                                                  0 -0.102
+ 0  0  7  0  4  0  0  0  1  1  0  0  1  0  0  0  1  0  1  3   0      10.3
+                                                                  0 -0.102
+ 2  0  0  6  2  0  0  1  0  0  0  0  5  0  0  0  0  0  0  3   0      10.8
+                                                                  0 -0.102
+ 0  0  3  0  0  7  0  0  0  0  0  1  3  0  0  5  0  0  0  0   0      17.0
+                                                                  0 -0.102
+ 1  0  1  2  0  0  1  0  1  4  0  3  0  1  4  1  0  0  0  0   0      0.894
+
+Score: 680.611  Columns: 50  Sequences: 19
+
+                  ********************.****************.............**************
+At1g01140.1_   55 VFRHKMVEQLKREISTMKLI.KHPNVVEIIEVMASKT.............KIYIVLELVNGGEL  104 + 91.6
+At1g01140.2_   55 VFRHKMVEQLKREISTMKLI.KHPNVVEIIEVMASKT.............KIYIVLELVNGGEL  104 + 91.6
+At1g01140.3_   55 VFRHKMVEQLKREISTMKLI.KHPNVVEIIEVMASKT.............KIYIVLELVNGGEL  104 + 91.6
+At1g01450.1_   56 HFFG.DIDALLPQITPLLSL.SHPNIVYYLCGFTDEEKK...........ECFLVMELMRK.TL  105 + 22.9
+At1g01540.1_  186 NNRGQAEKEFKVEVEVIGRV.RHKNLVRLLGYCVEGA.............YRMLVYDFVDNGNL  235 + 77.0
+At1g01540.2_  186 NNRGQAEKEFKVEVEVIGRV.RHKNLVRLLGYCVEGA.............YRMLVYDFVDNGNL  235 + 77.0
+At1g01560.1_   77 NIID.AKRTL.REIKLLKHM.DHDNVIAIIDIIRPPQPDNFN........DVHIVYELMDT.DL  128 + 36.4
+At1g01740.1_   90 AWPD.PRQFL.EEARLVGQL.RSKRMANLLGYCCEGG.............ERLLVAEFMPNETL  137 + 15.5
+At1g02970.1_  285 YLDSERRKAM.MEVQALAALGFHENIVGYYSSWFENE.............QLYIQLELCDH.SL  333 + 30.3
+At1g03740.1_  248 LNDMESVKFMAREIIVMRRL.DHPNVLKLEGLITAPVSS...........SLYLVFEYMDH.DL  298 + 49.1
+At1g03920.1_  174 LRRG.QVEHVRAERNLLAEV.DSNCIVKLYCSFQDNE.............YLYLIMEYLPGGDM  222 + 38.2
+At1g03930.1_  254 YCRS.LRFDDKPDYSYLKRL.FRDLFIR.EGYQFDYV.............FDWTVLKYPQIGSS  301 + 37.5
+At1g04210.1_  823 DIRT.FEYTCLGEVRILGAL.KHDCIVELYGHEISSKWITSENGNEHRVLQSSILMEHIKGGSL  884 + 30.7
+At1g04440.1_  254 YVRS.LRFEDKPDYSYLKRL.FRDLFIR.EGYQFDYV.............FDWTILRYPQFGSS  301 + 39.1
+At1g04700.1_  807 QARQ.TKDFW.REARILANL.HHPNVVAFYGVVPDGPGG...........TMATVTEYMVNGSL  856 + 43.4
+At1g05100.1_   34 AEFH.RSEFLQREAKILSSL.NSPYVIGYRGCEITREPFHNNGEAT....TYSLLMEYAPYGTL   91 + 29.4
+At1g05700.1_  594 SAQG.FKEFR.SEVEVLVRV.HHVNLTALIGYFHEGD.............QMGLIYEFMANGNM  641 + 44.9
+At1g06390.1_  101 VLQD.RRYKN.RELQLMRPM.DHPNVISLKHCFFSTTSRDEL........FLNLVMEYVPE.TL  152 + 72.0
+At1g06390.2_  101 VLQD.RRYKN.RELQLMRPM.DHPNVISLKHCFFSTTSRDEL........FLNLVMEYVPE.TL  152 + 72.0
+
+                  VFRGKRREFLKREISLLKRL DHPNVVELIGYFFSGT             FLYLVLEYVDGGSL
+                     DE VK     V VMG V K D IIRIL V  D E                I M LMPN T 
+                     HQ                        Y    E                    Y F      
+
+ A  C  D  E  F  G  H  I  K  L  M  N  P  Q  R  S  T  V  W  Y Del Ins Score
+ 2  0  1  0  0  0  1  0  0  2  0  3  0  1  0  1  0  5  0  3   0      2.08
+                                                                  0 -0.102
+ 2  1  0  1  4  0  0  2  0  3  0  3  0  0  1  0  0  1  1  0   0      0.783
+                                                                  0 -0.102
+ 0  0  2  0  2  0  0  1  0  0  0  0  1  3 10  0  0  0  0  0   0      17.4
+                                                                  0 -0.102
+ 0  0  4  0  0  5  4  0  0  0  1  0  0  1  0  3  1  0  0  0   0      11.6
+                                                                  0 -0.102
+ 0  0  0  2  0  0  0  0  3  0  0  0  0  2  0  0  0  0  0  0  12     -16.1
+                                                                  0 -0.102
+ 3  0  1  0  2  0  0  0  0  2  3  0  1  1  4  1  1  0  0  0   0     -0.168
+                                                                  0 -0.102
+ 0  0  0  3  0  0  0  1  3  0  0  0  0  0  6  1  0  5  0  0   0      13.8
+                                                                  0 -0.102
+ 0  0  2  6  2  0  0  0  4  0  0  0  0  1  1  0  0  0  0  3   0      9.84
+                                                                  0 -0.102
+ 2  0  1  3  5  0  1  0  2  0  0  0  0  3  0  0  2  0  0  0   0      6.03
+                                                                  0 -0.102
+ 0  1  2  0  2  0  0  0  0  7  2  2  0  0  1  0  0  1  1  0   0      3.39
+                                                                  0 -0.102
+ 1  0  0  0  0  0  0  0  7  2  0  0  0  1  1  0  0  0  0  0   7     -10.2
+                                                                  0 -0.102
+ 1  0  0  1  0  1  0  0  0  0  1  0  3  0  9  1  0  2  0  0   0      9.92
+                                                                  0 -0.102
+ 0  0  2 16  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0   0      48.3
+                                                                  0 -0.102
+ 3  0  0  0  0  0  0  6  0  2  0  0  0  0  1  0  0  5  0  2   0      14.1
+                                                                  0 -0.102
+ 0  0  0  3  0  0  0  1  2  0  0  1  0  3  3  5  1  0  0  0   0      7.44
+                                                                  0 -0.102
+ 1  0  0  0  0  0  0  3  0  5  0  0  1  0  0  0  3  4  0  2   0      8.23
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  2  0 10  6  0  0  0  0  0  0  1  0  0   0      38.5
+                                                                  0 -0.102
+ 3  0  0  0  0  4  0  0  6  1  0  0  0  0  3  1  0  1  0  0   0      5.71
+                                                                  0 -0.102
+ 2  0  0  1  0  0  1  0  0  3  0  1  2  1  6  2  0  0  0  0   0      1.78
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  3  0  9  3  0  0  0  0  0  0  4  0  0   0      30.4
+                                                                  1 -10.1
+ 0  0  5  0  3  0  2  0  4  0  0  1  0  0  3  1  0  0  0  0   0      11.4
+                                                                  0 -0.102
+ 0  0  0  0  0  0 14  0  0  0  0  0  0  0  2  3  0  0  0  0   0      57.9
+                                                                  0 -0.102
+ 0  0  4  1  0  0  0  0  3  0  0  1  9  0  0  0  0  1  0  0   0      19.4
+                                                                  0 -0.102
+ 0  2  0  0  0  0  0  0  0  2  0 13  0  0  1  0  0  0  0  1   0      31.0
+                                                                  0 -0.102
+ 0  0  0  0  2  0  0  4  0  3  1  0  0  0  0  0  0  9  0  0   0      28.2
+                                                                  0 -0.102
+ 1  0  0  0  0  0  0  6  0  1  0  0  0  0  0  0  1 10  0  0   0      32.7
+                                                                  0 -0.102
+ 3  0  0  4  0  2  0  0  2  0  0  1  0  0  4  2  0  0  0  1   0      4.13
+                                                                  0 -0.102
+ 0  0  0  0  1  0  0  4  0  9  0  0  0  0  0  0  0  0  0  3   2      14.3
+                                                                  0 -0.102
+ 0  0  0  3  0  0  0  5  2  4  0  0  0  0  1  0  0  0  0  4   0      10.5
+                                                                  0 -0.102
+ 0  2  1  3  0 10  2  0  0  0  0  0  0  0  0  1  0  0  0  0   0      17.6
+                                                                  0 -0.102
+ 0  3  0  0  0  1  1  1  0  1  0  0  0  0  0  2  0  4  0  6   0      12.0
+                                                                  0 -0.102
+ 0  3  0  2  5  0  0  2  0  0  3  0  0  2  0  0  0  1  1  0   0      11.4
+                                                                  0 -0.102
+ 3  1  0  0  5  0  1  2  0  0  0  0  1  1  1  0  2  2  0  0   0      1.93
+                                                                  0 -0.102
+ 1  0  5  5  0  0  0  0  0  0  0  0  1  0  0  6  1  0  0  0   0      16.2
+                                                                  0 -0.102
+ 0  0  0  1  0  5  0  0  3  0  0  2  2  0  1  1  2  0  0  2   0      3.17
+                                                                  0 -0.102
+ 2  0  1  4  0  1  0  0  1  0  0  0  1  1  0  0  5  3  0  0   0      1.99
+                                                                 43 -63.0
+ 0  0  1  2  4  0  0  0  3  0  0  0  0  3  0  1  2  0  0  3   0      5.25
+                                                                  0 -0.102
+ 0  1  2  0  0  0  0  3  0  5  2  0  0  0  3  1  0  1  0  1   0      2.46
+                                                                  0 -0.102
+ 1  0  0  0  1  1  1  0  0  1  2  2  0  0  0  2  0  0  2  6   0      7.68
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  6  0 10  0  0  0  0  0  0  3  0  0  0   0      30.6
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  3  0  2  0  0  0  1  0  0  0 13  0  0   0      35.1
+                                                                  0 -0.102
+ 1  0  0  0  1  0  0  0  0  6  6  0  0  0  0  0  1  0  0  4   0      23.2
+                                                                  0 -0.102
+ 0  0  2 15  0  0  0  0  1  0  0  0  0  0  1  0  0  0  0  0   0      40.6
+                                                                  0 -0.102
+ 0  0  0  0  4  0  1  0  0  6  0  0  0  0  0  0  0  0  0  8   0      36.1
+                                                                  0 -0.102
+ 1  1  0  0  0  0  0  1  0  1  6  0  2  0  0  0  0  7  0  0   0      22.9
+                                                                  0 -0.102
+ 1  0  5  0  0  0  0  0  1  0  0  3  5  2  1  0  0  1  0  0   0      8.85
+                                                                  0 -0.102
+ 0  0  0  2  1  5  2  1  1  0  0  5  0  0  0  0  1  0  0  1   0      3.50
+                                                                  0 -0.102
+ 0  0  0  1  0 12  0  0  0  0  0  0  0  0  0  0  0  0  0  0   6      13.1
+                                                                  0 -0.102
+ 0  0  3  3  0  0  0  0  0  0  0  3  0  0  0  5  5  0  0  0   0      16.7
+                                                                  0 -0.102
+ 0  0  0  0  0  0  0  0  0 15  2  0  0  0  0  2  0  0  0  0   0      35.8
+
+Score: 383.331  Columns: 50  Sequences: 15
+
+                  *******...****..*******..*************.*********.**********
+At1g01140.1_  224 NLMTLYKR..ICKA..EFSCPPW..FSQGAKRVIKRIL.EPNPITRIS.IAELLEDEWF  274 + 90.8
+At1g01140.2_  224 NLMTLYKRVRICKA..EFSCPPW..FSQGAKRVIKRIL.EPNPITRIS.IAELLEDEWF  276 + 88.8
+At1g01140.3_  224 NLMTLYKR..ICKA..EFSCPPW..FSQGAKRVIKRIL.EPNPITRIS.IAELLEDEWF  274 + 90.8
+At1g01540.1_  187 NRGQAEK...EFKV..EVEVIGRV.RHKNLVRLLGYCV.EGAYRMLVY.DFVDNGNLEQ  237 + 66.2
+At1g01540.2_  187 NRGQAEK...EFKV..EVEVIGRV.RHKNLVRLLGYCV.EGAYRMLVY.DFVDNGNLEQ  237 + 66.2
+At1g01740.1_   86 FSGTAWPDPRQFLE..EARLVGQL.RSKRMANLLGYCC.EGGERLLVA.EFMPNETLAK  139 + 15.6
+At1g02970.1_  448 NQSLNIK...E.GK...LPLLPG..HSLQLQQLLKTMM.DRDPKRRPS.ARELLDHPMF  495 + 24.1
+At1g03740.1_  444 PSSAGFKTAIPYRR..KVSEM.FKDFPASVLSLLETLL.SIDPDHRSS.ADRALESEYF  497 + 13.4
+At1g03920.1_  385 RKIVNWK...THLK...FPEESR..LSRGARDLIGKLLCSVNQRLGSTGASQIKAHPWF  435 + 16.5
+At1g03930.1_   60 QGGTGVPNLKWYGVEGDYNVMVIDLLGPSLEDLFNYC..NRKLSLK.T.VLMLADQLIN  114 + 26.7
+At1g04440.1_   60 QGGTGIPHLKWFGVEGEFNCMVIDLLGPSMEEFFNYC..SRSFSLK.T.VLMLADQMIN  114 + 39.1
+At1g05100.1_  212 PVSVLYRV..GYLG..ELPELPCS.LTEQAKDFLGKCL.KKEATERWT.ASQLLNHPFL  263 + 21.4
+At1g05700.1_  593 TSAQGFK...EFRS..EVEVLVRV.HHVNLTALIGYFH.EGDQMGLIY.EFMANGNMAD  643 + 35.5
+At1g06390.1_  308 PQIKAHP...WHKV...FH.K.R..MPPEAIDLASRLL.QYSPSLRCT.ALEACAHPFF  354 + 64.5
+At1g06390.2_  308 PQIKAHP...WHKV...FH.K.R..MPPEAIDLASRLL.QYSPSLRCT.ALEACAHPFF  354 + 64.5
+
+                  NLGTAYK   EFKV  EFSCLPR  FSPGAKDLLGYCL EGNPRLRIT AFELLEHPWF
+                  PQIQG P   WCGA   VEVMGW  LHKNL RVIKRL  SPD STLVS ILMANADEF 
+                   SM L     IHL     PEPV   RPQS       I   RS I   Y  A   DNL  
+                    S        Y                                          G    
+
+ A  C  D  E  F  G  H  I  K  L  M  N  P  Q  R  S  T  V  W  Y Del Ins Score
+ 0  0  0  0  1  0  0  0  0  0  0  6  4  2  1  0  1  0  0  0   0      10.4
+                                                                  0 -0.0953
+ 0  0  0  0  0  2  0  0  1  3  0  0  0  3  2  3  0  1  0  0   0     -0.991
+                                                                  0 -0.0953
+ 1  0  0  0  0  5  0  3  0  0  3  0  0  0  0  3  0  0  0  0   0      9.30
+                                                                  0 -0.0953
+ 1  0  0  0  0  0  0  0  2  1  0  0  0  3  0  0  6  2  0  0   0      7.88
+                                                                  0 -0.0953
+ 5  0  0  0  0  4  0  0  0  4  0  2  0  0  0  0  0  0  0  0   0      8.91
+                                                                  0 -0.0953
+ 0  0  0  2  2  0  2  2  0  0  0  0  0  0  0  0  0  1  2  4   0      10.1
+                                                                  0 -0.0953
+ 0  0  0  0  0  0  0  0  9  0  0  0  5  0  1  0  0  0  0  0   0      27.9
+                                                                 18 -39.8
+ 0  0  0  4  0  1  0  3  0  0  0  0  1  1  0  0  1  0  4  0   0      7.24
+                                                                  0 -0.0953
+ 0  3  0  0  5  0  3  0  0  0  0  0  0  0  0  0  0  0  0  3   1      20.3
+                                                                  0 -0.0953
+ 0  0  0  0  0  3  0  0  7  3  0  0  0  0  2  0  0  0  0  0   0      14.5
+                                                                  0 -0.0953
+ 3  0  0  1  0  1  0  0  2  0  0  0  0  0  1  1  0  6  0  0   0      3.32
+                                                                  4 -19.6
+ 0  0  1  9  0  0  0  0  1  0  0  0  0  0  0  0  0  0  0  0   4      6.44
+                                                                  0 -0.0953
+ 1  0  0  0  7  0  0  0  0  2  0  0  0  0  0  0  0  4  0  1   0      19.5
+                                                                  0 -0.0953
+ 0  0  0  3  0  0  2  0  0  0  0  2  3  0  1  4  0  0  0  0   0      8.17
+                                                                  0 -0.0953
+ 0  4  0  3  0  0  0  0  0  2  0  0  0  0  0  0  0  4  0  0   2      1.59
+                                                                  0 -0.0953
+ 0  0  0  1  0  0  0  2  2  3  3  0  3  0  0  0  0  1  0  0   0      3.37
+                                                                  0 -0.0953
+ 0  0  0  0  0  3  0  0  0  0  0  0  5  0  0  1  0  3  0  0   3     -4.11
+                                                                  0 -0.0953
+ 0  1  0  0  1  1  0  2  0  0  0  0  0  1  6  0  0  0  3  0   0      8.89
+                                                                 11 -32.0
+ 0  0  0  0  4  0  2  0  0  4  2  0  0  0  3  0  0  0  0  0   0      11.7
+                                                                  0 -0.0953
+ 0  0  0  0  0  2  3  0  0  0  0  0  3  0  0  6  1  0  0  0   0      11.8
+                                                                  0 -0.0953
+ 1  0  0  1  0  0  0  0  3  1  0  0  4  3  1  0  0  1  0  0   0      3.53
+                                                                  0 -0.0953
+ 0  0  0  2  0  4  0  0  0  0  0  3  0  2  1  3  0  0  0  0   0      7.48
+                                                                  0 -0.0953
+ 7  0  0  0  0  0  0  0  0  5  2  0  0  0  0  0  0  1  0  0   0      17.7
+                                                                  0 -0.0953
+ 1  0  0  2  0  0  0  2  4  1  0  0  0  1  1  0  1  2  0  0   0      0.0831
+                                                                  0 -0.0953
+ 1  0  5  1  0  0  0  0  0  0  0  1  0  1  5  1  0  0  0  0   0      11.2
+                                                                  0 -0.0953
+ 0  0  0  0  2  0  0  0  0 10  0  0  0  0  0  0  0  3  0  0   0      26.0
+                                                                  0 -0.0953
+ 2  0  0  0  2  0  0  5  0  6  0  0  0  0  0  0  0  0  0  0   0      18.6
+                                                                  0 -0.0953
+ 0  0  0  1  0  6  0  0  4  0  0  2  0  0  0  2  0  0  0  0   0      11.7
+                                                                  0 -0.0953
+ 0  0  0  0  0  0  0  0  2  0  0  0  0  0  5  0  2  0  0  6   0      21.3
+                                                                  0 -0.0953
+ 0  6  0  0  1  0  0  3  0  4  1  0  0  0  0  0  0  0  0  0   0      24.4
+                                                                  0 -0.0953
+ 0  1  0  0  0  0  1  0  0  8  1  0  0  0  0  0  0  2  0  0   2      1.13
+                                                                  1 -9.74
+ 0  0  1  7  0  0  0  0  1  0  0  1  0  2  0  3  0  0  0  0   0      13.6
+                                                                  0 -0.0953
+ 0  0  0  0  0  4  0  1  1  0  0  0  3  0  3  0  0  1  0  2   0      0.657
+                                                                  0 -0.0953
+ 2  0  3  1  0  1  0  0  1  0  0  4  0  0  0  3  0  0  0  0   0      7.52
+                                                                  0 -0.0953
+ 1  0  0  1  1  0  0  0  0  1  0  0  7  2  0  0  0  0  0  2   0      7.07
+                                                                  0 -0.0953
+ 0  0  1  0  0  0  0  3  1  0  1  0  0  0  4  4  1  0  0  0   0      3.28
+                                                                  0 -0.0953
+ 0  0  0  1  0  1  1  0  0  6  2  0  0  0  1  0  3  0  0  0   0      3.74
+                                                                  0 -0.0953
+ 0  0  0  0  0  1  0  0  2  4  0  0  0  0  8  0  0  0  0  0   0      19.4
+                                                                  0 -0.0953
+ 0  2  0  0  0  0  0  4  0  0  0  0  1  0  0  2  0  3  1  0   2     -6.58
+                                                                  0 -0.0953
+ 1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  5  6  0  0  3   0      18.7
+                                                                  1 -9.74
+ 6  0  2  2  0  0  0  3  0  0  0  0  0  0  0  0  0  2  0  0   0      6.74
+                                                                  0 -0.0953
+ 3  0  1  0  4  0  0  0  0  4  0  0  0  0  1  2  0  0  0  0   0      3.48
+                                                                  0 -0.0953
+ 0  0  0  6  0  0  0  0  0  0  4  0  0  2  1  0  0  2  0  0   0      15.5
+                                                                  0 -0.0953
+ 4  0  2  0  0  0  0  1  0  7  0  0  1  0  0  0  0  0  0  0   0      6.50
+                                                                  0 -0.0953
+ 2  2  0  0  0  0  0  0  1  6  0  4  0  0  0  0  0  0  0  0   0      7.57
+                                                                  0 -0.0953
+ 3  0  3  5  0  3  0  0  0  0  0  1  0  0  0  0  0  0  0  0   0      10.8
+                                                                  0 -0.0953
+ 0  0  3  0  0  0  5  0  0  0  0  3  0  2  0  1  1  0  0  0   0      16.0
+                                                                  0 -0.0953
+ 0  0  0  4  0  0  0  0  0  4  2  0  5  0  0  0  0  0  0  0   0      11.4
+                                                                  0 -0.0953
+ 2  0  0  2  3  0  0  2  0  0  1  0  0  0  0  0  0  0  4  1   0      10.1
+                                                                  0 -0.0953
+ 0  0  1  0  8  0  0  0  1  1  0  2  0  2  0  0  0  0  0  0   0      13.3
+
+Score: 281.318  Columns: 30  Sequences: 17
+
+                  ******..********.....***********..*****
+At1g01140.1_    1 MSGSRR..KATPA.SRT....RVGNYEMGRTL..GEGSF   30 + 49.9
+At1g01140.2_    1 MSGSRR..KATPA.SRT....RVGNYEMGRTL..GEGSF   30 + 49.9
+At1g01140.3_    1 MSGSRR..KATPA.SRT....RVGNYEMGRTL..GEGSF   30 + 49.9
+At1g01540.1_  123 YSGSGN...CGPEVSHL....GWGRWYTLRELE.AATNG  153 + 47.0
+At1g01540.2_  123 YSGSGN...CGPEVSHL....GWGRWYTLRELE.AATNG  153 + 47.0
+At1g01560.1_  185 FGLART..KSETDFMTEY...VVTRWYRAPELLLNCSEY  218 + 20.6
+At1g01740.1_  197 FGLMKNS..RDGK.SY.....STNLAFTPPEY..LRTGR  225 + 13.2
+At1g02970.1_  233 LPVSTS...GDGL.SR.....YLTDFHEIRQI..GAGHF  260 + 12.3
+At1g03740.1_  362 FDPAKS...VSLT.SH.....VVTLWYRPPELLLGASHY  391 + 29.0
+At1g03920.1_   23 FSGSTY...GGGV.TETTVPDGGNDTETATKLPPLGGDG   57 + 1.74
+At1g03930.1_   39 LESVKT..K.HPQ.LH.....YESKLYMLLQ...GGTGV   65 + 18.8
+At1g04440.1_   39 LEPLRA...RHPQ.LH.....YESKLYMLLQ...GGTGI   65 + 15.6
+At1g04700.1_  918 FGLSRI..KRNTLVSGGV...RGTLPWMAPELLNGSSNR  951 + 29.3
+At1g05100.1_  150 FGCAKW...VEPEITEPV...RGTPAFMAPEA..ARGER  180 + 24.6
+At1g05700.1_  416 LSSSGL....TGHISS.....SFSNLTMIQELD.LSNNG  444 + 7.90
+At1g06390.1_  215 FGSAKVLVKGEPNISY.....ICSRYYRAPELIFGATEY  248 + 50.7
+At1g06390.2_  215 FGSAKVLVKGEPNISY.....ICSRYYRAPELIFGATEY  248 + 50.7
+
+                  FSGSK   KGEP ISH     RVGRYYMAPEL  GATEF
+                  LGSAR    ATG V R       SNWERLR      GNG
+                           R             T   T          Y
+
+ A  C  D  E  F  G  H  I  K  L  M  N  P  Q  R  S  T  V  W  Y Del Ins Score
+ 0  0  0  0  8  0  0  0  0  4  3  0  0  0  0  0  0  0  0  2   0      32.5
+                                                                  0 -0.0988
+ 0  0  1  2  0  6  0  0  0  0  0  0  1  0  0  7  0  0  0  0   0      15.0
+                                                                  0 -0.0988
+ 0  1  0  0  0  6  0  0  0  3  0  0  2  0  0  4  0  1  0  0   0      4.18
+                                                                  0 -0.0988
+ 5  0  0  0  0  0  0  0  0  1  1  0  0  0  0  9  0  1  0  0   0      18.1
+                                                                  0 -0.0988
+ 0  0  0  0  0  3  0  0  6  0  0  0  0  0  6  0  2  0  0  0   0      21.2
+                                                                  0 -0.0988
+ 1  0  0  0  0  0  0  1  0  1  0  3  0  0  3  2  2  2  1  1   0     -1.76
+                                                                  5 -22.7
+ 0  0  0  0  0  0  0  0  8  0  0  0  0  0  0  0  0  0  0  0   9      2.46
+                                                                  0 -0.0988
+ 3  2  0  0  0  4  0  0  0  0  0  0  0  0  3  1  0  2  0  0   2     -5.93
+                                                                  0 -0.0988
+ 0  0  2  4  0  3  2  0  0  0  0  1  0  0  0  1  4  0  0  0   0      8.81
+                                                                  0 -0.0988
+ 0  0  0  0  0  4  0  0  0  1  0  0 10  0  0  0  2  0  0  0   0      25.8
+                                                                  0 -0.0988
+ 3  0  1  3  0  0  1  0  1  2  0  2  0  2  0  0  1  1  0  0   0     -3.37
+                                                                  0 -0.0988
+ 0  0  0  0  1  0  0  4  0  0  0  0  0  0  0  0  0  3  0  0   9     -8.83
+                                                                  0 -0.0988
+ 0  0  0  0  0  0  0  0  0  2  1  0  0  0  0 12  2  0  0  0   0      24.9
+                                                                  0 -0.0988
+ 0  0  0  2  0  1  5  0  0  0  0  0  0  0  4  1  1  0  0  3   0      13.2
+                                                                 16 -39.8
+ 0  0  0  0  0  3  0  2  0  0  0  0  0  0  5  2  0  2  0  3   0      5.93
+                                                                  0 -0.0988
+ 0  2  0  2  1  3  0  0  0  1  0  0  0  0  0  0  1  5  2  0   0      3.04
+                                                                  0 -0.0988
+ 0  0  0  0  0  5  0  0  0  0  0  2  0  0  0  5  5  0  0  0   0      18.3
+                                                                  0 -0.0988
+ 0  0  2  0  0  0  0  0  2  3  0  4  1  0  5  0  0  0  0  0   0      8.54
+                                                                  0 -0.0988
+ 2  0  0  0  1  0  0  0  0  3  0  0  1  0  0  0  1  0  4  5   0      14.5
+                                                                  0 -0.0988
+ 0  0  0  4  2  0  1  0  0  0  0  0  0  0  0  0  1  0  1  8   0      24.7
+                                                                  0 -0.0988
+ 0  0  0  1  0  0  0  0  0  0  8  0  0  0  4  0  4  0  0  0   0      29.0
+                                                                  0 -0.0988
+ 6  0  0  0  0  3  0  2  0  4  0  0  2  0  0  0  0  0  0  0   0      6.67
+                                                                  0 -0.0988
+ 0  0  0  0  0  0  0  0  0  2  0  0  7  1  6  0  1  0  0  0   0      17.9
+                                                                  0 -0.0988
+ 0  0  0 10  0  0  0  0  1  0  0  0  0  3  0  0  3  0  0  0   0      26.1
+                                                                  0 -0.0988
+ 1  0  0  0  0  0  0  1  0 12  0  0  0  0  0  0  0  0  0  1   2      13.3
+                                                                 15 -38.6
+ 3  0  0  0  0 10  0  0  0  3  0  1  0  0  0  0  0  0  0  0   0      19.9
+                                                                  0 -0.0988
+ 6  1  0  3  0  3  0  0  0  0  0  0  0  0  2  2  0  0  0  0   0      6.28
+                                                                  0 -0.0988
+ 0  0  0  0  0  6  0  0  0  0  0  1  0  0  0  3  7  0  0  0   0      21.5
+                                                                  0 -0.0988
+ 0  0  1  4  0  3  2  0  0  0  0  4  0  0  0  3  0  0  0  0   0      12.3
+                                                                  0 -0.0988
+ 0  0  0  0  4  4  0  1  0  0  0  0  0  0  3  0  0  1  0  4   0      10.7
+

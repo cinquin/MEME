@@ -1,0 +1,377 @@
+#!@WHICHPERL@
+=head1 NAME
+
+dreme_xml_to_html - Make a DREME HTML output from a DREME XML output.
+
+=head1 SYNOPSIS
+
+dreme_xml_to_html <DREME XML file> <DREME HTML file>
+=cut
+
+use strict;
+use warnings;
+
+use Cwd qw(abs_path);
+use Fcntl qw(O_RDONLY SEEK_SET);
+use File::Basename qw(fileparse);
+use File::Spec::Functions qw(tmpdir);
+use File::Temp qw(tempfile);
+use Getopt::Long;
+use Pod::Usage;
+use XML::Parser::Expat;
+
+use lib '@PERLLIBDIR@';
+
+my $etc_dir;
+my $temp_dir;
+my $scripts_dir;
+
+#
+# initialise the global constants
+# 
+sub initialise {
+  # setup etc dir
+  $etc_dir = defined($ENV{MEME_ETC_DIR}) ? $ENV{MEME_ETC_DIR} : '@APPCONFIGDIR@';
+  # setup temporary directory
+  $temp_dir = '@TMP_DIR@';
+  # use the perl default if none is supplied or the replace fails
+  $temp_dir = tmpdir() if ($temp_dir eq '' || $temp_dir =~ m/^\@TMP[_]DIR\@$/);
+
+  # find the location of the script
+  my $script_name;
+  ($script_name, $scripts_dir) = fileparse(__FILE__);
+  $scripts_dir = abs_path($scripts_dir);
+
+  # add script location to search path
+  unshift(@INC, $scripts_dir);
+
+  require HtmlMonolithWr;
+  require DremeSAX;
+}
+
+sub arguments {
+  # Set Option Defaults
+  my $options = {XML_PATH => undef, HTML_PATH => undef};
+  # General Options
+  my $help = 0; # FALSE
+  my @errors = ();
+  my @dbs = ();
+
+  # get the options from the arguments
+  my $options_success = 0; # FALSE
+  # redirect stderr to a temp file so we can get the error message from GetOptions
+  my $olderr;
+  my $tmperr = tempfile('GetOptions_XXXXXXXXXX', DIR => $temp_dir, UNLINK => 1);
+  open($olderr, ">&STDERR") or die("Can't dup STDERR: $!");
+  open(STDERR, '>&', $tmperr) or die("Can't redirect STDERR to temp file: $!");
+  # parse options
+  $options_success = GetOptions(
+    'help|?'          => \$help,
+  );
+  ($options->{XML_PATH}, $options->{HTML_PATH}) = @ARGV;
+  # display help
+  pod2usage(1) if $help;
+  # reset STDERR
+  open(STDERR, ">&", $olderr) or die("Can't reset STDERR: $!");
+  # read argument parsing errors
+  seek($tmperr, 0, SEEK_SET);
+  while (<$tmperr>) {chomp; push(@errors, $_);}
+  close($tmperr);
+  # check source XML file
+  unless (defined($options->{XML_PATH})) {
+    push(@errors, "No DREME XML file specified");
+  } elsif (not -e $options->{XML_PATH}) {
+    push(@errors, "The DREME XML file specified does not exist");
+  }
+  unless (defined($options->{HTML_PATH})) {
+    push(@errors, "No output file specified");
+  }
+  # print errors
+  foreach my $error (@errors) {
+    print STDERR $error, "\n";
+  }
+  pod2usage(2) if @errors;
+  # return options
+  return $options;
+}
+
+sub start_dreme {
+  my ($info, $vmajor, $vminor, $vpatch, $release_date) = @_;
+  my $wr = $info->{wr};
+  $wr->str_prop('program', 'dreme');
+  $wr->str_prop('version', "$vmajor.$vminor.$vpatch");
+  # dreme doesn't include the revision information in the XML
+  $wr->str_prop('release', $release_date);
+}
+
+sub end_dreme {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+}
+
+sub start_model {
+  my ($info) = @_;
+  $info->{model} = {};
+}
+
+sub end_model {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+
+  if (defined($info->{model}->{description})) {
+    $wr->str_prop("description", $info->{model}->{description});
+  }
+  $wr->str_array_prop("cmd", split(/\s+/, $info->{model}->{command_line}));
+  $wr->property("options");
+  $wr->start_object_value();
+  $wr->bool_prop("revcomp", $info->{model}->{strands} eq 'both');
+  $wr->num_prop("ngen", $info->{model}->{ngen});
+  $wr->num_prop("add_pv_thresh", $info->{model}->{pv_thresh});
+  $wr->num_prop("seed", $info->{model}->{seed});
+  $wr->property("stop");
+  $wr->start_object_value();
+  $wr->str_prop("evalue", $info->{model}->{stop}->{evalue});
+  if (defined($info->{model}->{stop}->{count})) {
+    $wr->num_prop("count", $info->{model}->{stop}->{count});
+  }
+  if (defined($info->{model}->{stop}->{time})) {
+    $wr->num_prop("time", $info->{model}->{stop}->{time});
+  }
+  $wr->end_object_value();
+  # more options to be put here
+  $wr->end_object_value();
+  $wr->property("alphabet");
+  $info->{alph}->to_json($wr);
+  $wr->property("background");
+  $wr->start_object_value();
+  $wr->num_array_prop("freqs", @{$info->{model}->{background}});
+  $wr->end_object_value();
+  $wr->property("sequence_db");
+  $wr->start_object_value();
+  $wr->str_prop("name", $info->{model}->{positives}->{name});
+  $wr->str_prop("file", $info->{model}->{positives}->{file});
+  $wr->str_prop("lmod", $info->{model}->{positives}->{last_mod_date});
+  $wr->num_prop("count", $info->{model}->{positives}->{count});
+  $wr->end_object_value();
+  $wr->property("control_db");
+  $wr->start_object_value();
+  $wr->str_prop("name", $info->{model}->{negatives}->{name});
+  $wr->str_prop("from", $info->{model}->{negatives}->{from});
+  if ($info->{model}->{negatives}->{from} eq 'file') {
+    $wr->str_prop("file", $info->{model}->{negatives}->{file});
+    $wr->str_prop("lmod", $info->{model}->{negatives}->{last_mod_date});
+  }
+  $wr->num_prop("count", $info->{model}->{negatives}->{count});
+  $wr->num_array_prop("freqs", @{$info->{model}->{background}});
+  $wr->end_object_value();
+}
+
+sub handle_command_line {
+  my ($info, $command_line) = @_;
+  $info->{model}->{command_line} = $command_line;
+}
+
+sub handle_positives {
+  my ($info, $name, $count, $file, $last_mod_date) = @_;
+  $info->{model}->{positives} = {
+    name => $name, count => $count, file => $file,
+    last_mod_date => $last_mod_date};
+}
+
+sub handle_negatives {
+  my ($info, $name, $count, $from, $file, $last_mod) = @_;
+  $info->{model}->{negatives} = {
+    name => $name, count => $count, from => $from,
+    file => $file, last_mod_date => $last_mod};
+}
+
+sub handle_alphabet {
+  my ($info, $alphabet) = @_;
+  $info->{alph} = $alphabet;
+}
+
+sub handle_strands {
+  my ($info, $strands) = @_;
+  $info->{model}->{strands} = $strands;
+}
+
+sub handle_background {
+  my ($info, @probs) = @_;
+  $info->{model}->{background} = [@probs];
+}
+
+sub handle_stop {
+  my ($info, $evalue, $count, $time) = @_;
+  $info->{model}->{stop} = {evalue => $evalue, count => $count, time => $time};
+}
+
+sub handle_ngen {
+  my ($info, $ngen) = @_;
+  $info->{model}->{ngen} = $ngen;
+}
+
+sub handle_add_pv_thresh {
+  my ($info, $pv_thresh) = @_;
+  $info->{model}->{pv_thresh} = $pv_thresh;
+}
+
+sub handle_seed {
+  my ($info, $seed) = @_;
+  $info->{model}->{seed} = $seed;
+}
+
+sub handle_host {
+  my ($info, $host) = @_;
+  $info->{model}->{host} = $host;
+}
+
+sub handle_when {
+  my ($info, $when) = @_;
+  $info->{model}->{when} = $when;
+}
+
+sub handle_description {
+  my ($info, $description) = @_;
+  $info->{model}->{description} = $description;
+}
+
+sub start_motifs {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->property("motifs");
+  $wr->start_array_value();
+}
+
+sub end_motifs {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->end_array_value();
+}
+
+sub start_motif {
+  my ($info, $id, $alt, $seq, $len, $nsites, $p, $n, $pvalue, $evalue, $unerased_evalue) = @_;
+  my $wr = $info->{wr};
+  $wr->start_object_value();
+  $wr->num_prop("db", 0);
+  $wr->str_prop("id", $seq);
+  $wr->str_prop("alt", $alt);
+  $wr->num_prop("len", $len);
+  $wr->num_prop("nsites", $nsites);
+  $wr->str_prop("evalue", $evalue);
+  $wr->num_prop("p", $p);
+  $wr->num_prop("n", $n);
+  $wr->str_prop("pvalue", $pvalue);
+  $wr->str_prop("unerased_evalue", $unerased_evalue);
+  $wr->property("pwm");
+  $wr->start_array_value();
+  $info->{seen_match} = 0;
+}
+
+sub end_motif {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  if (!$info->{seen_match}) {
+    $wr->end_array_value();
+    $wr->property("matches");
+    $wr->start_array_value();
+  }
+  $wr->end_array_value();
+  $wr->end_object_value();
+}
+
+sub handle_pos {
+  my ($info, @probs) = @_;
+  my $wr = $info->{wr};
+  $wr->num_array_value(@probs);
+}
+
+sub handle_match {
+  my ($info, $seq, $p, $n, $pvalue, $evalue) = @_;
+  my $wr = $info->{wr};
+  if (!$info->{seen_match}) {
+    $wr->end_array_value();
+    $wr->property("matches");
+    $wr->start_array_value();
+    $info->{seen_match} = 1;
+  }
+  $wr->start_object_value();
+  $wr->str_prop("seq", $seq);
+  $wr->num_prop("p", $p);
+  $wr->num_prop("n", $n);
+  $wr->str_prop("pvalue", $pvalue);
+  $wr->str_prop("evalue", $evalue);
+  $wr->end_object_value();
+}
+
+sub handle_run_time {
+  my ($info, $cpu, $real, $stop) = @_;
+  my $wr = $info->{wr};
+  $wr->property("runtime");
+  $wr->start_object_value();
+  $wr->str_prop("host", $info->{model}->{host});
+  $wr->str_prop("when", $info->{model}->{when});
+  $wr->num_prop("cpu", $cpu);
+  $wr->num_prop("real", $real);
+  $wr->str_prop("stop", $stop);
+  $wr->end_object_value();
+}
+
+sub transform_data {
+  my ($opts, $jsonwr) = @_;
+  my $info = {wr => $jsonwr};
+
+  my $sax = new DremeSAX($info,
+    start_dreme => \&start_dreme,
+    end_dreme=> \&end_dreme,
+    start_model => \&start_model,
+    end_model => \&end_model,
+    handle_command_line => \&handle_command_line,
+    handle_positives => \&handle_positives,
+    handle_negatives => \&handle_negatives,
+    handle_alphabet => \&handle_alphabet,
+    handle_strands => \&handle_strands,
+    handle_background => \&handle_background,
+    handle_stop => \&handle_stop,
+    handle_ngen => \&handle_ngen,
+    handle_add_pv_thresh => \&handle_add_pv_thresh,
+    handle_seed => \&handle_seed,
+    handle_host => \&handle_host,
+    handle_when => \&handle_when,
+    handle_description => \&handle_description,
+    start_motifs => \&start_motifs,
+    end_motifs => \&end_motifs,
+    start_motif => \&start_motif,
+    end_motif => \&end_motif,
+    handle_pos => \&handle_pos,
+    handle_match => \&handle_match,
+    handle_run_time => \&handle_run_time
+  );
+  my $fh;
+  sysopen($fh, $opts->{XML_PATH}, O_RDONLY) or die("Failed to open file \"$opts->{XML_PATH}\"\n");
+  while (<$fh>) {
+    $sax->parse_more($_);
+    if ($sax->has_errors()) {
+      die("Failed to write HTML output due to errors processing the XML:\n" . join("\n", $sax->get_errors()));
+    }
+  }
+  $sax->parse_done();
+  if ($sax->has_errors()) {
+    die("Failed to write HTML output due to errors processing the XML:\n" . join("\n", $sax->get_errors()));
+  }  
+}
+
+sub main {
+  &initialise();
+  my $opts = &arguments();
+  # start writing HTML
+  my $htmlwr = new HtmlMonolithWr($etc_dir, 'dreme_template.html', 
+    $opts->{HTML_PATH}, 'dreme_data.js' => 'data');
+  # transform the XML into JSON
+  &transform_data($opts, $htmlwr->output());
+  # finish writing HTML
+  $htmlwr->output();
+}
+
+&main();
+1;
+

@@ -1,0 +1,614 @@
+#!@WHICHPERL@
+use strict;
+use warnings;
+
+use Cwd qw(abs_path);
+use Fcntl qw(O_WRONLY O_CREAT O_TRUNC);
+use File::Basename qw(fileparse);
+use File::Copy qw(copy);
+use File::Path qw(mkpath rmtree);
+use File::Spec::Functions qw(catfile catdir tmpdir file_name_is_absolute updir);
+use File::Temp qw(tempfile);
+use Getopt::Long;
+use Pod::Usage;
+
+=head1 NAME
+
+test_driver - Custom test driver for MEME Suite
+
+=head1 SYNOPSIS
+
+test_driver [options] <TEST>+
+
+  Options:
+    --test-name=NAME
+      The name of the test to report in logging. This program does not make use
+      of this option but it is required by the API.
+
+    --log-file=PATH.log
+      The name of the log file to create. If this is not specified then a log
+      file will be created based on the filename of the test.
+
+    --trs-file=PATH.trs
+      The name of the test result file to create. If this is not specified then
+      a trs file will be created based on the filename of the test.
+
+    --color-tests={yes|no}
+      Should test console output be coloured (default yes when run in a terminal).
+
+    --expect-failure={yes|no}
+      Should the test be expected to fail (default no).
+
+    --enable-hard-errors={yes|no}
+      Should hard error be treated differently from normal errors (default yes).
+      I have no idea what a "hard error" is so I just ignore this option.
+
+    --args=TEST ONE_OR_MORE_ARGS \;
+      Add all the arguments specified between the --args=TEST and ; to the end
+      of the program arguments of TEST before running. If the test is not specified
+      then the arguments are added to all tests.
+
+    --cores=NUM
+      How many cores should multi-threaded programs use.
+
+    --update=NAME
+      Only run the test with the given name. Update the test result to match the program output.
+
+    --update_all
+      Update all test results to match the program output.
+
+   --comprehensive 
+      Run slow tests.
+
+    --noclean
+      Do not remove test files from passing tests.
+
+    --status
+      Test status will be reported as an exit code: 0 = success, 1 = failure, 77 = skipped, 99 = error
+
+    --debug
+      Print out detailed meta information on the test.
+
+    --dry-run
+      Only print the meta information. Do not actually run the test.
+
+    --help|?
+      Display this help message
+
+  This implements the test protocol used by Automake for custom test drivers.
+
+=cut
+
+my $test_name = undef;
+my $log_fh = undef;
+my $trs_fh = undef;
+my $test_log_fh = undef;
+my $test_trs_fh = undef;
+my $color_tests = (-t STDOUT); # FALSE
+my $expect_failure = 0; # FALSE
+my $enable_hard_errors = 1; # TRUE
+my $cores = 1;
+my $update = undef;
+my $update_all = undef;
+my $comprehensive = 0; # FALSE
+my $noclean = 0; # FALSE
+my $report_status = 0; # FALSE
+my $debug = 0; # FALSE
+my $dry_run = 0; # FALSE
+my $noxml = 0; # FALSE
+my @tests = ();
+my %targs = ();
+my %results = (PASS => 0, FAIL => 0, XPASS => 0, XFAIL => 0, SKIP => 0, ERROR => 0);
+
+sub yn2bool {
+  my ($name, $value) = @_;
+  if ($value eq 'yes') {
+    return 1;
+  } elsif ($value eq 'no') {
+    return 0;
+  }
+  die("Option $name requires a value of 'yes', 'no'.");
+}
+
+sub setup {
+  # find all argument sets --args=TESTNAME TEST_SPECIFIC_ARGS+ \;
+  my @ranges;
+  my $test = '';
+  my $start = -1;
+  for (my $i = 0; $i < scalar @ARGV; $i++) {
+    # match --args=TESTNAME
+    if ($start == -1 && $ARGV[$i] =~ m/^--?a(?:r(?:gs?)?)?(?:=?(\S*))?$/) {
+      $test = (defined $1 && $1 ne '' ? $1 : 'ALL');
+      $start = $i;
+    } elsif ($ARGV[$i] eq ';') {
+      # store the arguments with the test name (or ALL if none is specified)
+      $targs{$test} = [@ARGV[$start+1..$i-1]];
+      # store the range to remove later
+      push(@ranges, {start => $start, len => $i - $start + 1});
+      $start = -1;
+    }
+  }
+  if ($start != -1) {
+    # store the arguments with the test name (or ALL if none is specified)
+    $targs{$test} = [@ARGV[$start+1..$#ARGV]];
+    # store the range to remove later
+    push(@ranges, {start => $start, len => 0 + @ARGV - $start});
+  }
+  # delete the ranges from ARGV
+  foreach my $range (reverse @ranges) {
+    splice @ARGV, $range->{start}, $range->{len};
+  }
+  # check options
+  my $help = 0; # FALSE
+  my $log_filename = undef;
+  my $trs_filename = undef;
+  GetOptions(
+    "test-name=s" => \$test_name,
+    "log-file=s" => \$log_filename,
+    "trs-file=s" => \$trs_filename,
+    "color-tests=s" => sub {$color_tests = &yn2bool(@_);},
+    "expect-failure=s" => sub {$expect_failure = &yn2bool(@_);},
+    "enable-hard-errors=s" => sub {$enable_hard_errors = &yn2bool(@_);},
+    "update=s" => \$update,
+    "update_all" => \$update_all,
+    "cores=i" => \$cores,
+    "debug" => \$debug,
+    "dry-run" => sub {$dry_run = 1; $debug = 1; },
+    "comprehensive" => \$comprehensive,
+    "noclean" =>\$noclean,
+    "status" => sub { $report_status = 0; },
+    "help|?" => \$help
+  ) or pod2usage(2);
+  pod2usage(0) if $help;
+  pod2usage("Expected tests") unless (@ARGV);
+  # store the remaining values in tests converting to absolute paths
+  foreach my $test_filename (@ARGV) {
+    pod2usage("Test $test_filename not found!") unless (-e $test_filename);
+    push(@tests, abs_path($test_filename));
+  }
+  # create the log file
+  if (defined($log_filename)) {
+    sysopen($log_fh, $log_filename, O_WRONLY | O_CREAT | O_TRUNC) or die("Unable to write to log file $log_filename: $!");
+  }
+  # create the test result file
+  if (defined($trs_filename)) {
+    sysopen($trs_fh, $trs_filename, O_WRONLY | O_CREAT | O_TRUNC) or die("Unable to write to test result file $trs_filename: $!");
+  }
+  # find the file directory
+  my ($file_name, $file_dir) = fileparse(__FILE__);
+  $file_dir = abs_path($file_dir);
+  # other directories
+  my $dist_dir = abs_path(catdir($file_dir, '../..'));
+  my $test_dir = catdir($dist_dir, 'tests');
+  my $scripts_dir = catdir($dist_dir, 'scripts');
+  my $etc_dir = catdir($dist_dir, 'etc');
+  my $src_dir = catdir($dist_dir, 'src');
+  # change the current directory to the test dir
+  chdir($test_dir);
+  # add the scripts directory to the library search path
+  unshift(@INC, $scripts_dir);
+  # load the libraries we need
+  require ExecUtils; ExecUtils->import('invoke');
+  eval { require DiffXML; DiffXML->import('diff_xml'); };
+  $noxml = 1 if ($@);
+  require DiffJSON;
+  DiffJSON->import('diff_json');
+  # set the environment so the programs can find their resources
+  $ENV{'PERL5LIB'} = $scripts_dir . (defined($ENV{'PERL5LIB'}) ? ':' . $ENV{'PERL5LIB'} : '');
+  $ENV{'MEME_DIST_DIR'} = $dist_dir;
+  $ENV{'MEME_ETC_DIR'} = $etc_dir;
+  $ENV{'MEME_SCRIPT_DIR'} = $scripts_dir;
+  $ENV{'MEME_BIN_DIR'} = $src_dir;
+  $ENV{'MEME_BIN_DIRS'} = $src_dir . ':' . $scripts_dir;
+}
+
+sub teardown {
+  if (defined($trs_fh)) {
+    close($trs_fh);
+    $trs_fh = undef;
+  }
+  if (defined($log_fh)) {
+    close($log_fh);
+    $log_fh = undef;
+  }
+}
+
+sub process_result {
+  my ($result, $name, $description, $reason) = @_;
+  die("Invalid result") unless ($result =~ m/^(?:X?PASS|X?FAIL|SKIP|ERROR)$/);
+  $results{$result}++;
+  print $test_trs_fh ':test-result: ' . $result . 
+      (defined($name) ? ' ' . $name : '') . 
+      (defined($description) ? ' ' . $description : '') . "\n";
+  my ($start, $end) = ('', '');
+  if ($color_tests) {
+    my %colours = (PASS => "32", XPASS => "31", FAIL => "31", XFAIL => "32;1", SKIP => "34;1", ERROR => "35");
+    $start = "\033[".$colours{$result}."m";
+    $end = "\033[0m";
+  }
+  my $info = '';
+  if (defined $reason) {
+    $info = ' (' . $reason . ')';
+  }
+  print $start, $result, ': ', $name, $end, $info, "\n";
+}
+
+sub run_tests {
+  foreach my $test_filename (@tests) {
+    if (defined($trs_fh)) {
+      $test_trs_fh = $trs_fh;
+    } else {
+      my $trs_filename = $test_filename;
+      $trs_filename =~ s/\.[^\.]+$//; # remove extension
+      $trs_filename .= '.trs';
+      sysopen($test_trs_fh, $trs_filename, O_WRONLY | O_CREAT | O_TRUNC) 
+        or die("Unable to write to test result file $trs_filename: $!");
+    }
+    if (defined($log_fh)) {
+      $test_log_fh = $log_fh;
+    } else {
+      my $log_filename = $test_filename;
+      $log_filename =~ s/\.[^\.]+$//; # remove extension
+      $log_filename .= '.log';
+      sysopen($test_log_fh, $log_filename, O_WRONLY | O_CREAT | O_TRUNC) 
+        or die("Unable to write to test log file $log_filename: $!");
+    }
+    my $return;
+    unless ($return = do $test_filename) {
+      if ($@) {
+        print $test_log_fh "Error parsing test $test_filename: $@\n";
+      } elsif (not defined $return) {
+        print $test_log_fh "Can't open test $test_filename: $!\n";
+      } else {
+        next;
+      }
+      &process_result('ERROR', $test_filename, undef, 'FAULT IN TEST!')
+    }
+    close($test_trs_fh) unless (defined($trs_fh));
+    close($test_log_fh) unless (defined($log_fh));
+    $test_log_fh = undef;
+  }
+}
+
+sub test {
+  my (
+    $name, $description,
+    $program, $stdin, $arguments,
+    $comparisons,
+    $work_dir, $program_dir
+  ) = @_;
+  if ($debug) {
+    print "TEST INFORMATION\n";
+    print " name        = " . (defined $name ? (ref($name) eq '' ? "\"$name\"" : "NOT A SCALAR!") : "UNDEFINED!") . "\n";
+    print " description = " . (defined $description ? (ref($description) eq '' ? "\"$description\"" : "NOT A SCALAR!") : "Not set") . "\n";
+    print " work dir    = " . (defined $work_dir ? (ref($work_dir) eq '' ? "\"$work_dir\"" : "NOT A SCALAR!") : "UNDEFINED!") . "\n";
+    print " program dir = " . (defined $program_dir ? (ref($program_dir) eq '' ? "\"$program_dir\"" : "NOT A SCALAR!") : "Will use default") . "\n";
+    print " program     = " . (defined $program ? (ref($program) eq '' ? "\"$program\"" : "NOT A SCALAR!") : "UNDEFINED!") . "\n";
+    print " stdin       = ";
+    if (defined $stdin) {
+      if (ref($stdin) eq '') {
+        if ($stdin ne '') {
+          print "\"$stdin\"" . (-e $stdin ? "" : " (FILE MISSING!)") . "\n";
+        } else {
+          print "Not set\n";
+        }
+      } else {
+        print "NOT A SCALAR!\n";
+      }
+    } else {
+      print "Not set\n";
+    }
+    print " arguments   = ";
+    if (defined $arguments) {
+      if (ref($arguments) eq 'ARRAY') {
+        print "[";
+        my $i = 0;
+        foreach my $arg (@{$arguments}) {
+          print ", " if ($i != 0);
+          if (defined $arg) {
+            if (ref($arg) eq '') {
+              print "\"$arg\"";
+            } else {
+              print "NON-SCALAR";
+            }
+          } else {
+            print "UNDEFINED";
+          }
+          $i++;
+        }
+        print "]\n";
+      } else {
+        print "NOT AN ARRAY!\n";
+      }
+    } else {
+      print "UNDEFINED!\n";
+    }
+    print " comparisons = ";
+    if (defined $comparisons) {
+      if (ref($comparisons) eq 'ARRAY') {
+        print "[\n";
+        my $i = 0;
+        foreach my $comparison (@{$comparisons}) {
+          print ",\n" if ($i != 0);
+          if (ref($comparison) eq 'HASH') {
+            print "   {\n";
+            print "     output => " . (defined($comparison->{output}) ? (ref($comparison->{output}) eq '' ? "\"" . $comparison->{output} . "\"" : "NOT_A_SCALAR") : "UNDEFINED") . ",\n";
+            print "     reference => " . (defined($comparison->{reference}) ? (ref($comparison->{reference}) eq '' ? "\"" . $comparison->{reference} . "\"" : "NOT_A_SCALAR") : "UNDEFINED") . ",\n";
+            print "     type => " . (defined($comparison->{type}) ? (ref($comparison->{type}) eq '' ? "\"" . $comparison->{type} . "\"" : "NOT_A_SCALAR") : "UNDEFINED") . ",\n";
+            print "     ignore => ";
+            if (defined($comparison->{ignore})) {
+              if (ref($comparison->{ignore}) eq 'ARRAY') {
+                print "[\n";
+                my $j = 0;
+                foreach my $ignore_str (@{$comparison->{ignore}}) {
+                  print ",\n" if ($j != 0);
+                  if (defined $ignore_str) {
+                    if (ref($ignore_str) eq '') {
+                      print "       \"$ignore_str\"";
+                    } else {
+                      print "       NOT_A_SCALAR!"
+                    }
+                  } else {
+                    print "       UNDEFINED!"
+                  }
+                  $j++;
+                }
+                print "\n     ]\n"
+              } else {
+                print "NOT ARRAY!\n";
+              }
+            } else {
+              print "[ ]\n";
+            }
+            print "   }";
+          } else {
+            print "   NOT A HASH!"
+          }
+          $i++;
+        }
+        print "\n ]\n";
+      } else {
+        print "NOT AN ARRAY!\n";
+      }
+    } else {
+      print "UNDEFINED!\n";
+    }
+    # don't actually do anything on a dry run.
+    return 1 if ($dry_run);
+  }
+  return 1 if (defined($update) && $name ne $update);
+  my ($status, $stdout_fh, $stdout_fn);
+  my $failed = 1; #TRUE
+  my $skipped = 0; #FALSE
+  my $updatable = 0; #FALSE
+  my $with_stdin = 0; #FALSE
+  my $with_stdout = 0; #FALSE
+  my $sep = '-' x 79 . "\n";
+  my $comparison_count = scalar(@{$comparisons});
+  my $comparison;
+  my $fail_reason = undef;
+  my %opts;
+  my %signals = (
+    1 => "SIGHUP", 2 => "SIGINT", 3 => "SIGQUIT", 4 => "SIGILL",
+    6 => "SIGABRT", 8 => "SIGFPE", 9 => "SIGKILL", 11 => "SIGSEGV", 
+    13 => "SIGPIPE", 14 => "SIGALRM", 15 => "SIGTERM",
+    30 => "SIGUSR1", 10 => "SIGUSR1", 16 => "SIGUSR1", 
+    31 => "SIGUSR2", 12 => "SIGUSR2", 17 => "SIGUSR2"
+  );
+  my %sigdesc = (
+    SIGHUP => "Hangup detected on controlling terminal or death of controlling process",
+    SIGINT => "interrupt from keyboard",
+    SIGQUIT => "request to quit from keyboard",
+    SIGILL => "ran an illegal instruction",
+    SIGABRT => "failed assertion or call to abort",
+    SIGFPE => "floating point exception",
+    SIGKILL => "program was killed",
+    SIGSEGV => "accessed invalid memory address",
+    SIGPIPE => "write to pipe with no readers",
+    SIGALRM => "uncaught timer signal",
+    SIGTERM => "request to terminate",
+    SIGUSR1 => "user-defined signal 1",
+    SIGUSR2 => "user-defined signal 2"
+  );
+
+  if (defined($program_dir)) {
+    unless (file_name_is_absolute($program_dir)) {
+      $program_dir = catdir($ENV{'MEME_DIST_DIR'}, $program_dir);
+    }
+  } else {
+    $program_dir = $ENV{'MEME_BIN_DIR'};
+  }
+
+  # check if any comparisons use stdout
+  for (my $i = 0; $i < $comparison_count; $i++) {
+    $comparison = @{$comparisons}[$i];
+    if ($comparison->{output} eq '-') {
+      $with_stdout = 1; #TRUE
+      last;
+    }
+  }
+  # check if a file should be passed to stdin
+  $with_stdin = defined($stdin) && -e $stdin;
+  # create file to store stdout
+  if ($with_stdout) {
+    # clean out existing files from previous run
+    rmtree($work_dir) if (-e $work_dir);
+    # create file to write standard output to
+    mkpath($work_dir);
+    ($stdout_fh, $stdout_fn) = tempfile(
+      $program . '_XXXXX', SUFFIX => '_stdout', DIR => $work_dir, UNLINK => 0);
+  } else {
+    if (-e $work_dir) {
+      rmtree($work_dir);
+    } else {
+      # make sure the directory that work_dir is created in exists
+      mkpath(catdir($work_dir, updir()));
+    }
+  }
+  my $real_arguments;
+  if (exists $targs{$name}) {
+    $real_arguments = [@{$arguments}, @{$targs{$name}}];
+  } elsif (exists $targs{ALL}) {
+    $real_arguments = [@{$arguments}, @{$targs{ALL}}];
+  } else {
+    $real_arguments = $arguments;
+  }
+
+  # put together options
+  my $messages = '';
+  %opts = (
+    PROG => $program, BIN => $program_dir, ARGS => $real_arguments,
+    ($with_stdin  ? (IN_FILE => $stdin) : ()),
+    ($with_stdout ? 
+      (OUT_FILE => $stdout_fh, OUT_NAME => $stdout_fn,
+        ERR_VAR => \$messages, ERR_NAME => 'log') :
+      (ALL_VAR => \$messages, ALL_NAME => 'log'))
+  );
+  # Print out the command
+  print $test_log_fh '*' x 79 . "\n";
+  print $test_log_fh "Test $name ...\n";
+  print $test_log_fh &ExecUtils::stringify_args2(%opts), "\n";
+  unless (-e catfile($opts{BIN}, $opts{PROG})) {
+    printf($test_log_fh "Program %s not found!\n", $program);
+    $failed = 0;
+    $skipped = 1;
+    close($stdout_fh) if ($with_stdout);
+    goto CLEANUP;
+  }
+  # Run the command
+  $status = &ExecUtils::invoke(%opts);
+  print $test_log_fh $messages;
+  # close stdout file
+  close($stdout_fh) if ($with_stdout);
+  # check status
+  print $test_log_fh $sep if $status;
+  if ($status == -1) {
+    printf($test_log_fh "Failed to run %s: %s\n", $program, $!);
+  } elsif ($status & 127) {
+    my ($sig_no, $sig_name, $sig_desc);
+    $sig_no = ($status & 127);
+    $sig_name = $signals{$sig_no};
+    if (defined($sig_name)) {
+      $sig_desc = $sigdesc{$sig_name};
+    } else {
+      $sig_name = "SIGNAL_" . $sig_no;
+      $sig_desc = "unknown signal";
+    }
+    printf($test_log_fh
+      "%s died with signal %s (%s), %s coredump.\n", 
+      $program, $sig_name, $sig_desc, ($status & 128) ? 'with' : 'without'
+    );
+    $fail_reason = 'CRASH! ' . $sig_name;
+  } elsif ($status != 0) {
+    printf($test_log_fh "%s exited with value %d indicating failure.\n", $program, $? >> 8);
+    $fail_reason = 'CRASH!'
+  }
+  goto CLEANUP if $status;
+
+  $updatable = 1; #TRUE (assume)
+  $failed = 0; #FALSE
+  for (my $i = 0; $i < $comparison_count; $i++) {
+    $comparison = @{$comparisons}[$i];
+    my ($output, $reference, $type, $ignore);
+    $output = $comparison->{output};
+    $reference = $comparison->{reference};
+    $type = $comparison->{type};
+    $ignore = $comparison->{ignore};
+    $ignore = [] unless defined($ignore);
+
+    $output = $stdout_fn if ($output eq '-');
+
+    # check that the output we're expecting actually exists
+    unless (-e $output) {
+      print $test_log_fh $sep unless ($failed || $skipped);
+      printf($test_log_fh "%s did not create the file \"%s\"\n", $program, $output);
+      $updatable = 0; #FALSE (no file to allow update)
+      $failed = 1; #TRUE
+      $fail_reason = 'missing ' . fileparse($output);
+      next;
+    }
+    # check that the reference xml exists
+    unless (-e $reference) {
+      print $test_log_fh $sep unless ($failed || $skipped);
+      printf($test_log_fh "Could not find the reference file \"%s\"\n", $reference);
+      $skipped = 1; #TRUE
+      next;
+    }
+
+    my $diff;
+    if ($type eq 'xml') {
+      unless ($noxml) {
+        $diff = &DiffXML::diff_xml($reference, $output, @{$ignore});
+      }
+    } elsif ($type eq 'json') {
+      $diff = &DiffJSON::diff_json($reference, $output, @{$ignore});
+    } else { # $type eq 'text'
+      # Build the string describing patterns to ignore in diff.
+      my $ignore_string = "";
+      foreach my $item (@{$ignore}) {
+        $ignore_string .= "-I \"$item\" ";
+      }
+      $diff = `diff $ignore_string $reference $output`;
+    }
+    # see if any differences were found
+    if ($diff) {
+      print $test_log_fh $sep unless ($failed || $skipped);
+      print $test_log_fh $diff;
+      $failed = 1; #TRUE
+      $fail_reason = 'differences in ' . ($comparison->{output} eq '-' ? 'stdout' : fileparse($output));
+    }
+  }
+  # update
+  if ((defined($update) || defined($update_all)) && $updatable) {
+    print $test_log_fh "Updating reference files.\n";
+    for (my $i = 0; $i < $comparison_count; $i++) {
+      $comparison = @{$comparisons}[$i];
+      my $output = $comparison->{output};
+      $output = $stdout_fn if ($output eq '-');
+      copy($output, $comparison->{reference});
+    }
+  }
+CLEANUP:
+  # remove the result folder
+  if (-e $work_dir && !$failed && !$noclean) {
+    rmtree($work_dir);
+  }
+  # test result
+  if ($failed) {
+    &process_result(($expect_failure ? 'XFAIL' : 'FAIL'), $name, $description, $fail_reason);
+    print $test_log_fh "FAILED!\n";
+  } elsif ($skipped) {
+    &process_result('SKIP', $name, $description);
+    print $test_log_fh "SKIPPED!\n";
+  } else {
+    &process_result(($expect_failure ? 'XPASS' : 'PASS'), $name, $description);
+    print $test_log_fh "PASSED!\n";
+  }
+  return 1;
+}
+
+sub is_comprehensive {
+  return $comprehensive;
+}
+
+sub get_log_fh {
+  return $test_log_fh;
+}
+
+sub num_cores {
+  return $cores;
+}
+
+&setup();
+&run_tests();
+&teardown();
+if ($report_status) {
+  # some tests are broken
+  exit(99) if ($results{ERROR} > 0);
+  # some tests returned bad results
+  exit(1) if ($results{FAIL} > 0 || $results{XPASS} > 0);
+  # some tests were skipped or no tests were run
+  exit(77) if ($results{SKIP} > 0 || ($results{PASS} == 0 && $results{XFAIL} == 0));
+  # all tests passed
+}
+exit(0);

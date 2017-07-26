@@ -1,0 +1,27 @@
+&test('centrimo1', 'centrimo with flip',
+  'centrimo', '',
+  ['-verbosity', 1, '-oc', 'results/centrimo', '-flip',
+    'common/Klf1.s', 'centrimo/dreme-Klf1.xml'],
+  [
+    {
+      output => 'results/centrimo/site_counts.txt', 
+      reference => 'centrimo/site_counts.txt', 
+      type => 'text', ignore => ['^#']
+    },
+    {
+      output => 'results/centrimo/centrimo.txt', 
+      reference => 'centrimo/centrimo.txt', 
+      type => 'text', ignore => ['^#']
+    },
+    {
+      output => 'results/centrimo/centrimo.html', 
+      reference => 'centrimo/centrimo.html', 
+      type => 'json', ignore => [
+        'data:(version|revision|release|cmd)',
+        'data:sequence_db:source'
+      ]
+    }
+  ],
+  'results/centrimo'
+);
+

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>fasta-fetch - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+  </head>
+  <body>
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <h2>fasta-fetch</h2>
+    
+    <div class="usage">
+      <h3>Usage:</h3>
+      <code>fasta-fetch &lt;FASTA file&gt; [-f &lt;file&gt; | &lt;id&gt;+] [options] </code>
+    </div>
+
+    <h3>Description</h3>
+    <div class="indent">
+      <p>Fetch sequences from a FASTA sequence file and 
+      write to standard output.</p>
+
+      <p>Reads sequence identifiers from the command line, from
+      a file and from standard input, in that order.</p>
+
+      <p>Note: Assumes an index file has been made using <a
+        href="fasta-make-index.html">fasta-make-index</a>.
+      Sequence identifiers must be same as made by fasta-make-index.</p>
+    </div>
+
+    <h3>Input</h3>
+    <div class="indent">
+      <p>Sequences in <a href="fasta-format.html">FASTA format</a> from the <code>&lt;FASTA file&gt;</code>.</p>
+      <p>An index generated from the sequences with  <a href="fasta-make-index.html">fasta-make-index</a>
+      which is named the same as the FASTA file but with ".index" appended.</p>
+      <p>Sequence identifiers, either listed on the command line,
+      from a file specified with <span class="popt">-f</span> option or provided
+      on standard input.</p>
+    </div>
+
+    <h3>Output</h3>
+    <div class="indent">
+      <p>Writes a <a href="fasta-format.html">FASTA format</a> file to standard output.</p>
+    </div>
+
+    <h3>Options</h3>
+    <div class="indent">
+      <table class="options">
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Parameter</th>
+            <th>Description</th>
+            <th>Default Behaviour</th>
+          </tr>
+        </thead>
+          <tbody>
+          <tr>
+            <th colspan="4">General Options</th>
+          </tr>
+          <tr>
+            <td class="popt">-f</td><td><span class="pdat">file</span></td>
+            <td>Specifiy a <span class="pdat">file</span> containing a list of
+              sequence identifiers.</td>
+            <td>The sequence identifiers must be specified on the command line
+              or on standard input.</td>
+          </tr>
+          <tr>
+            <td class="popt">-c</td><td></td>
+            <td>Check that the index actually references the expected sequence.
+            This is intended to help catch cases when the sequence file has
+            changed but the index has not been updated.</td>
+            <td>The index file is assumed to be correct for the sequence file.</td>
+          </tr>
+          <tr>
+            <td class="popt">-s</td><td><span class="pdat">suffix</span></td>
+            <td>Put each sequence in its own file named with the sequence
+              identifier with ".<span class="pdat">suffix</span>" appended.
+              Any pipe characters in the identifier will be substituted with 
+              underscores.</td>
+            <td>The sequences are written to standard output.</td>
+          </tr>
+          <tr>
+            <td class="popt">-off</td><td><span class="pdat">position</span></td>
+            <td>Print sequences starting at <span class="pdat">position</span>.</td>
+            <td>The sequences are printed from their start which is equivalent to
+              giving <span class="popt">-off</span> a value of 1.</td>
+          </tr>
+          <tr>
+            <td class="popt">-len</td><td><span class="pdat">length</span></td>
+            <td>Print up to <span class="pdat">length</span> characters of the
+              sequence.</td>
+            <td>The entire sequence is printed.</td>
+          </tr>
+          <tr>
+            <td class="popt">-h</td><td>&nbsp;</td>
+            <td>Print a help message and exit.</td>
+            <td>Runs as normal.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
+

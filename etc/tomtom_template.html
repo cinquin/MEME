@@ -1,0 +1,478 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>TOMTOM</title>
+    <script src="tomtom_data.js"></script>
+    <script src="constants.js"></script>
+    <script src="utilities.js"></script>
+    <script src="alphabet_utilities.js"></script>
+    <script src="delay_draw.js"></script>
+    <script src="motif_logo.js"></script>
+    <script src="tomtom_template.js"></script>
+    <link rel="stylesheet" type="text/css" href="meme.css">
+    <link rel="stylesheet" type="text/css" href="tomtom_template.css">
+  </head>
+  <body data-scrollpad="true">
+    <div id="grey_out_page" class="grey_background" style="display:none;"></div>
+    <!-- {{{ help topics -->
+    <div class="pop_content" id="pop_query_db">
+      <p>The database containing the query motif. Refer to the query databases
+      table for details.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_query_name">
+      <p>The ID of the query motif.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_query_alt">
+      <p>The alternate ID of the query motif.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_query_web">
+      <p>A link to more information about the query motif.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_query_preview">
+      <p>The motif preview. On supporting browsers this will display as a motif
+      logo, otherwise the consensus sequence will be displayed.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_query_matches">
+      <p>The number of significant matches of the query motif to a motif in the
+      target database.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_query_list">
+      <p>Links to the first 20 matches of the query motif to a motif in the
+      target database.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_db_name">
+    <p>The database name.</p>
+    <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_db_used">
+      <p>The number of motifs read from the motif database minus the number that
+      had to be discarded due to conflicting IDs.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_db_matched">
+      <p>The number of motifs that had a match with at least one of the query
+      motifs.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_match_summary">
+      <p>The summary gives information about the matched motif. Mouse over each
+      row to show further help buttons for each specific title.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_match_name">
+      <p>The ID of the matched motif with the optional alternate ID shown in parentheses.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_match_alt">
+      <p>The alternative name of the matched motif.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_match_db">
+      <p>The database containing the matched motif.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_match_pvalue">
+      <p>The probability that the match occurred by random chance according to
+      the null model.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_match_evalue">
+      <p>The expected number of false positives in the matches up to this
+      point.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_match_qvalue">
+      <p>The minimum <b>F</b>alse <b>D</b>iscovery <b>R</b>ate required to
+      include the match.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_match_overlap">
+      <p>The number of letters that overlaped in the optimal alignment.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_match_offset">
+      <p>The offset of the query motif relative to the matched motif in the optimal
+      alignment.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_match_orientation">
+      <p>The orientation of the matched motif that gave the optimal alignment. 
+      A value of "normal" means that the matched motif is as it appears in 
+      the database. Otherwise, the matched motif has been reverse complemented.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_match_alignment">
+      <p>The image shows the alignment of the two motifs. The matched motif is 
+      shown on the top and the query motif is shown on the bottom.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_match_download">
+      <p>By clicking the link "Create custom LOGO &#8615;" a form to make custom logos 
+      will be displayed. The download button can then be clicked to generate a motif
+      matching the selected specifications.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_dl_type">
+      <p>Two image formats, png and eps, are avaliable. The pixel based portable
+      network graphic (png) format is commonly used on the Internet and the
+      Encapsulated PostScript (eps) format is more suitable for publications
+      that might require scaling.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_dl_err">
+      <p>Toggle error bars indicating the confidence of a motif based on the
+      number of sites used in its creation.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_dl_ssc">
+      <p>Toggle adding pseudocounts for <b>S</b>mall <b>S</b>ample 
+      <b>C</b>orrection.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_dl_flip">
+      <p>Toggle a full reverse complement of the alignment.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    
+    <div class="pop_content" id="pop_dl_width">
+      <p>Specify the width of the generated logo.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_dl_height">
+      <p>Specify the height of the generated logo.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <!-- }}} -->
+    <div id="download" class="hidden">
+      <form id="logo_form" method="post" action="">
+        <input type="hidden" name="program" value="Tomtom"/>
+        <input type="hidden" name="motifs" id="dl_motifs" value=""/>
+        <input type="hidden" name="id1" value="1"/>
+        <input type="hidden" name="rc1" id="dl_rc1" value="0"/>
+        <input type="hidden" name="label1" id="dl_label1" value=""/>
+        <input type="hidden" name="id2" value="2"/>
+        <input type="hidden" name="rc2" id="dl_rc2" value="0"/>
+        <input type="hidden" name="label2" id="dl_label2" value=""/>
+        <input type="hidden" name="shift" id="dl_shift" value="0"/>
+        <table class="dl_opts">
+          <tr>
+            <th>Image Type <div class="help" data-topic="pop_dl_type"></div></th>
+            <td>
+              <select name="png">
+                <option value="1" selected>PNG</option>
+                <option value="0">EPS</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th>Error bars <div class="help" data-topic="pop_dl_err"></div></th>
+            <td>
+              <select name="errbars">
+                <option value="1" selected>yes</option>
+                <option value="0">no</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th>SSC <div class="help" data-topic="pop_dl_ssc"></div></th>
+            <td>
+              <select name="ssc">
+                <option value="1">yes</option>
+                <option value="0" selected>no</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th>Flip <div class="help" data-topic="pop_dl_flip"></div></th>
+            <td>
+              <select id="dl_flip">
+                <option value="1">yes</option>
+                <option value="0" selected>no</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th>Width <div class="help" data-topic="pop_dl_width"></div></th>
+            <td>
+              <input name="width" id="dl_width" type="text" size="3" placeholder="auto"/>
+            </td>
+          </tr>
+          <tr>
+            <th>Height <div class="help" data-topic="pop_dl_height"></div></th>
+            <td>
+              <input name="height" id="dl_height" type="text" size="3" placeholder="auto"/>
+            </td>
+          </tr>
+        </table>
+        <input type="submit" id="download_submit" value="download"/>&nbsp;&nbsp;<input type="button" id="download_cancel" value="cancel"/>
+      </form>
+      <script>make_logo_form()</script>
+    </div>
+
+    <div class="pad1">
+    <div class="prog_logo big">
+    <img src="tomtom_icon.png" alt="Tomtom Logo">
+    <h1>Tomtom</h1>
+    <h2>Motif Comparison Tool</h2>
+    </div>
+    <p>For further information on how to interpret these results or to get a 
+    copy of the MEME software please access 
+    <a href="http://meme.nbcr.net/">http://meme.nbcr.net</a>.</p>
+    <p>If you use TOMTOM in your research, please cite the following paper:<br>
+      <span class="citation">
+        Shobhit Gupta, JA Stamatoyannopolous, Timothy Bailey and William Stafford Noble,
+        "Quantifying similarity between motifs",
+        <i>Genome Biology</i>, <b>8</b>(2):R24, 2007.
+        <a href="http://genomebiology.com/2007/8/2/R24">[full text]</a>
+      </span>
+    </p>
+    </div>
+
+    <div class="pad2">
+      <a class="jump" href="#query_motifs">Query Motifs</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
+        class="jump" href="#target_dbs">Target Databases</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
+        class="jump" href="#matches">Matches</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
+        class="jump" href="#settings">Settings</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a
+        class="jump" href="#program">Program information</a>
+    </div>
+
+    <div id="query_motifs" class="header">
+      <h2>Query Motifs</h2>
+      <span><a href="#target_dbs">Next</a>&nbsp;<a href="#">Top</a></span>
+    </div>
+    <div class="box">
+      <table id="preview" class="preview th_ul">
+        <thead>
+          <tr>
+          <th><span>Database <div class="help" data-topic="pop_query_db"></div></span></th>
+          <th><span>ID<div class="help" data-topic="pop_query_name"></div></span></th>
+          <th><span>Alt. ID<div class="help" data-topic="pop_query_alt"></div></span></th>
+          <th><span>Preview <div class="help" data-topic="pop_query_preview"></div></span></th>
+          <th><span>Matches <div class="help" data-topic="pop_query_matches"></div></span></th>
+          <th><span>List <div class="help" data-topic="pop_query_list"></div></span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="pview_row">
+          <td class="pview_db"></td>
+          <td class="pview_name"></td>
+          <td class="pview_alt"></td>
+          <td class="pview_logo"></td>
+          <td class="pview_matches"></td>
+          <td><div class="ml pview_list"></div></td>
+          </tr>
+        </tbody>
+      </table>
+      <script>make_preview();</script>
+    </div>
+
+    <div id="target_dbs" class="header">
+      <h2>Target Databases</h2>
+      <span><a href="#query_motifs">Previous</a>&nbsp;<a id="link_after_target_db" href="#">Next</a>&nbsp;<a href="#">Top</a></span>
+    </div>
+    <div class="box">
+      <table id="tdbs" class="targets th_ul">
+      <thead>
+        <tr>
+          <th><span>Database <div class="help" data-topic="pop_db_name"></div></span></th>
+          <th><span>Used <div class="help" data-topic="pop_db_used"></div></span></th>
+          <th><span>Matched <div class="help" data-topic="pop_db_matched"></div></span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="db_row">
+          <td class="db_name"></td>
+          <td class="db_used ac"></td>
+          <td class="db_matched ac"></td>
+        </tr>
+      </tbody>
+      </table>
+      <script>make_target_dbs();</script>
+    </div>
+
+    <div id="matches">
+      <div class="match_box">
+        <div class="header">
+          <h2>Matches to <span class="query_name"></span></h2>
+          <span class="links"><a class="prev" href="#">Previous</a>&nbsp;<a class="next" href="#">Next</a>&nbsp;<a href="#">Top</a></span>
+        </div>
+        <div class="box">
+          <table class="th_ul" style="width:100%">
+            <col style="width: 5em;">
+            <col>
+            <tbody class="match_entry">
+              <tr>
+                <th style="text-align:left;"><span>Summary <div class="help" data-topic="pop_match_summary"></div></span></th>
+                <th style="text-align:left;"><span>Alignment <div class="help" data-topic="pop_match_alignment"></div></span></th>
+              </tr>
+              <tr>
+                <td style="vertical-align:top">
+                  <table class="match_summary">
+                    <tbody>
+                      <tr>
+                        <th>Name <div class="help" data-topic="pop_match_name"></div></th>
+                        <td class="match_name"></td>
+                      </tr>
+                      <tr>
+                        <th>Database <div class="help" data-topic="pop_match_db"></div></th>
+                        <td class="match_db"></td>
+                      </tr>
+                    </tbody>
+                    <tbody>
+                      <tr>
+                        <th><i>p</i>-value <div class="help" data-topic="pop_match_pvalue"></div></th>
+                        <td class="match_pvalue"></td>
+                      </tr>
+                      <tr>
+                        <th><i>E</i>-value <div class="help" data-topic="pop_match_evalue"></div></th>
+                        <td class="match_evalue"></td>
+                      </tr>
+                      <tr>
+                        <th><i>q</i>-value <div class="help" data-topic="pop_match_qvalue"></div></th>
+                        <td class="match_qvalue"></td>
+                      </tr>
+                    </tbody>
+                    <tbody>
+                      <tr>
+                        <th>Overlap <div class="help" data-topic="pop_match_overlap"></div></th>
+                        <td class="match_overlap"></td>
+                      </tr>
+                      <tr>
+                        <th>Offset <div class="help" data-topic="pop_match_offset"></div></th>
+                        <td class="match_offset"></td>
+                      </tr>
+                      <tr>
+                        <th>Orientation <div class="help" data-topic="pop_match_orientation"></div></th>
+                        <td class="match_orientation"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <a class="download_text" href="#">Show logo download options</a>
+                </td>
+                <td>
+                  <div class="logo_container">
+                    <a title="Previous query" class="prev_query">&#x2912;</a>
+                    <a title="Previous match" class="prev_target">&#x21A5;</a>
+                    <a title="Show logo download options" class="download_btn">&#x21D8;</a>
+                    <a title="Next match" class="next_target">&#x21A7;</a>
+                    <a title="Next query" class="next_query">&#x2913;</a>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <script>make_matches();</script>
+
+    <div id="settings" class="header">
+      <h2>Settings</h2>
+      <span><a id="link_before_program" href="#">Previous</a>&nbsp;<a href="#program">Next</a>&nbsp;<a href="#">Top</a></span>
+    </div>
+    <div class="box">
+      <h4>Background</h4>
+      <span id="alpha_bg"></span>
+      <script>
+      {
+        $("alpha_bg").appendChild(make_alpha_bg_table(tomtom_alphabet));
+      }
+      </script>
+      <h4>Other Settings</h4>
+      <table id="tbl_settings" class="inputs hide_advanced">
+        <tr>
+          <th>Strand Handling</th>
+          <td id="opt_strand">
+            <span class="strand_none">Reverse complements are not possible so motifs are compared as they are provided.</span>
+            <span class="strand_given">Motifs are compared as they are provided.</span>
+            <span class="strand_both">Motifs may be reverse complemented before comparison to find a better match.</span>
+          </td>
+        </tr>
+        <tr>
+          <th>Distance Measure</th>
+          <td id="opt_dist">
+            <span class="dist_allr">Average log-likelihood ratio</span>
+            <span class="dist_ed">Euclidian distance</span>
+            <span class="dist_kullback">Kullback-Leibler divergence</span>
+            <span class="dist_pearson">Pearson correlation coefficient</span>
+            <span class="dist_sandelin">Sandelin-Wasserman function</span>
+            <span class="dist_blic1">Bayesian Likelihood 2-Components score (from 1-component Dirichlet prior)</span>
+            <span class="dist_blic5">Bayesian Likelihood 2-Components score (from 5-component Dirichlet prior)</span>
+            <span class="dist_llr1">Log likelihood Ratio score (from 1-component Dirichlet prior)</span>
+            <span class="dist_llr5">Log likelihood Ratio score (from 5-component Dirichlet prior)</span>
+          </td>
+        </tr>
+        <tr>
+          <th>Match Threshold</th>
+          <td id="opt_ttype">
+            Matches must have a <span class="ttype_evalue">E-value</span><span class="ttype_qvalue">q-value</span> of <span id="opt_thresh"></span> or smaller.
+          </td>
+        </tr>
+      </table>
+      <script>
+      {
+        $("opt_strand").className = (tomtom_alphabet.has_complement() ? (data.options.strands == "both" ? "both" : "given") : "none");
+        $("opt_dist").className = data.options.distance_measure;
+        $("opt_ttype").className = data.options.threshold_type;
+        $("opt_thresh").textContent = data.options.threshold_value;
+      }
+      </script>
+    </div>
+
+    <div id="program" class="bar">
+      <div style="text-align:right;"><a href="#settings">Previous</a> <a href="#">Top</a></div>
+      <div class="subsection">
+        <h5>TOMTOM version</h5>
+        <span id="version"></span> (Release date: <span id="release"></span>)
+      </div>
+      <div class="subsection">
+        <h5>Reference</h5>
+        <span class="citation">
+          Shobhit Gupta, JA Stamatoyannopolous, Timothy Bailey and William Stafford Noble,
+          "Quantifying similarity between motifs",
+          <i>Genome Biology</i>, <b>8</b>(2):R24, 2007.
+        </span>
+      </div>
+      <div class="subsection">
+        <h5>Command line</h5>
+        <textarea id="cmd" rows="1" style="width:100%;" readonly></textarea><br>
+        <br>Result calculation took <span id="runtime"></span> seconds<br>
+      </div>
+    </div>
+    <script>make_program();</script>
+  </body>
+</html>

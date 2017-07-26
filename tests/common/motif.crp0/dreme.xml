@@ -1,0 +1,58 @@
+<dreme version="4.10.2" release="Thu Sep 03 15:00:54 2015 -0700">
+  <model>
+    <command_line>dreme -dna -oc motif.crp0 -e 100 -m 3 -p crp0.s</command_line>
+    <positives name="crp0" count="18" file="crp0.s" last_mod_date="Fri May 02 13:01:55 AEST 2014" />
+    <negatives name="shuffled positive sequences" count="18" from="shuffled"/>
+    <alphabet name="DNA" like="dna">
+      <letter id="A" symbol="A" complement="T" name="Adenine" colour="CC0000"/>
+      <letter id="C" symbol="C" complement="G" name="Cytosine" colour="0000CC"/>
+      <letter id="G" symbol="G" complement="C" name="Guanine" colour="FFB300"/>
+      <letter id="T" symbol="T" aliases="U" complement="A" name="Thymine" colour="008000"/>
+      <letter id="N" symbol="N" aliases="X." equals="ACGT" name="Any base"/>
+      <letter id="V" symbol="V" equals="ACG" name="Not T"/>
+      <letter id="H" symbol="H" equals="ACT" name="Not G"/>
+      <letter id="D" symbol="D" equals="AGT" name="Not C"/>
+      <letter id="B" symbol="B" equals="CGT" name="Not A"/>
+      <letter id="M" symbol="M" equals="AC" name="Amino"/>
+      <letter id="R" symbol="R" equals="AG" name="Purine"/>
+      <letter id="W" symbol="W" equals="AT" name="Weak"/>
+      <letter id="S" symbol="S" equals="CG" name="Strong"/>
+      <letter id="Y" symbol="Y" equals="CT" name="Pyrimidine"/>
+      <letter id="K" symbol="K" equals="GT" name="Keto"/>
+    </alphabet>
+    <strands>both</strands>
+    <background A="0.303" C="0.183" G="0.209" T="0.306" from="dataset"/>
+    <stop evalue="100" count="3"/>
+    <ngen>100</ngen>
+    <add_pv_thresh>0.01</add_pv_thresh>
+    <seed>1</seed>
+    <host>IMB12-010665</host>
+    <when>Wed Oct 28 09:45:40 AEST 2015</when>
+  </model>
+  <motifs>
+    <motif id="m01" seq="TCACA" length="5" nsites="19" p="16" n="5" pvalue="2.5e-004" evalue="1.2e+000" unerased_evalue="1.2e+000">
+      <pos A="0.000000" C="0.000000" G="0.000000" T="1.000000"/>
+      <pos A="0.000000" C="1.000000" G="0.000000" T="0.000000"/>
+      <pos A="1.000000" C="0.000000" G="0.000000" T="0.000000"/>
+      <pos A="0.000000" C="1.000000" G="0.000000" T="0.000000"/>
+      <pos A="1.000000" C="0.000000" G="0.000000" T="0.000000"/>
+      <match seq="TCACA" p="16" n="5" pvalue="2.5e-004" evalue="1.2e+000"/>
+    </motif>
+    <motif id="m02" seq="GTAA" length="4" nsites="20" p="15" n="6" pvalue="3.0e-003" evalue="1.3e+001" unerased_evalue="1.3e+001">
+      <pos A="0.000000" C="0.000000" G="1.000000" T="0.000000"/>
+      <pos A="0.000000" C="0.000000" G="0.000000" T="1.000000"/>
+      <pos A="1.000000" C="0.000000" G="0.000000" T="0.000000"/>
+      <pos A="1.000000" C="0.000000" G="0.000000" T="0.000000"/>
+      <match seq="GTAA" p="15" n="6" pvalue="3.0e-003" evalue="1.3e+001"/>
+    </motif>
+    <motif id="m03" seq="GATGC" length="5" nsites="9" p="7" n="0" pvalue="3.8e-003" evalue="1.5e+001" unerased_evalue="1.5e+001">
+      <pos A="0.000000" C="0.000000" G="1.000000" T="0.000000"/>
+      <pos A="1.000000" C="0.000000" G="0.000000" T="0.000000"/>
+      <pos A="0.000000" C="0.000000" G="0.000000" T="1.000000"/>
+      <pos A="0.000000" C="0.000000" G="1.000000" T="0.000000"/>
+      <pos A="0.000000" C="1.000000" G="0.000000" T="0.000000"/>
+      <match seq="GATGC" p="7" n="0" pvalue="3.8e-003" evalue="1.5e+001"/>
+    </motif>
+  </motifs>
+  <run_time cpu="0.71" real="0.71" stop="count"/>
+</dreme>

@@ -1,0 +1,536 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>DREME</title>
+    <script src="dreme_data.js"></script>
+    <script src="constants.js"></script>
+    <script src="utilities.js"></script>
+    <script src="motif_logo_template.js"></script>
+    <script src="motif_logo.js"></script>
+    <script src="dreme_template.js"></script>
+    <link rel="stylesheet" type="text/css" href="meme.css">
+    <link rel="stylesheet" type="text/css" href="dreme_template.css">
+  </head>
+  <body data-scrollpad="true">
+    <!--  -->
+    <div id="grey_out_page" class="grey_background" style="display:none;">
+    </div>
+
+    <!-- Help popups -->
+    <div class="pop_content" id="pop_">
+      <p>Help poup.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_motifs_word">
+      <p>
+        The name of the motif uses the IUPAC codes for nucleotides which has 
+        a different letter to represent each of the 15 possible combinations.
+      </p>
+      <p>
+        The name is itself a representation of the motif though the position
+        weight matrix is not directly equalivant as it is generated from the
+        sites found that matched the letters given in the name.
+      </p>
+      <p>
+        <a id="doc_alphabets_url" href="#">
+        Read more about the MEME suite's use of the IUPAC alphabets.
+        </a>
+        <script>$("doc_alphabets_url").href = site_url + "/doc/alphabets.html";</script>
+      </p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_motifs_logo">
+      <p>The logo of the motif.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_motifs_rc_logo">
+      <p>The logo of the reverse complement motif.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_motifs_evalue">
+      <p>The E-value is the enrichment p-value times the number of candidate 
+        motifs tested.</p>
+      <p>The enrichment p-value is calculated using Fisher's Exact Test for 
+        enrichment of the motif in the positive sequences.</p>
+      <p>Note that the counts used in Fisher's Exact Test are made after 
+        erasing sites that match previously found motifs.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_motifs_uevalue">
+      <p>The E-value of the motif calculated without erasing the sites of 
+        previously found motifs.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_more">
+      <p>Show more information on the motif.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_submit_dl">
+      <p>Submit your motif to another MEME Suite program or download your motif.</p>
+      <h5>Supported Programs</h5>
+      <dl>
+        <dt>Tomtom</dt>
+        <dd>Tomtom is a tool for searching for similar known motifs. 
+          </dd>
+        <dt>MAST</dt>
+        <dd>MAST is a tool for searching biological sequence databases for 
+          sequences that contain one or more of a group of known motifs.
+          </dd>
+        <dt>FIMO</dt>
+        <dd>FIMO is a tool for searching biological sequence databases for 
+          sequences that contain one or more known motifs.
+          </dd>
+        <dt>GOMO</dt>
+        <dd>GOMO is a tool for identifying possible roles (Gene Ontology 
+          terms) for DNA binding motifs.
+          </dd>
+        <dt>SpaMo</dt>
+        <dd>SpaMo is a tool for inferring possible transcription factor
+          complexes by finding motifs with enriched spacings.
+          </dd>
+      </dl>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_motif_positives">
+      <p># positive sequences matching the motif / # positive sequences.</p>
+      <p>Note these counts are made after erasing sites that match previously
+        found motifs.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_motif_negatives">
+      <p># negative sequences matching the motif / # negative sequences.</p>
+      <p>Note these counts are made after erasing sites that match previously
+        found motifs.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_motif_pvalue">
+      <p>The p-value of Fisher's Exact Test for enrichment of the motif in 
+        the positive sequences.</p>
+      <p>Note that the counts used in Fisher's Exact Test are made after 
+        erasing sites that match previously found motifs.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_motif_evalue">
+      <p>The E-value is the motif p-value times the number of candidate motifs 
+        tested.</p>
+      <p>Note that the p-value was calculated with counts made after 
+        erasing sites that match previously found motifs.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_motif_uevalue">
+      <p>The E-value of the motif calculated without erasing the sites of 
+        previously found motifs.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_match_word">
+      <p>All words matching the motif whose uncorrected p-value is less than
+      <span id="help_add_pv_thresh"></span>.</p>
+      <script>$("help_add_pv_thresh").innerHTML = data.options.add_pv_thresh;</script>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_match_pos">
+      <p># positive sequences with matches to the word / # positive sequences.</p>
+      <p>Note these counts are made after erasing sites that match previously
+        found motifs.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_match_neg">
+      <p># negative sequences with matches to the word / # negative sequences.</p>
+      <p>Note these counts are made after erasing sites that match previously
+        found motifs.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_match_pval">
+      <p>The p-value of Fisher's Exact Test for enrichment of the word in 
+        the positive sequences.</p>
+      <p>Note that the counts used in Fisher's Exact Test are made after 
+        erasing sites that match previously found motifs.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_match_eval">
+      <p>The word p-value times the number of candidates tested.</p>
+      <p>Note that the p-value was calculated with counts made after 
+        erasing sites that match previously found motifs.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_seq_source">
+      <p>The sequence file used by DREME to find the motifs.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_seq_alph">
+      <p>The alphabet of the sequences.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_seq_count">
+      <p>The count of the sequences.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_alph_name">
+      <p>The name of the alphabet symbol.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_alph_control">
+      <p>The frequency of the alphabet symbol in the control dataset.</p>
+      <div class="pop_close">[<a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <!-- templates -->
+
+    <div class="template box expanded_motif" id="tmpl_motif_expanded">
+      <div>
+        <span class="tvar_logo"></span>
+        <span class="tvar_rclogo"></span>
+      </div>
+      <h4>Details</h4>
+      <table class="details">
+        <thead>
+          <tr>
+            <th class="match_count">Positives <div class="help" data-topic="pop_motif_positives"></div></th>
+            <th class="match_count">Negatives <div class="help" data-topic="pop_motif_negatives"></div></th>
+            <th class="match_evalue">P-value <div class="help" data-topic="pop_motif_pvalue"></div></th>
+            <th class="match_evalue">E-value <div class="help" data-topic="pop_motif_evalue"></div></th>
+            <th class="match_evalue">Unerased E-value <div class="help" data-topic="pop_motif_uevalue"></div></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="match_count">
+              <span class="tvar_p"></span> / <span class="tvar_p_total"></span>
+            </td>
+            <td class="match_count">
+              <span class="tvar_n"></span> / <span class="tvar_n_total"></span>
+            </td>
+            <td class="tvar_pvalue match_evalue"></td>
+            <td class="tvar_evalue match_evalue"></td>
+            <td class="tvar_uevalue match_evalue"></td>
+          </tr>
+        </tbody>
+      </table>
+      <h4>Enriched Matching Words</h4>
+      <div class="tvar_words"></div>
+    </div>
+
+
+    <div class="popup_wrapper">
+      <div class="popup" style="display:none; top: -150px;" id="download">
+        <div>
+          <div style="float:right; ">
+            <div id="outpop_close" class="close" tabindex="0">x</div>
+          </div>
+          <h2 class="mainh" style="margin:0; padding:0;">Submit or Download</h2>
+          <div style="clear:both"></div>
+        </div>
+          <div style="height:100px">
+            <div style="float:right; width: 30px;">
+              <div id="outpop_prev" class="navarrow" tabindex="0">
+                <span class="inactive">&#8679;</span><span class="active">&#11014;</span>
+              </div>
+              <div id="outpop_num" class="navnum"></div>
+              <div id="outpop_next" class="navarrow" tabindex="0">
+                <span class="inactive">&#8681;</span><span class="active">&#11015;</span>
+              </div>
+            </div>
+            <div id="logo_box" style="height: 100px; margin-right: 40px;">
+              <canvas id="outpop_logo" height="100" width="250"></canvas>
+              <canvas id="outpop_logo_rc" height="100" width="250"></canvas>
+            </div>
+          </div>
+          <div>
+            <!-- tabs start -->
+            <div class="tabArea top">
+              <span id="outpop_tab_1" class="tab">Submit Motif</span><span
+                id="outpop_tab_2" class="tab middle">Download Motif</span><span 
+                id="outpop_tab_3" class="tab middle">Download Logo</span>
+            </div>
+            <div class="tabMain top">
+              <!-- Submit to another program -->
+              <div id="outpop_pnl_1">
+                <h4 class="compact">Submit to program</h4>
+                <table id="programs" class="programs">
+                  <tr class="dna_only">
+                    <td><input type="radio" name="program" value="tomtom" id="submit_tomtom"></td>
+                    <td><label for="submit_tomtom">Tomtom</label></td>
+                    <td><label for="submit_tomtom">Find similar motifs in
+                        published libraries or a library you supply.</label></td>
+                  </tr>
+                  <tr>
+                    <td><input type="radio" name="program" value="fimo" id="submit_fimo"></td>
+                    <td><label for="submit_fimo">FIMO</label></td>
+                    <td><label for="submit_fimo">Find motif occurrences in
+                        sequence data.</label></td>
+                  </tr>
+                  <tr>
+                    <td><input type="radio" name="program" value="mast" id="submit_mast"></td>
+                    <td><label for="submit_mast">MAST</label></td>
+                    <td><label for="submit_mast">Rank sequences by affinity to
+                        groups of motifs.</label></td>
+                  </tr>
+                  <tr class="dna_only">
+                    <td><input type="radio" name="program" value="gomo" id="submit_gomo"></td>
+                    <td><label for="submit_gomo">GOMo</label></td>
+                    <td><label for="submit_gomo">Identify possible roles (Gene
+                        Ontology terms) for motifs.</label></td>
+                  </tr>
+                  <tr class="dna_only">
+                    <td><input type="radio" name="program" value="spamo" id="submit_spamo"></td>
+                    <td><label for="submit_spamo">SpaMo</label></td>
+                    <td><label for="submit_spamo">Find other motifs that are
+                        enriched at specific close spacings which might imply the existance of a complex.</label></td>
+                  </tr>
+                </table>
+              </div>
+              <!-- download text format  -->
+              <div id="outpop_pnl_2">
+                <div>
+                  <label for="text_format">Format:</label>
+                  <select id="text_format">
+                    <option value="0">Count Matrix</option>
+                    <option value="1">Probability Matrix</option>
+                    <option value="2">Minimal MEME</option>
+                  </select>
+                </div>
+                <textarea id="outpop_text" name="content"
+                  style="width:99%; white-space: pre; word-wrap: normal; overflow-x: scroll;" 
+                  rows="8" readonly="readonly" wrap="off"></textarea>
+                <a id="outpop_text_dl" download="meme.txt" href=""></a>
+              </div>
+              <!-- download logo format -->
+              <div id="outpop_pnl_3">
+                <form id="logo_form" method="post" action="">
+                  <script>$("logo_form").action = site_url + "/utilities/generate_logo";</script>
+                  <input type="hidden" name="program" value="DREME"/>
+                  <input type="hidden" id="logo_motifs" name="motifs" value=""/>
+                  <table>
+                    <tr>
+                      <td><label for="logo_format">Format:</label></td>
+                      <td>
+                        <select id="logo_format" name="png">
+                          <option value="1">PNG (for web)</option>
+                          <option value="0">EPS (for publication)</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><label for="logo_rc">Orientation:</label></td>
+                      <td>
+                        <select id="logo_rc" name="rc1">
+                          <option value="0">Normal</option>
+                          <option value="1" id="logo_rc_option">Reverse Complement</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><label for="logo_ssc">Small Sample Correction:</label></td>
+                      <td>
+                        <input type="hidden" id="logo_err" name="errbars" value="0"/>
+                        <select id="logo_ssc" name="ssc">
+                          <option value="0">Off</option>
+                          <option value="1">On</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><label for="logo_width">Width:</label></td>
+                      <td>
+                        <input type="text" id="logo_width" size="4" placeholder="default" name="width"/>&nbsp;cm
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><label for="logo_height">Height:</label></td>
+                      <td>
+                        <input type="text" id="logo_height" size="4" placeholder="default" name="height"/>&nbsp;cm
+                      </td>
+                    </tr>
+                  </table>
+                </form>
+              </div>
+              <!-- Buttons -->
+              <div>
+                <div style="float:left;">
+                  <input type="button" id="outpop_do" value="Submit" />
+                </div>
+                <div style="float:right;">
+                  <input id="outpop_cancel" type="button" value="Cancel" />
+                </div>
+                <div style="clear:both;"></div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- Page starts here -->
+    <div id="top" class="pad1">
+      <div class="prog_logo big">
+        <img src="dreme_icon.png" alt="DREME Logo"/>
+        <h1>DREME</h1>
+        <h2>Discriminative Regular Expression Motif Elicitation</h2>
+      </div>
+      <p class="spaced">
+        For further information on how to interpret these results or to get a 
+        copy of the MEME software please access 
+        <a href="http://meme.nbcr.net/">http://meme.nbcr.net</a>. 
+      </p>
+      <p>
+        If you use DREME in your research please cite the following paper:<br />
+        <span class="citation">
+          Timothy L. Bailey, "DREME: Motif discovery in transcription factor ChIP-seq data", <i>Bioinformatics</i>, <b>27</b>(12):1653-1659, 2011.
+          <a href="http://bioinformatics.oxfordjournals.org/content/27/12/1653">[full text]</a>
+        </span>
+      </p>
+    </div>
+    <!-- navigation -->
+    <div class="pad2">
+      <a class="jump" href="#motifs_sec">Discovered Motifs</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a class="jump" href="#inputs_sec">Inputs &amp; Settings</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a class="jump" href="#info_sec">Program information</a>
+    </div>
+    <!-- alert the user when their browser is not up to the task -->
+    <noscript><h1 style="color:red">Javascript is required to view these results!</h1></noscript>
+    <h1 id="html5_warning" style="color:red; display:none;">Your browser does not support canvas!</h1>
+    <script>
+      if (!window.HTMLCanvasElement) $("html5_warning").style.display = "block";
+    </script>
+    <!-- description -->
+    <div id="description_section" style="display:none">
+      <div id="description" class="header">
+        <h2>Description</h2>
+      </div>
+      <div id="description_text" class="box">
+      </div>
+    </div>
+    <script>
+      if (data.description) {
+        $("description_text").innerHTML = "";
+        $("description_text").appendChild(make_description(data.description));
+        $("description_section").style.display = "block";
+      }
+    </script>
+    <!-- motifs -->
+    <div id="motifs_sec" class="header">
+      <h2>Discovered Motifs</h2>
+      <span><a href="#inputs_sec">Next</a>&nbsp;<a href="#">Top</a></span>
+    </div>
+    <div id="motifs" class="box">
+      <p>No motifs were discovered!</p>
+    </div>
+    <script>make_motifs();</script>
+    <!-- inputs and settings -->
+    <div id="inputs_sec" class="header">
+      <h2>Inputs &amp; Settings</h2>
+      <span><a href="#motifs_sec">Previous</a>&nbsp;<a href="#info_sec">Next</a>&nbsp;<a href="#">Top</a></span>
+    </div>
+    <div class="box">
+      <h4>Sequences</h4>
+      <table id="seq_info" class="inputs">
+        <tr><th>Source <div class="help" data-topic="pop_seq_source"></div></th>
+          <th>Alphabet <div class="help" data-topic="pop_seq_alph"></div></th>
+          <th>Sequence Count <div class="help" data-topic="pop_seq_count"></div></th>
+        </tr>
+        <tr>
+          <td id="ins_seq_source"></td>
+          <td id="ins_seq_alphabet"></td>
+          <td id="ins_seq_count"></td>
+        </tr>
+      </table>
+      <script>
+      {
+        var db = data.sequence_db;
+        $("ins_seq_source").innerHTML = db.file;
+        $("ins_seq_alphabet").innerHTML = dreme_alphabet.get_alphabet_name();
+        $("ins_seq_count").innerHTML = db.count;
+      }
+      </script>
+      <h4>Control Sequences</h4>
+      <table id="seq_info" class="inputs">
+        <tr><th>Source <div class="help" data-topic="pop_seq_source"></div></th>
+          <th>Sequence Count <div class="help" data-topic="pop_seq_count"></div></th>
+        </tr>
+        <tr>
+          <td id="ins_cseq_source"></td>
+          <td id="ins_cseq_count"></td>
+        </tr>
+      </table>
+      <script>
+      {
+        var db = data.control_db;
+        if (db.from == "shuffled") {
+          $("ins_cseq_source").innerHTML = "Shuffled Sequences";
+        } else {
+          $("ins_cseq_source").innerHTML = db.file;
+        }
+        $("ins_cseq_count").innerHTML = db.count;
+      }
+      </script>
+      <h4>Background</h4>
+      <span id="alpha_bg"></span>
+      <script>
+      {
+        $("alpha_bg").appendChild(make_alpha_bg(dreme_alphabet, data.control_db.freqs));
+      }
+      </script>
+      <h4>Other Settings</h4>
+      <table id="tbl_settings" class="inputs hide_advanced">
+        <tr>
+          <th>Strand Handling</th>
+          <td id="opt_strand">
+            <span class="strand_none">This alphabet only has one strand</span>
+            <span class="strand_given">Only the given strand is processed</span>
+            <span class="strand_both">Both the given and reverse complement strands are processed</span>
+          </td>
+        </tr>
+        <tr><th># REs to Generalize</th><td id="opt_ngen"></td></tr>
+        <tr><th>Shuffle Seed</th><td id="opt_seed"></td></tr>
+        <tr><th>E-value Threshold</th><td id="opt_stop_evalue"></td></tr>
+        <tr><th>Max Motif Count</th><td id="opt_stop_count"></td></tr>
+        <tr><th>Max Run Time</th><td id="opt_stop_time"></td></tr>
+      </table>
+      <script>
+      {
+        $("opt_strand").className = (dreme_alphabet.has_complement() ? (data.options.revcomp ? "both" : "given") : "none");
+        $("opt_ngen").innerHTML = data.options.ngen;
+        $("opt_seed").innerHTML = data.options.seed;
+        $("opt_stop_evalue").innerHTML = data.options.stop.evalue;
+        $("opt_stop_count").innerHTML = (typeof data.options.stop.count == "number" ? data.options.stop.count : "No maximum motif count.");
+        $("opt_stop_time").innerHTML = (typeof data.options.stop.time == "number" ? data.options.stop.time + " seconds." : "No maximum running time.");
+      }
+      </script>
+    </div>
+    <!-- list information on this program -->
+    <div id="info_sec" class="bar" style="position:relative">
+      <div style="position: absolute; right: 0;"><a href="#inputs_sec">Previous</a> <a href="#">Top</a></div>
+      <div class="subsection">
+        <h5 id="version">DREME version</h5>
+        <span id="ins_version"></span> 
+        (Release date: <span id="ins_release"></span>)<br>
+      </div>
+      <script>
+        $("ins_version").innerHTML = data["version"];
+        $("ins_release").innerHTML = data["release"];
+      </script>
+      <div class="subsection">
+        <h5 id="reference">Reference</h5>
+        <span class="citation">
+          Timothy L. Bailey, "DREME: Motif discovery in transcription factor ChIP-seq data", <i>Bioinformatics</i>, <b>27</b>(12):1653-1659, 2011.
+          <a href="http://bioinformatics.oxfordjournals.org/content/27/12/1653">[full text]</a>
+        </span>
+      </div>
+      <div class="subsection">
+        <h5 id="command">Command line</h5>
+        <textarea id="cmd" rows="3" style="width:100%;" readonly="readonly">
+        </textarea>
+        <script>$("cmd").value = data["cmd"].join(" ");</script>
+      </div>
+    </div>
+    
+  </body>
+</html>

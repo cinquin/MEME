@@ -1,0 +1,73 @@
+my $counter = 1;
+foreach my $dset ('crp0', 'lipo') {
+  # Create input filenames.
+  my $train_file = catfile('common', $dset.'.fasta');
+  my $meme_file = catfile('common', $dset.'.meme.html');
+  my $test_file = catfile('common', $dset.'-test.fasta');
+
+  # Check different topologies.
+  foreach my $topology ("linear", "complete", "star") {
+
+    # Create various types of spacer models.
+    foreach my $spacer ("1", "3", "fim") {
+
+      # FIXME: There is a bug with star topology plus fims.
+      if (($spacer eq "fim") && ($topology eq "star")) {
+        next;
+      }
+
+      my $model = $dset.'.'.$topology;
+      my @mhmm_params = ('--noheader', '--noparams', '--type', $topology);
+
+      if ($spacer eq "fim") {
+        $model .= ".fim";
+        push(@mhmm_params, '--fim');
+      } elsif ($spacer eq "3") {
+        $model .= ".spacer";
+        push(@mhmm_params, '--nspacer', 3);
+      }
+      push(@mhmm_params, '--verbosity', 1, $meme_file);
+      
+      # Create the model.
+      &test('mhmm_core'.$counter, '',
+        'mhmm', '',
+        \@mhmm_params,
+        [{output => '-', reference => catfile('mhmm', $model.'.mhmm'), 
+            type => 'text'}],
+        catdir('results', 'core'.$counter)
+      );
+      $counter++;
+
+      # Draw the model.
+      &test('mhmm_core'.$counter, '',
+        'draw-mhmm', '', 
+        ['--verbosity', 1, '--consensus', catfile('mhmm', $model.'.mhmm')],
+        [{output => '-', reference => catfile('draw-mhmm', $model.'.gvz'), type => 'text'}],
+        catdir('results', 'core'.$counter)
+      );
+      $counter++;
+
+      # Set parameters for search routines.
+      my @search_params = ('--ethresh', 99999, '--quiet', '--width', 79);
+
+      # Use different scoring schemes.
+      foreach my $paths ("all", "single") {
+
+        # Search with the model.      
+        my $search_file = "$model.$paths";
+        if ($paths ne "all") {
+          push(@search_params, '--fancy');
+        }
+
+        &test('mhmm_core'.$counter, '',
+          'mhmms', '',
+          ['--verbosity', 1, '--paths', $paths, @search_params, catfile('mhmm', $model.'.mhmm'), $test_file],
+          [{output => '-', reference => catfile('mhmms', $search_file.'.mhmms'), type => 'text'}],
+          catdir('results', 'core'.$counter)
+        );
+        $counter++;
+      }
+    }
+  }
+}
+

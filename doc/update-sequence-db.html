@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>update-sequence-db - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+    <script src="js/shared-doc.js"></script>
+    <style>
+    h4.db_table_name {
+      font-size: larger;
+      text-decoration: underline;
+      margin-top: 20px;
+    }
+    table.db_schema td {
+      padding-right: 20px;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <h2>update-sequence-db</h2>
+    
+    <div class="usage">
+      <h3>Usage:</h3>
+      <code>update-sequence-db [options] &lt;sequence database directory&gt;</code>
+    </div>
+
+    <h3>Description</h3>
+    <div class="indent">
+      <p>Download sequence databases.</p>
+      <p>Creates a SQLite database called <code>fasta_db.sqlite</code> and
+      downloads sequences from multiple sources while storing information
+      about the sequences in the database.</p>
+      <p>The program will start in status display mode where it will give
+      regular updates on what it is doing. You can switch it
+      to command mode by pressing Enter. In command mode you can type the two
+      basic commands "help" which will show the available commands and "status"
+      which will switch it back to status mode. While sequences are downloading
+      you may use the command "exit" to stop any further downloading.</p>
+    </div>
+
+    <h3>Input</h3>
+    <div class="indent">
+      <h4>Sequence Database Directory</h4>
+      <div class="indent">
+        <p>The folder to store downloaded database files. The MEME Suite expects
+        to find sequence databases in a folder called <code>fasta_databases</code>
+        either inside in the folder <code><span class="pdat">MEME Install Folder</span>/db</code> or in
+        the folder specified to the configure script
+        <code>--with-db <span class="pdat">DB Install Folder</span></code> . Depending on how
+        you configured the MEME Suite you should either specify 
+        <code><span class="pdat">MEME Install Folder</span>/db/fasta_databases</code> or
+        <code><span class="pdat">DB Install Folder</span>/fasta_databases</code> .</p>
+      </div>
+    </div>
+
+    <h3>Output</h3>
+    <div class="indent">
+      <p>By default, all of the standard sequence databases supported by the
+        MEME Suite will be updated.  Specifying one or more specific types
+        of databases overrides this default, and then only the specified types
+        of sequence database will be updated.  You can also specify individual
+        types of database to omit using the <code>--no_X</code>
+        options, where <code>X</code> is one of the allowed database types (see
+        the section "Select Databases to Update", below).
+      </p>
+      <p>The program creates a folder called <code>downloads</code> and a folder
+      called <code>logs</code>. It also creates a SQLite database called
+      <code>fasta_db.sqlite</code>. Every sequence database that is downloaded
+      is initially put in the folder <code>downloads</code> until it has been
+      completely downloaded. When the sequence has been downloaded it will be
+      decompressed or merged from multiple sources as required and put into
+      a sequence file with either a <code>.faa</code> or <code>.fna</code>
+      extension for protein or DNA sequences. Once the sequence has been 
+      expanded it will be processed by <code>fasta-get-markov</code> to
+      calculate a 1st order background model in a file with the extension
+      <code>.bfile</code>. Additionally <code>fasta-get-markov</code> will
+      calculate the number of sequences, the shortest, longest and average size
+      and all this information will be stored in the SQLite database.</p>
+    </div>
+
+    <h3>Configuration</h3>
+    <div class="indent">
+      <p>Configuration files that tweak the behaviours of the sequence database
+      downloaders will be automatically generated in the <code>conf/</code>
+      subdirectory within the specified <b>sequence database directory</b>.</p>
+      <p>Additionally the miscellaneous source downloader will check the
+      <code>conf/</code> subdirectory for any files ending with the extension
+      <code>.csv</code> which it reads to determine sequence sources. The MEME
+      Suite includes two files <code>db_general.csv</code> and
+      <code>db_other_genomes.csv</code> in the distribution's <code>etc</code>
+      folder which may be moved into the <code>conf</code> folder, though
+      this is not done automatically during install.</p>
+    </div>
+
+    <h3>Options</h3>
+    <div class="indent">
+      <table class="options">
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Parameter</th>
+            <th>Description</th>
+            <th>Default Behaviour</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th colspan="4">Help</th>
+          </tr>
+          <tr>
+            <td class="popt">--help</td><td></td>
+            <td>Display a help message and exit.</td>
+            <td>Run like normal.</td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr>
+            <th colspan="4">Select Databases to Update</th>
+          </tr>
+          <tr>
+            <td class="popt">--[no_]ensembl</td><td></td>
+            <td>[Do not] update genomes from Ensembl.</td>
+            <td>Update all sequence databases.</td>
+          </tr>
+          <tr>
+            <td class="popt">--[no_]genbank</td><td></td>
+            <td>[Do not] update genomes from GenBank.</td>
+            <td>Update all sequence databases.</td>
+          </tr>
+          <tr>
+            <td class="popt">--[no_]ucsc</td><td></td>
+            <td>[Do not] update the genomes from UCSC.</td>
+            <td>Update all sequence databases.</td>
+          </tr>
+          <tr>
+            <td class="popt">--[no_]rsat</td><td></td>
+            <td>[Do not] update the upstream sequence databases from RSAT.</td>
+            <td>Update all sequence databases.</td>
+          </tr>
+          <tr>
+            <td class="popt">--[no_]epd</td><td></td>
+            <td>[Do not] update the Eukaryotic Promoter Database.</td>
+            <td>Update all sequence databases.</td>
+          </tr>
+          <tr>
+            <td class="popt">--[no_]misc</td><td></td>
+            <td>[Do not] update the miscellaneous sequence databases specified
+                in <code>.csv</code> files in the database subdirectory <code>conf/</code>.
+                There are two example <code>.csv</code> files in the MEME Suite <code>etc/</code>
+                directory.
+            </td>
+            <td>Update all sequence databases.</td>
+          </tr>
+          <tr>
+            <td class="popt">--updater</td><td><span class="pdat">classname</span></td>
+            <td><span class="experimental">Experimental</span> Specify the classname of a custom updater.</td>
+            <td></td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr>
+            <th colspan="4">File Cleanup</th>
+          </tr>
+          <tr>
+            <td class="popt">--obsolete</td><td><span class="pdat">file pattern</span></td>
+            <td>Mark any sequence databases that match the given glob syntax 
+              file pattern as obsolete causing them to be hidden from the
+              interface.
+              This option may be repeated to specify multiple patterns.
+              After the files are obsoleted the updater exits.
+            </td>
+            <td>Run as normal.</td>
+          </tr>
+          <tr>
+            <td class="popt">--delete_old</td><td></td>
+            <td>Sequence databases marked as obsolete (on a previous update)
+              will be deleted.</td>
+            <td>Sequence databases marked as obsolete will be left untouched.</td>
+          </tr>
+          <tr>
+            <td class="popt">--retain_missing</td><td></td>
+            <td>Database entries for missing files are retained.</td>
+            <td>Database entries for missing files are removed.</td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr>
+            <th colspan="4">Backwards compatibility</th>
+          </tr>
+          <tr>
+            <td class="popt">--csv<span class="poptional">:<span class="pdat">directory</span></span></td><td></td>
+            <td>Create a csv file and index file that lists all the databases to
+              enable backwards compatibility with older releases. The directory
+              to create the csv and index file can be specified if desired but
+              if it is not specified then the csv and index file will be placed
+              in the sequence database directory.</td>
+            <td>Don't create a csv or index file.</td>
+          </tr>
+        </tbody>
+        <tbody>
+          <tr>
+            <th colspan="4">Miscellaneous</th>
+          </tr>
+          <tr>
+            <td class="popt">--bin</td><td><span class="pdat">directory</span></td>
+            <td>Specify the location to find the fasta-get-markov tool.</td>
+            <td>The program will search the configured bin directory and if
+              fasta-get-markov is not present it will search the path.</td>
+          </tr>
+          <tr>
+            <td class="popt">--log</td><td><span class="pdat">log file</span></td>
+            <td>Specify the file to write logs.</td>
+            <td>A log will be written the <code>logs</code> directory below the
+              sequence database directory.</td>
+          </tr>
+          <tr>
+            <td class="popt">-v</td><td><span class="pdat">log level</span></td>
+            <td>Specify the logging level [1-8].</td>
+            <td>A default logging level of 3 is used which outputs errors,
+              warnings and summary information.</td>
+          </tr>
+          <tr>
+            <td class="popt">--priors</td><td><span class="pdat">tsv file</span></td>
+            <td>Specify a tab separated values file listing all the priors that
+              should be listed in the database. The updater will exit after
+              changing the priors. Note that pre-existing priors will be removed!</td>
+            <td>Run as normal.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 id="priors">Adding Priors</h3>
+    <div class="indent">
+      <p>MCAST and FIMO support priors for sequence databases but adding them is
+      still a manual process. The process will probably be automated in future
+      however until then this is how you add priors.</p>
+      <ol>
+        <li>Create priors with prior sources like DNase1 hypersensitivity
+        sequence tag counts using <a href="create-priors.html">create-priors</a>.
+        This will create two files: <code>priors.wig</code> and <code>priors.dist</code>
+        which you should rename in a way that makes sense.</li>
+
+        <li>Run <code>gzip</code> on each of the files. This should leave them 
+        with the extension &quot;.gz&quot; - it is important that you leave this
+        extension so they can be ungzip-ed by the webservice script later.</li>
+
+        <li>Move the gzip-ed &quot;.wig&quot; and &quot;.dist&quot; files into
+        the sequence database directory. They may be at the top level or nested
+        within folders however they must be accessible by a relative path without
+        any &quot;..&quot; elements.</li>
+
+        <li>Create a file listing all the priors one per line with the fields separated by tabs.
+          <table>
+            <tr><th>Field</th><th>Description</th></tr>
+            <tr><td>Sequence File</td><td>The path to the sequence file relative to the sequence database directory.</td></tr>
+            <tr><td>Wig File</td><td>The path to the gzip-ed &quot;.wig&quot; file relative to the sequence database directory.</td></tr>
+            <tr><td>Dist File</td><td>The path to the gzip-ed &quot;.dist&quot; file relative to the sequence database directory.</td></tr>
+            <tr><td>Biosample</td><td>A short descriptive name for the sample used in the experiment that the priors were derived from.</td></tr>
+            <tr><td>Assay</td><td>A short descriptive name for the experiment that the priors were derived from.</td></tr>
+            <tr><td>Source</td><td>A short descriptive name of the lab or group that performed the experiment that the priors were derived from.</td></tr>
+            <tr><td>URL</td><td>A URL linking to further information on the experiment.</td></tr>
+            <tr><td>Description</td><td>A description of the experiment which may contain HTML.</td></tr>
+          </table>
+        </li>
+
+        <li>Finally run 
+        <div><span class="popt">update-sequence-db --priors</span> <span class="pdat">priors tsv</span> <span class="pdat">sequence database directory</span></div>
+        which will replace the existing priors in the database with those listed
+        in the TSV file. Check the log file generated by update-sequence-db to ensure that all the priors were added without error.</li>
+
+      </ol>
+    </div>
+
+    <h3>Database Schema</h3>
+    <div class="indent">
+      <p>As well as downloading the sequence files from many sources, the updater
+      tracks the files using a SQLite database. The schema of the database is
+      given below.</p>
+      <h4 class="db_table_name">tblCategory</h4>
+      <table class="db_schema">
+        <tr>
+          <th>Column</th><th>Type</th><th>Constraint</th><th>Description</th>
+        </tr>
+        <tr>
+          <td>id</td><td>INTEGER</td><td>PRIMARY KEY</td><td>A auto-generated unique identifier for the category. Other tables reference this field.</td>
+        </tr>
+        <tr>
+          <td>name</td><td>TEXT</td><td>UNIQUE NOT NULL</td><td>The unique name of the category as shown to users.</td>
+        </tr>
+      </table>
+      <h4 class="db_table_name">tblListing</h4>
+      <table class="db_schema">
+        <tr>
+          <th>Column</th><th>Type</th><th>Constraint</th><th>Description</th>
+        </tr>
+        <tr>
+          <td>id</td><td>INTEGER</td><td>PRIMARY KEY</td><td>A auto-generated unique identifier for the listing. Other tables reference this field.</td>
+        </tr>
+        <tr>
+          <td>categoryId</td><td>INTEGER</td><td>NOT NULL REFERENCES tblCategory (id)</td><td>The identifier of the category that contains this listing.</td>
+        </tr>
+        <tr>
+          <td>name</td><td>TEXT</td><td>NOT NULL</td><td>The name of the listing shown to users.</td>
+        </tr>
+        <tr>
+          <td>description</td><td>TEXT</td><td>NOT NULL</td><td>The description of the listing shown to users.</td>
+        </tr>
+      </table>
+      <p>The combination of the fields <code>categoryId</code> and <code>name</code> is unique.</p>
+
+      <h4 class="db_table_name">tblSequenceFile</h4>
+      <table class="db_schema">
+        <tr>
+          <th>Column</th><th>Type</th><th>Constraint</th><th>Description</th>
+        </tr>
+        <tr>
+          <td>id</td><td>INTEGER</td><td>PRIMARY KEY</td><td>A auto-generated unique identifier for the sequence file.</td>
+        </tr>
+        <tr>
+          <td>retriever</td><td>INTEGER</td><td>NOT NULL</td>
+          <td>An identifier for the code module that downloaded this sequence.
+            It allows the individual code modules to ensure they don't change
+            the records of files downloaded by other modules.</td>
+        </tr>
+        <tr>
+          <td>listingId</td><td>INTEGER</td><td>NOT NULL REFERENCES tblListing (id)</td><td>The identifier of the listing that contains this sequence file.</td>
+        </tr>
+        <tr>
+          <td>alphabet</td><td>INTEGER</td><td>NOT NULL CHECK (alphabet IN (1, 2, 4))</td>
+          <td>Represents the alphabet as powers of 2 so they can be combined into a bitset.
+            <ul>
+              <li>RNA = 1,</li>
+              <li>DNA = 2,</li>
+              <li>Protein = 4.</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>edition</td><td>INTEGER</td><td>NOT NULL</td><td>A machine readable version. This field is used for sorting. Larger numbers are considered newer.</td>
+        </tr>
+        <tr>
+          <td>version</td><td>TEXT</td><td>NOT NULL</td><td>A human readable version which is displayed to the user.</td>
+        </tr>
+        <tr>
+          <td>description</td><td>TEXT</td><td>NOT NULL</td><td>The description of the sequence file, often containing information about the source.</td>
+        </tr>
+        <tr>
+          <td>fileSeq</td><td>TEXT</td><td>UNIQUE NOT NULL</td><td>The relative path to the sequence file.</td>
+        </tr>
+        <tr>
+          <td>fileBg</td><td>TEXT</td><td>UNIQUE NOT NULL</td><td>The relative path to the background file.</td>
+        </tr>
+        <tr>
+          <td>sequenceCount</td><td>INTEGER</td><td>NOT NULL</td><td>The number of sequences.</td>
+        </tr>
+        <tr>
+          <td>totalLen</td><td>INTEGER</td><td>NOT NULL</td><td>The total end-to-end combined length of the sequences.</td>
+        </tr>
+        <tr>
+          <td>minLen</td><td>INTEGER</td><td>NOT NULL</td><td>The length of the shortest sequence.</td>
+        </tr>
+        <tr>
+          <td>maxLen</td><td>INTEGER</td><td>NOT NULL</td><td>The length of the longest sequence.</td>
+        </tr>
+        <tr>
+          <td>avgLen</td><td>REAL</td><td>NOT NULL</td><td>The average length of the sequences.</td>
+        </tr>
+        <tr>
+          <td>stdDLen</td><td>REAL</td><td>NOT NULL</td><td>Currently unused! Intended to store the standard deviation of the average length.</td>
+        </tr>
+        <tr>
+          <td>obsolete</td><td>INTEGER</td><td>DEFAULT 0</td><td>Used to flag sequences as obsolete. Sequences flagged as obsolete are hidden from the interface.</td>
+        </tr>
+      </table>
+      <p>The combination of the fields <code>listingId</code>, <code>alphabet</code> and <code>edition</code> is unique.</p>
+
+      <h4 class="db_table_name">tblPriorFile</h4>
+      <table class="db_schema">
+        <tr>
+          <th>Column</th><th>Type</th><th>Constraint</th><th>Description</th>
+        </tr>
+        <tr>
+          <td>id</td><td>INTEGER</td><td>PRIMARY KEY</td><td>A auto-generated unique identifier for the prior.</td>
+        </tr>
+        <tr>
+          <td>sequenceId</td><td>INTEGER</td><td>NOT NULL REFERENCES tblSequenceFile (id)</td><td>The identifier of the sequence that is associated with this prior.</td>
+        </tr>
+        <tr>
+          <td>filePrior</td><td>TEXT</td><td>UNIQUE NOT NULL</td><td>The relative path to the wig file (which may be gzipped).</td>
+        </tr>
+        <tr>
+          <td>fileDist</td><td>TEXT</td><td>UNIQUE NOT NULL</td><td>The relative path to the dist file (which may be gzipped).</td>
+        </tr>
+        <tr>
+          <td>biosample</td><td>TEXT</td><td>NOT NULL</td><td>A short descriptive name for the sample used in the experiment that the priors were derived from.</td>
+        </tr>
+        <tr>
+          <td>assay</td><td>TEXT</td><td>NOT NULL</td><td>A short descriptive name for the experiment that the priors were derived from.</td>
+        </tr>
+        <tr>
+          <td>source</td><td>TEXT</td><td>NOT NULL</td><td>A short descriptive name of the lab or group that performed the experiment that the priors were derived from.</td>
+        </tr>
+        <tr>
+          <td>url</td><td>TEXT</td><td>NOT NULL</td><td>A URL linking to further information on the experiment.</td>
+        </tr>
+        <tr>
+          <td>description</td><td>TEXT</td><td>NOT NULL</td><td>A description of the experiment which may contain HTML.</td>
+        </tr>
+      </table>
+
+    </div>
+
+  </body>
+</html>
+
+

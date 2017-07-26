@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>PSM Format - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+    <style>
+    div.example {
+      border: 1px solid black;
+      padding: 5px;
+      margin-top: 0px;
+      margin-bottom: 10px;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <h2>Peptide-Spectrum Match (PSM) Format</h2>
+
+    <h3>Description</h3>
+    <div class="indent">
+      <p>Some MEME Suite programs allow as input a file containing
+      tab-delimited data from analysis of tandem mass spectrometry. Some
+      popoular softwares that produce files that are supported by the MEME Suite
+      include <a href="http://crux.ms">Crux's Tide and Percolator</a>, <a href="http://comet-ms.sourceforge.net">Comet</a>, and <a href="https://omics.pnl.gov/software/ms-gf">MS-GF+</a>, and tab-delimited exports from <a href="http://tools.proteomecenter.org/wiki/index.php?title=TPP_Tutorial">TPP's PepXML Viewer</a>.</p>
+    </div>
+
+    <h3>Format Specification</h3>
+    <div class="indent">
+      <p>The basic structure of a tab-delimited PSM File is where each such file consists of a single line containing the tab-separated names of fields, followed by one or more lines giving the corresponding field values. For example:</p>
+      <textarea style="font-family: monospace;" rows="5" cols="220" readonly >
+file	scan	charge	spectrum precursor m/z	spectrum neutral mass	peptide mass	delta_cn	xcorr score	xcorr rank	distinct matches/spectrum	sequence	cleavage type	protein id	flanking aa
+demo.ms2	35	1	709.07	708.063	709.275	0.00361925	0.305444	1	17	S[79.9]LGIIGA	trypsin-full-digest	YFR053C(479)	K-
+demo.ms2	35	1	709.07	708.063	710.245	0.061339	0.301825	2	17	QS[79.9]GLAR	trypsin-full-digest	YDL198C(8)	KL
+demo.ms2	35	1	709.07	708.063	709.449	0.0103678	0.240486	3	17	SIHILK	trypsin-full-digest	YMR242C(126)	RV
+      </textarea>
+      <p>An example PSM file can be found <a href="examples/small-tide-mod.txt">here</a>.</p>
+      <p>When specifying post-translational modifications, MoMo requires for the user to specify the name of a column where the modification is embedded inside the matched peptide. By default, MoMo assumes the column is named "sequence". MoMo allows three different methods of embedding the modifications:</p>
+      <pre class="indent">
+<b>Tide and Percolator</b>
+AAAS[79.9]AAA
+...
+<b>Comet and TPP</b>
+A.AAAS[167]AAA.-
+...
+<b>MS-GF+</b>
+AAAS+79.9AAA
+...
+      </pre>
+
+  </body>
+</html>
+

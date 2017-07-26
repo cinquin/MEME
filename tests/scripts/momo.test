@@ -1,0 +1,176 @@
+#!/usr/bin/perl test_driver
+
+$momo_ignore = ['MEME version'];
+my $momo_dir = 'src';
+
+# Test momo default output
+$out_dir = 'results/momo1';
+$out_file = catfile($out_dir, 'momo.txt');
+&test('momo1', '',
+'momo', '',
+['simple', '--oc', $out_dir, 'momo/small-tide-mod.txt'],
+[{output => $out_file, reference => 'momo/default-no-fasta.txt', type => 'text', ignore => $momo_ignore}],
+$out_dir, $momo_dir
+);
+
+# Test momo default output with protein database
+$out_dir = 'results/momo2';
+$out_file = catfile($out_dir, 'momo.txt');
+&test('momo2', '',
+'momo', '',
+['simple', '--oc', $out_dir, '--protein-database', 'momo/small-yeast.fasta', 'momo/small-tide-mod.txt'],
+[{output => $out_file, reference => 'momo/default-with-fasta.txt', type => 'text', ignore => $momo_ignore}],
+$out_dir, $momo_dir
+);
+
+# Test momo single-motif-per-mass option
+$out_dir = 'results/momo3';
+$out_file = catfile($out_dir, 'momo.txt');
+&test('momo3', '',
+'momo', '',
+['simple', '--oc', $out_dir, '--single-motif-per-mass', 'T', 'momo/small-tide-mod.txt'],
+[{output => $out_file, reference => 'momo/single-motif-per-mass.txt', type => 'text', ignore => $momo_ignore}],
+$out_dir, $momo_dir
+);
+
+# Test disable hash-fasta option
+$out_dir = 'results/momo4';
+$out_file = catfile($out_dir, 'momo.txt');
+&test('momo4', '',
+'momo', '',
+['simple', '--oc', $out_dir, '--protein-database', 'momo/small-yeast.fasta',
+'--hash-fasta', '0', 'momo/small-tide-mod.txt'],
+[{output => $out_file, reference => 'momo/default-with-fasta.txt', type => 'text', ignore => $momo_ignore}],
+$out_dir, $momo_dir
+);
+
+# Test eliminate-repeats option with length of 3
+$out_dir = 'results/momo5';
+$out_file = catfile($out_dir, 'momo.txt');
+&test('momo5', '',
+'momo', '',
+['simple', '--oc', $out_dir, '--eliminate-repeats', '3', 'momo/small-tide-mod.txt'],
+[{output => $out_file, reference => 'momo/elim3.txt', type => 'text', ignore => $momo_ignore}],
+$out_dir, $momo_dir
+);
+
+# Test disable eliminate-repeats option (length of 0)
+$out_dir = 'results/momo6';
+$out_file = catfile($out_dir, 'momo.txt');
+&test('momo6', '',
+'momo', '',
+['simple', '--oc', $out_dir, '--eliminate-repeats', '0', 'momo/small-tide-mod.txt'],
+[{output => $out_file, reference => 'momo/elim0.txt', type => 'text', ignore => $momo_ignore}],
+$out_dir, $momo_dir
+);
+
+# Test filter option (xcorr rank <= 3)
+$out_dir = 'results/momo7';
+$out_file = catfile($out_dir, 'momo.txt');
+&test('momo7', '',
+'momo', '',
+['simple', '--oc', $out_dir, '--filter', "xcorr rank,le,3", 'momo/small-tide-mod.txt'],
+[{output => $out_file, reference => 'momo/filterxcorrrankle3.txt', type => 'text', ignore => $momo_ignore}],
+$out_dir, $momo_dir
+);
+
+# Test fg-filetype (prealigned)
+$out_dir = 'results/momo8';
+$out_file = catfile($out_dir, 'momo.txt');
+&test('momo8', '',
+'momo', '',
+['simple', '--oc', $out_dir, '--fg-filetype', 'prealigned', 'momo/small-tide-mod-phospho.txt'],
+[{output => $out_file, reference => 'momo/default-with-fasta-no-mass-in-motif-names.txt', type => 'text', ignore => $momo_ignore}],
+$out_dir, $momo_dir
+);
+
+# Test fg-filetype (fasta)
+$out_dir = 'results/momo9';
+$out_file = catfile($out_dir, 'momo.txt');
+&test('momo9', '',
+'momo', '',
+['simple', '--oc', $out_dir, '--fg-filetype', 'fasta', 'momo/small-tide-mod-phospho.fasta'],
+[{output => $out_file, reference => 'momo/default-with-fasta-no-mass-in-motif-names.txt', type => 'text', ignore => $momo_ignore}],
+$out_dir, $momo_dir
+);
+
+# Test multiple file analysis
+$out_dir = 'results/momo10';
+$out_file = catfile($out_dir, 'momo.txt');
+&test('momo10', '',
+'momo', '',
+['simple', '--oc', $out_dir, 'momo/small-tide-mod-1-out-of-2.txt', 'momo/small-tide-mod-2-out-of-2.txt'],
+[{output => $out_file, reference => 'momo/default-no-fasta.txt', type => 'text', ignore => $momo_ignore}],
+$out_dir, $momo_dir
+);
+
+# Test motifx
+$out_dir = 'results/momo11';
+$out_file = catfile($out_dir, 'momo.txt');
+&test('momo11', '',
+'momo', '',
+['motifx', '--oc', $out_dir, '--protein-database', 'momo/small-yeast.fasta', '--score-threshold', "0.05", '--count-threshold', "1", 'momo/small-tide-mod.txt'],
+[{output => $out_file, reference => 'momo/mtfx-s0.05-c1.txt', type => 'text', ignore => $momo_ignore}],
+$out_dir, $momo_dir
+);
+
+# Test motifx single motif per mass
+$out_dir = 'results/momo12';
+$out_file = catfile($out_dir, 'momo.txt');
+&test('momo12', '',
+'momo', '',
+['motifx', '--oc', $out_dir, '--protein-database', 'momo/small-yeast.fasta', '--score-threshold', "0.05", '--count-threshold', "1", '--single-motif-per-mass', "T", 'momo/small-tide-mod.txt'],
+[{output => $out_file, reference => 'momo/mtfx-s0.05-c1-smpmT.txt', type => 'text', ignore => $momo_ignore}],
+$out_dir, $momo_dir
+);
+
+# Test motifx fg file prealigned
+$out_dir = 'results/momo13';
+$out_file = catfile($out_dir, 'momo.txt');
+&test('momo13', '',
+'momo', '',
+['motifx', '--oc', $out_dir, '--protein-database', 'momo/small-yeast.fasta', '--score-threshold', "0.05", '--count-threshold', "1", '--fg-filetype', 'prealigned', 'momo/small-tide-mod-phospho.txt'],
+[{output => $out_file, reference => 'momo/mtfx-s0.05-c1-no-mass-in-motif-names.txt', type => 'text', ignore => $momo_ignore}],
+$out_dir, $momo_dir
+);
+
+# Test motifx fg and bg file prealigned
+$out_dir = 'results/momo14';
+$out_file = catfile($out_dir, 'momo.txt');
+&test('momo14', '',
+'momo', '',
+['motifx', '--oc', $out_dir, '--protein-database', 'momo/small-yeast-prealigned-no-unknowns.txt', '--score-threshold', "0.05", '--count-threshold', "1", '--fg-filetype', 'prealigned', '--bg-filetype', 'prealigned', 'momo/small-tide-mod-phospho.txt'],
+[{output => $out_file, reference => 'momo/mtfx-s0.05-c1-no-mass-in-motif-names-bg-kmers-only-bgfreqs.txt', type => 'text', ignore => $momo_ignore}],
+$out_dir, $momo_dir
+);
+
+# Test momo default output w/ msgf file
+$out_dir = 'results/momo15';
+$out_file = catfile($out_dir, 'momo.txt');
+&test('momo15', '',
+'momo', '',
+['simple', '--oc', $out_dir, '--sequence-column', 'Peptide', 'momo/small-msgf-mod.txt'],
+[{output => $out_file, reference => 'momo/default-msgf-no-fasta.txt', type => 'text', ignore => $momo_ignore}],
+$out_dir, $momo_dir
+);
+
+# Test momo default output comet file
+$out_dir = 'results/momo16';
+$out_file = catfile($out_dir, 'momo.txt');
+&test('momo16', '',
+'momo', '',
+['simple', '--oc', $out_dir, '--sequence-column', 'modified sequence', 'momo/small-comet-mod.txt'],
+[{output => $out_file, reference => 'momo/default-comet-no-fasta.txt', type => 'text', ignore => $momo_ignore}],
+$out_dir, $momo_dir
+);
+
+# Test momo modl
+$out_dir = 'results/momo17';
+$out_file = catfile($out_dir, 'momo.txt');
+&test('momo17', '',
+'momo', '',
+['modl', '--oc', $out_dir, '--protein-database', 'momo/small-yeast.fasta', 'momo/small-tide-mod.txt'],
+[{output => $out_file, reference => 'momo/modl-default.txt', type => 'text', ignore => $momo_ignore}],
+$out_dir, $momo_dir
+);
+

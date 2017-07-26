@@ -1,0 +1,80 @@
+GLAM2SCAN
+Version 1056
+
+/Users/t.bailey/meme_hg/meme/src/glam2scan p glam2/glam2.txt At.s
+
+                             *****************************
+At1g01140.1_4-2-4_SnRK3. 196 YDGAAADVWSCGVILFVLMAGYLPFDEPN 224 + 66.9
+
+                             *****************************
+At1g01140.2_SnRK3.12     196 YDGAAADVWSCGVILFVLMAGYLPFDEPN 224 + 66.9
+
+                             *****************************
+At1g01140.3_SnRK3.12     196 YDGAAADVWSCGVILFVLMAGYLPFDEPN 224 + 66.9
+
+                             *****************************
+At1g01540.1_1-6-3        332 MLNEKSDIYSFGILIMEIITGRNPVDYSR 360 + 65.1
+
+                             *****************************
+At1g01540.2_Putative     332 MLNEKSDIYSFGILIMEIITGRNPVDYSR 360 + 65.1
+
+                             *****************************
+At1g01560.1_4-5-1_MPK11  217 EYTAAIDIWSVGCILGEIMTRE.PLFPGR 244 + 63.2
+
+                             *****************************
+At1g06390.1_4-5-4_ASK-io 247 EYTASIDIWSAGCVLAELLLGQ.PLFPGE 274 + 62.6
+
+                             *****************************
+At1g06390.2_ASK-iota     247 EYTASIDIWSAGCVLAELLLGQ.PLFPGE 274 + 62.6
+
+                             *****************************
+At1g04210.1_protein      999 FYGLEVDIWSFGCLIFELLTLQNPYFDLS 1027 + 61.7
+
+                             *****************************
+At1g01450.1_2-1-1        221 KYSDKSDVYSFGMVSFELLTGKVPFEDSH 249 + 60.7
+
+                             *****************************
+At1g04700.1_2-1-4-1_Raf1 951 RVSEKVDVFSFGIVMWEILTGEEPYANLH 979 + 57.2
+
+                             *****************************
+At1g05700.1_1-8-1        737 GLNEKSDIYSFGVVLLEMITGKTVIKESQ 765 + 56.2
+
+                             *****************************
+At1g03920.1_4-2-6        351 GYGMECDWWSLGAIMYEMLVGY.PPFYAD 378 + 56.2
+
+                             *****************************
+At1g05100.1_4-4-1_MAPKKK 180 RQGKESDIWAVGCTVIEMVTGSQPWIGAD 208 + 55.6
+
+                             *****************************
+At1g03740.1_4-5-2        390 HYGVGVDLWSTGCILGELYAGK.PILPGK 417 + 53.1
+
+                             *****************************
+At1g04440.1_3-1-1-1      189 EQSRRDDLESLGYLLMYFLRGSLPWQGLR 217 + 52.3
+
+                             *****************************
+At1g02970.1_4-3-1        420 EHLDKVDIFSLGVTVYELIKGS.PLTESR 447 + 51.0
+
+                             *****************************
+At1g03930.1_3-1-1-1_ADK1 189 EQSRRDDLEALGYVLMYFLKGSLPWQGLK 217 + 50.0
+
+                             *****************************
+At1g01740.1_1-16-1       225 RITAESVIYSFGTLLLDLLTGK.HIPPSH 252 + 49.3
+
+                             *****************************
+At1g04700.1_2-1-4-1_Raf1 595 KSSDKADYSSPNTNFPVVFLRQEPMIPRH 623 + -11.5
+
+                            *************.****************
+At1g01540.1_1-6-3        12 ELSKPTSIFGLRLWVVIGILLGSLIVIALF 41 + -13.7
+
+                            *************.****************
+At1g01540.2_Putative     12 ELSKPTSIFGLRLWVVIGILLGSLIVIALF 41 + -13.7
+
+                             *****************************
+At1g03740.1_4-5-2        322 LSGLEH.CHSRGVLHRD.IKGSNLLIDSK 348 + -13.8
+
+                             *****************************
+At1g01140.1_4-2-4_SnRK3. 385 KSGRKGQL.SVATEVFE.VAPSLHVVELR 411 + -14.6
+
+                             *****************************
+At1g01140.2_SnRK3.12     387 KSGRKGQL.SVATEVFE.VAPSLHVVELR 413 + -14.6
+

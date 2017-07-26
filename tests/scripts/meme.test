@@ -1,0 +1,104 @@
+#my @objfuns = ('classic', 'cv', 'nz');
+my @objfuns = ('classic');
+my @datasets = ('crp0', 'adh');
+my $n_basic_dsets = @datasets;
+if (&is_comprehensive()) {
+  push(@datasets, 'INO_up800', 'farntrans5', 'lipocalin');
+}
+my @models = ('oops', 'zoops', 'tcm');
+my %params = (
+  'crp0' => ['-dna', '-revcomp'], 
+  'INO_up800' => ['-dna', '-revcomp', '-bfile', catfile('common', 'yeast.nc.6.freq'), '-x_branch'],
+  'farntrans5' => ['-protein'], 'lipocalin' => ['-protein'], 'adh' => ['-protein']
+);
+my %obj_params = (
+  'classic' => ['-minw', 8],
+  'cv' => ['-objfun', 'cv', '-w', 18, '-ctfrac', 0.6, '-maxwords', 3000, '-shuf', 3],
+  'nz' => ['-objfun', 'nz', '-maxw', 30, '-ctfrac', 0.8, '-maxwords', 2000, '-shuf', 3]
+);
+
+# extensions for each type of data
+my %extensions= (
+  'text' => 'txt', 
+  'json' => 'html', 
+  'xml' => 'xml'
+);
+# type of data for each extension
+my %types= (
+  'txt' => 'text', 
+  'html' => 'json', 
+  'xml' => 'xml'
+);
+# parts to ignore in MEME text, HTML or XML output
+my %meme_ignore = (
+  'text' => [
+    'Release date', 'http:', 'MOTIFS', 'Time', 'CPU:', 'DATAFILE=', 'DATABASE',
+    'command: ', 'Background letter frequencies', 'Last updated', '^LAM', '^$',
+    '^mast '
+  ], 
+  'json' => [
+    '^data:(version|release|cmd)', ':time'
+  ], 
+  'xml' => [
+    'MEME@(version|release)', 'MEME:model:command_line#value$',
+    'MEME:motifs:motif@elapsed_time',
+    'MEME:model:host',
+  ]
+);
+
+my $meme = 'meme';
+my $meme_dir = 'src';
+my @pargs = ();
+@pargs = ('-p', &num_cores()) if (&num_cores() > 1);
+
+my $counter = 1;
+
+foreach my $obj (@objfuns) {
+  my $i_dset;
+  for ($i_dset=0; $i_dset<@datasets; $i_dset++) {
+    if ($obj eq "cv" && $i_dset >= $n_basic_dsets) { next; }    # skip CV in small datasets (<15 seqs)
+    my $dset = $datasets[$i_dset];
+    foreach my $mod (@models) {
+      my $reference_root = ($obj eq 'classic') ? 
+        catfile('meme', 'meme.'.$dset.'.'.$mod) : 
+        catfile('meme', 'meme.'.$dset.'.'.$mod.'.'.$obj);
+      &test('meme'.$counter, '',
+        $meme, '',
+        [@pargs, catfile('common', $dset . '.s'), '-oc', 'results/meme'.$counter,
+          '-mod', $mod, @{$params{$dset}}, '-nmotifs', 2, @{$obj_params{$obj}}, '-nostatus'],
+        [
+          {
+            output => 'results/meme'.$counter.'/meme.txt', 
+            reference => $reference_root.'.txt',
+            type => 'text',
+            ignore => $meme_ignore{'text'}
+          },
+          {
+            output => 'results/meme'.$counter.'/meme.html', 
+            reference => $reference_root.'.html',
+            type => 'json',
+            ignore => $meme_ignore{'json'}
+          },
+          {
+            output => 'results/meme'.$counter.'/meme.xml', 
+            reference => $reference_root.'.xml',
+            type => 'xml',
+            ignore => $meme_ignore{'xml'}
+          }
+        ],
+        catdir('results', 'meme' . $counter), $meme_dir
+      );
+      $counter++;
+    } # mod
+  } # dset
+} # obj
+# test psp
+&test('meme_psp', '',
+  $meme, '',
+  [@pargs, catfile('common', 'psp_test.s'), '-psp', catfile('common', 'psp_test.psp'),
+    '-minsites', 5, '-dna', '-revcomp', '-minw', 7, '-maxw', 12, '-nostatus', 
+    '-text'],
+  [{output => '-', reference => catfile('meme', 'meme.psp_test.zoops'), 
+    type => 'text', ignore => $meme_ignore{'text'}}],
+  catdir('results', 'meme' . $counter), $meme_dir
+);

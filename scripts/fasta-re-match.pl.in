@@ -1,0 +1,175 @@
+#!@WHICHPERL@
+
+use strict;
+use warnings;
+
+use Fcntl qw(O_CREAT O_WRONLY O_TRUNC);
+use Getopt::Long;
+use Pod::Usage;
+
+=head1 NAME
+
+fasta-re-match - reports all matches to a IUPAC DNA motif, 1 per line.
+
+=head1 SYNOPSIS
+
+fasta-re-match [options] <IUPAC DNA Motif>
+
+ Options:
+  -norc                     Only find matches to motifs in the given strand
+  -erase <IUPAC DNA Motif>  erases this motif before finding matches; 
+                            repeatable; order matters!
+  -help                     prints this help message
+
+ Reads sequences from standard input.
+
+ Writes to standard output tab separated (space padded) columns:
+ <matching sequence> <strand +-> <line number> <column number> <sequence offset> <sequence name>
+
+ If you are trying to recreate DREME motif sites note that DREME erases 
+ previously found motifs so you will have to use the -erase option for any but 
+ the first motif, like:
+ fasta-re-match -erase CCMCRCCC TTATCW < sample-dna-Klf1.fa
+
+ If you want a count of sites try piping the output to "wc -l" like:
+ fasta-re-match CCMCRCCC < sample-dna-Klf1.fa | wc -l
+
+ If you want only one of the columns try piping the output to "cut -f <num>" like:
+ fasta-re-match CCMCRCCC < sample-dna-Klf1.fa | cut -f 1
+
+=cut
+
+my $help = 0; #FALSE
+my $norc = 0; #FALSE
+my @erase = ();
+my $iupac = undef;
+my @erase_re = ();
+my $motif_re = undef;
+my $motif_given_re = undef;
+
+GetOptions(
+  "norc" => \$norc,
+  "erase=s" => \@erase,
+  "help|?" => \$help
+) or pod2usage(2);
+pod2usage(1) if ($help);
+($iupac) = @ARGV;
+# check and create erasure motif REs
+for (my $i = 0; $i < scalar(@erase); $i++) {
+  $erase[$i] = uc($erase[$i]);
+  pod2usage('Value "'. $erase[$i]. '" is invalid for option erase '.
+    '(non IUPAC DNA characters)') if ($erase[$i] =~ /[^ACGTRYSWKMBDHVN]/);
+  push(@erase_re, &iupac_re($erase[$i], $norc));
+}
+# check and create search motif RE
+pod2usage("No motif given") unless ($iupac);
+$iupac = uc($iupac);
+pod2usage("Non IUPAC DNA characters") if ($iupac =~ /[^ACGTRYSWKMBDHVN]/);
+$motif_re = &iupac_re($iupac, $norc);
+$motif_given_re = &iupac_re($iupac, 1);
+
+my $line;
+my $seq;
+my $id;
+my @pos = ();
+my $in_seq = 0; #FALSE
+my $lineno = 1;
+
+while ($line = <STDIN>) {
+  if ($line =~ m/^>(\S+)/) {
+    &print_matches();
+    $id = $1;
+    $in_seq = 1; #TRUE
+    @pos = ();
+    $seq = '';
+  } else {
+    if ($in_seq) {
+      while ($line =~ /(\S+)/g) {
+        push(@pos, [length($seq), $lineno, $-[0]]);
+        $seq .= $1;
+      }
+    }
+  }
+  $lineno++;
+}
+&print_matches();
+pod2usage("Empty sequences file") unless $in_seq;
+exit(0);
+
+sub print_matches {
+  return unless $in_seq;
+  # erase any requested motifs
+  for (my $i = 0; $i < scalar(@erase_re); $i++) {
+    my $re = $erase_re[$i];
+    my $sub = 'N' x length($erase[$i]);
+    $seq =~ s/$re/$sub/g;
+  }
+  while ($seq =~ /$motif_re/g) {
+    my $match = $1;
+    my $offset = $-[0];
+    my ($line, $col) = &lookup_pos($offset);
+    my $strand = $match =~ m/^$motif_given_re$/ ? '+' : '-';
+    printf("%s\t%s\t%4d\t%3d\t%5d\t%s\n", $match, $strand, $line, $col, $offset, $id);
+  }
+}
+
+sub lookup_pos {
+  my ($target) = @_;
+  my $min = 0;
+  my $max = scalar(@pos)-1;
+  while ($min < $max) {
+    use integer;
+    my $mid = ($min + $max) / 2;
+    if ($pos[$mid]->[0] > $target) {
+      $max = $mid - 1;
+    } elsif ($pos[$mid+1]->[0] <= $target) {
+      $min = $mid + 1;
+    } else {
+      $min = $mid;
+      $max = $mid;
+    }
+  }
+  my @info = @{$pos[$min]};
+  return ($info[1], $info[2] + ($target - $info[0]) + 1);
+}
+
+sub iupac_to_bracket {
+  my ($in) = @_;
+  $in =~ s/A/[A]/g;
+  $in =~ s/C/[C]/g;
+  $in =~ s/G/[G]/g;
+  $in =~ s/T/[T]/g;
+
+  $in =~ s/N/[ACGT]/g;
+
+  $in =~ s/V/[ACG]/g;
+  $in =~ s/H/[ACT]/g;
+  $in =~ s/D/[AGT]/g;
+  $in =~ s/B/[CGT]/g;
+
+  $in =~ s/M/[AC]/g;
+  $in =~ s/K/[GT]/g;
+  $in =~ s/W/[AT]/g;
+  $in =~ s/S/[GC]/g;
+  $in =~ s/Y/[CT]/g;
+  $in =~ s/R/[AG]/g;
+
+  $in =~ s/A/Aa/g;
+  $in =~ s/C/Cc/g;
+  $in =~ s/G/Gg/g;
+  $in =~ s/T/TtUu/g;
+
+  return $in;
+}
+
+sub iupac_re {
+  my ($orig, $norc) = @_;
+  my $re = &iupac_to_bracket($orig);
+  unless ($norc) {
+    my $revc = reverse($orig);
+    $revc =~ tr/ACGTRYSWKMBDHVN/TGCAYRSWMKVHDBN/;
+    $re = $re . '|' . &iupac_to_bracket($revc);
+  }
+  return qr/($re)/;
+}
+1;

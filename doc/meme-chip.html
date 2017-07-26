@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>MEME-ChIP - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="images/memesuite_icon.png">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="js/menu.js"></script>
+    <script src="js/shared-doc.js"></script>
+  </head>
+  <body>
+    <div class="memesuitelogo">
+      <h1>The MEME Suite</h1>
+      <h2>Motif-based sequence analysis tools</h2>
+    </div>
+    <div class="prog_logo">
+      <img src="images/memechip_icon.png" alt="MEME-ChIP Logo">
+      <h1>MEME-ChIP</h1>
+      <h2>Motif Analysis of Large Nucleotide Datasets</h2>
+    </div>
+
+    <div style='display:inline' id='man_web_button'>
+      <p> <button onclick="toggle_man_display()">View Web Version</button> </p>
+    </div>
+
+    <div style='display:none' id='man_cmd_button'>
+      <p> <button onclick="toggle_man_display()">View Command-Line Version</button> </p>
+    </div>
+
+    <div style='display:inline' id='man_usage'>
+      <div class="usage">
+        <h3>Usage:</h3>
+        <code>meme-chip [options] [-db &lt;motif database&gt;]* &lt;sequences&gt;</code>
+      </div>
+    </div>
+
+    <h3>Description</h3>
+    <div class="indent">
+       <span class="man blurb" data-id="memechip"></span>
+    </div>
+
+    <!-- Command Line Version Doc -->
+    <div style='display:inline' id='man_cmd'>
+      <h3>Input</h3>
+      <div class="indent">
+        <h4>Motif Database (optional but recommended)</h4>
+        <div class="indent">
+          <p>File(s) containing <a href="meme-format.html">MEME formatted motifs</a>.
+          Outputs from MEME and DREME are supported, as well as Minimal MEME
+          Format. You can convert many other motif formats to MEME format
+          using <a href="overview.html#motif_conversion_utilities">conversion scripts</a>
+          available with the MEME Suite.
+          These database(s) will used by Tomtom and CentriMo.</p>
+        </div>
+        <h4>Sequences</h4>
+        <div class="indent">
+          <p>A set of sequences in <a href="fasta-format.html">FASTA format</a>.
+          Ideally the sequences should be all
+          the same length, between 100 and 500 base-pairs long and centrally
+          enriched for motifs. The immediate regions around individual ChIP-seq 
+          "peaks" from a transcription factor (TF) ChIP-seq experiment are ideal.
+          The suggested 100 base-pair minimum size is based on the typical 
+          resolution of ChIP-seq peaks but it is useful to have more of the
+          surrounding sequence to give CentriMo the power to tell if a motif is
+          centrally enriched. We recommend that you "repeat mask" your
+          sequences, replacing repeat regions to the "N" character.</p>
+        </div>
+      </div>
+      <h3>Output</h3>
+      <div class="indent">
+        <p>MEME-ChIP runs each program in its analysis in a different folder 
+        in the output directory. The main file, 
+        <a href=examples/memechip_example_output_files/meme-chip.html><code>meme-chip.html</code></a>, 
+        is an interactive HTML file, and it contains links to the other output files
+	produced by MEME-ChIP. A tab-separated values (TSV) file suitable
+	for parsing by scripts and viewing by Excel is also created 
+        (<a href=examples/memechip_example_output_files/summary.tsv><code>summary.tsv</code></a>),
+	as well as an associated file containing all the motifs identified by MEME-ChIP 
+        (<a href=examples/memechip_example_output_files/combined.meme><code>combined.meme</code></a>) 
+	in <a href=meme-format.html>MEME Motif Format</a>.
+        </p>
+      </div>
+      <h3>Options</h3>
+      <div class="indent">
+        <table class="options">
+          <thead>
+            <tr>
+              <th>Option</th><th>Parameter</th><th>Description</th><th>Default Behaviour</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th colspan="4">General Options</th>
+            </tr>
+            <script>
+              wropt("all-o", {"dir": "memechip_out"});
+              wropt("all-oc", {"dir": "memechip_out"});
+            </script>
+            <tr>
+              <td class="popt">-db</td><td><span class="pdat">file</span></td>
+              <td>Use <span class="pdat">file</span> containing a database of DNA
+              motifs in <a href="meme-format.html">MEME format</a>.
+              This database will used by Tomtom and CentriMo.
+              This option may be used multiple times to pass multiple databases.</td>
+              <td>When no databases are provided Tomtom can't suggest similar motifs
+              and CentriMo is limited to the discovered motifs.</td>
+            </tr>
+            </tr>
+              <td class="popt">-neg</td><td><span class="pdat">file</span></td>
+              <td>MEME-ChIP will look for motifs enriched in the primary
+              sequences relative to this control set of sequences 
+              in <a href="fasta-format.html">FASTA format</a>.
+              These sequences will be input as control sequences to DREME
+              and CentriMo, and used as input to <code><a href=psp-gen.html>psp-gen</a></code>
+              to create a <a href=psp-format.html>postion-specific prior</a>
+              for use by MEME. 
+              When this option is used the primary and control sequences should all
+              be the same length; otherwise CentriMo <i>E</i>-values will be inaccurate.
+              If the primary sequences are ChIP-seq peak regions from a
+              transcription factor ChIP-seq experiment, similar regions from
+              a knockout cell line or organism, are a possible choice for control
+              sequences.  The control sequences should be prepared in exactly
+              the same way (e.g., repeat-masking) as the primary sequences.
+              </td>
+              <td>No control sequences are used for MEME and CentriMo. 
+              For DREME, the positive sequences are shuffled to create the control set.</td>
+            </tr>
+            <tr>
+              <td class="popt">-dna</td><td>&nbsp;</td>
+              <td>Use the standard DNA alphabet. Any motif databases provided 
+                must use the DNA alphabet.</td>
+              <td>The standard DNA alphabet is used.
+                  Motif databases retain their native alphabet.</td>
+            </tr>
+            <tr>
+              <td class="popt">-rna</td><td>&nbsp;</td>
+              <td>Use the standard RNA alphabet. Any motif databases provided
+                must use the RNA alphabet.</td>
+              <td>The standard DNA alphabet is used.
+                  Motif databases retain their native alphabet.</td>
+            </tr>
+            <tr>
+              <td class="popt">-protein</td><td>&nbsp;</td>
+              <td><span class="experimental">Not recommended</span>
+                Use the standard Protein alphabet. Any motif databases provided
+                must use the Protein alphabet. Note that while MEME-ChIP does
+                work with protein sequences it was not originally designed to and
+                some of the called programs like DREME don't work well with the
+                protein alphabet.</td>
+              <td>The standard DNA alphabet is used.
+                  Motif databases retain their native alphabet.</td>
+            </tr>
+              <script>
+		wropt("all-alph", {"ddash": false});
+		wropt("all-xalph", {"ddash": false});
+              </script>
+            <tr>
+              <td class="popt">-bfile</td><td><span class="pdat">file</span></td>
+              <td>Pass the <span class="pdat">file</span> specifying a background
+	      model in <a href=bfile-format.html>Markov Background Model Format</a>
+              to programs that support a background model
+              (<a href=meme.html>MEME</a>, <a href=centrimo.html>CentriMo</a>, 
+              <a href=fimo.html>FIMO</a>, <a href=spamo.html>SpaMo</a> and 
+              <a href=tomtom.html>Tomtom</a>).  Consult the documentation for
+	      those programs for details on how they use the background model.
+	      Basically, you can use a background model in order to normalize 
+              for biased distribution of letters and groups of letters in your sequences.
+              A 0-order model adjusts for single letter biases, a 1-order model adjusts for
+              dimer biases (e.g., GC content in DNA sequences), etc.
+              </td>
+              <td>A background model is calculated from the input sequences and
+              passed by MEME-ChIP to the programs that support it.</td>
+            </tr>
+            <tr>
+              <td class="popt">-order</td><td><span class="pdat">order</span></td>
+              <td>Set the order of the Markov background model that is generated
+              from the input sequences when a background model is not specified
+              via <span class="popt">-bfile</span>.</td>
+              <td>A Markov background model of order 1 is generated and passed
+                to the programs that support it.</td>
+            </tr>
+            <tr>
+              <td class="popt">-nmeme</td><td><span class="pdat">limit</span></td>
+              <td>The upper bound on the number of sequences that are passed to MEME.
+                This is required because MEME takes too long to run for very large
+                sequence sets.  All input sequences are passed to MEME if there
+                are not more than <span class="pdat">limit</span>.</td>
+              <td>The number of sequences passed to MEME will be limited to 600.</td>
+            </tr>
+            <tr>
+              <td class="popt">-seed</td><td><span class="pdat">seed</span></td>
+              <td>The seed for the randomized selection of sequences for MEME.</td>
+              <td>A seed value of 1 is used.</td>
+            </tr>
+            <tr>
+              <td class="popt">-norand</td><td></td>
+              <td>Disable the random selection of sequences for MEME and select the
+              maximum allowed number (see <span class="popt">-nmeme</span>) 
+              of sequences in input file order.</td>
+              <td>Sequences are selected randomly without replacement.</td>
+            </tr>
+            <tr>
+              <td class="popt">-ccut</td><td><span class="pdat">size</span></td>
+              <td>The maximum length of a sequence to use before it is trimmed to a
+              central region of this size. A value of 0 indicates that sequences
+              should not be trimmed.</td>
+              <td>A maximum size of 100 is used.</td>
+            </tr>
+            <tr>
+              <td class="popt">-group-thresh</td><td><span class="pdat">gthr</span></td>
+              <td>Main threshold for clustering highly similar motifs in MEME-ChIP output.
+              All motifs in a group will have a Tomtom <i>E</i>-value less than or equal to
+              <span class="pdat">gthr</span> when compared to the seed motif for the group,
+              which is the most significant motif in the group.
+              <td>A value of 0.05 is used.</td>
+            </tr>
+            <tr>
+              <td class="popt">-group-weak</td><td><span class="pdat">wthr</span></td>
+              <td>Secondary threshold for clustering highly similar motifs in MEME-ChIP output.
+              If this is specified by the user, groups will be merged into a more significant
+              group if all their motifs are weakly similar to the seed motif of the more significant
+              group. <span class="pdat">wthr</span> specifies the Tomtom <i>E</i>-value threshold
+              for merging groups.
+              <td>Set to be equal to twice the value of the main clustering threshold:
+              2 * <span class="pdat">gthr</span>.</td>
+            </tr>
+            <tr>
+              <td class="popt">-filter-thresh</td><td><span class="pdat">fthr</span></td>
+              <td><i>E</i>-value threshold for including motifs in the output.</td>
+              <td>A value of 0.05 is used.</td>
+            </tr>
+            <tr>
+              <td class="popt">-time</td><td><span class="pdat">minutes</span></td>
+              <td>The maximum time that MEME-ChIP is allowed to run before terminating
+                itself gracefully.</td>
+              <td>There is no time limit</td>
+            </tr>
+            <tr>
+              <td class="popt">-desc</td><td><span class="pdat">description</span></td>
+              <td>A description of the MEME-ChIP run which is displayed in the summary file.</td>
+              <td>No description is displayed in the summary file.</td>
+            </tr>
+            <tr>
+              <td class="popt">-fdesc</td><td><span class="pdat">file</span></td>
+              <td>A file containing a description of the MEME-ChIP run which will be included 
+                in the summary file. The summary file will try to preserve some of the formatting
+                by presenting blocks of text separated by multiple new lines as different paragraphs
+                and replacing single new line characters with line breaks. Only the first 500
+                characters are used.</td>
+              <td>No description is displayed in the summary file.</td>
+            </tr>
+            <tr>
+              <td class="popt">-norc</td><td>&nbsp;</td>
+              <td>Find motifs in given strand only.</td>
+              <td>Find motifs in both strands.</td>
+            </tr>
+            <tr>
+              <td class="popt">-old-clustering</td><td>&nbsp;</td>
+              <td>Pick seed motifs for clustering based only on significance;
+              <td>Discovered motifs are preferentially used as seed motifs for clustering.</td>
+            </tr>
+            <tr>
+              <td class="popt">-noecho</td><td>&nbsp;</td>
+              <td>Don't echo the commands run.</td>
+              <td>Echo the commands run to standard output.</td>
+            </tr>
+            <tr>
+              <td class="popt">-help</td><td>&nbsp;</td>
+              <td>Display a usage message</td>
+              <td>Run as normal.</td>
+            </tr>
+            <tr>
+              <td class="popt">-version</td><td>&nbsp;</td>
+              <td>Display the version and exit.</td>
+              <td>Run as normal.</td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <th colspan="4">MEME Specific Options</th>
+            </tr>
+            <tr>
+              <td class="popt">-meme-mod</td><td><span class="popt">oops</span>|<span
+                  class="popt">zoops</span>|<span class="popt">anr</span></td>
+              <td>The number of motif sites that MEME will find per sequence.
+              <div style="margin-left:1em;">
+                <b>oops</b> - One Occurrence Per Sequence,<br>
+                <b>zoops</b> - Zero or One Occurrence Per Sequence,<br>
+                <b>anr</b> - Any Number of Repetitions<br>
+              </div>
+              See <span class="popt">-mod</span> in the 
+              <a href="meme.html#distribution">MEME command-line documentation</a>.
+              </td>
+              <td>MEME defaults to using zoops mode.</td>
+            </tr>
+            <tr>
+              <td class="popt">-meme-minw</td><td><span class="pdat">width</span></td>
+              <td>The minimum motif width that MEME should find.</td>
+              <td>A minimum width of 6 is used unless the maximum width has been 
+                set to be less than 6 in which case the maximum width is used.</td>
+            </tr>
+            <tr>
+              <td class="popt">-meme-maxw</td><td><span class="pdat">width</span></td>
+              <td>The maximum motif width that MEME should find.</td>
+              <td>A maximum width of 30 is used unless the minimum width has been
+              set to be larger than 30 in which case the minimum width is used.</td>
+            </td>
+            <tr>
+              <td class="popt">-meme-nmotifs</td><td><span class="pdat">num</span></td>
+              <td>The number of motifs that MEME should search for.  
+              If <span class="pdat">num</span> is 0, MEME will not be run.</td>
+              <td>MEME will find 3 motifs.</td>
+            </tr>
+            <tr>
+              <td class="popt">-meme-minsites</td><td><span class="pdat">sites</span></td>
+              <td>The minimum number of sites that MEME needs to find for a motif.</td>
+              <td>MEME doesn't require any minimum number of sites for a motif.</td>
+            </tr>
+            <tr>
+              <td class="popt">-meme-maxsites</td><td><span class="pdat">sites</span></td>
+              <td>The maximum number of sites that MEME will find for a motif.</td>
+              <td>MEME doesn't limit the number of sites it will find for a motif.</td>
+            </tr>
+            <tr>
+              <td class="popt">-meme-p</td><td><span class="pdat">np</span></td>
+              <td>Use faster, parallel version of MEME with <span class="pdat">np</span> processors.
+                  The parameter <span class="pdat">np</span> may be a number or it
+                  may be a quoted string <b>starting</b> with a number and followed by arguments
+                  to the particular MPI run command for your installation (e.g., <code>mpirun</code>).</td>
+              <td>Use a single processor.</td>
+            </tr>
+            <tr>
+              <td class="popt">-meme-maxsize</td><td><span class="pdat">size</span></td>
+              <td>Change the largest allowed dataset to be
+                <span class="pdat">size</span>. Note that the default maximum
+                size exists to warn users that their dataset is possibly too
+                large to process in a reasonable time so please consider
+                carefully before increasing this value.</td>
+              <td>The maximum dataset size is 100000. This should be fine with the
+                default settings for <span class="popt">-nmeme</span> and
+                <span class="popt">-ccut</span> as the largest possible dataset
+                size would be 60000.</td>
+            </tr>
+            <tr>
+              <td class="popt">-meme-pal</td><td>&nbsp;</td>
+              <td>Restrict MEME to searching for palindromes only.</td>
+              <td>MEME searches for any motif not just palindromes.</td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <th colspan="4">DREME Specific Options</th>
+            </tr>
+            <tr>
+              <td class="popt">-dreme-e</td><td><span class="pdat"><i>E</i>-value</span></td>
+              <td>Stop searching for more motifs if the next best motif found has
+                a worse <i>E</i>-value</td>
+              <td>An <i>E</i>-value threshold of 0.05 is used.</td>
+            </tr>
+            <tr>
+              <td class="popt">-dreme-m</td><td><span class="pdat">count</span></td>
+              <td>Stop searching for more motifs if <span class="pdat">count</span> motifs have been
+                found.  If <span class="pdat">count</span> is 0, DREME will not be run.</td>
+              <td>There is no limit on the number of motifs.</td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <th colspan="4">CentriMo Specific Options</th>
+            </tr>
+            <tr>
+              <td class="popt">-centrimo-local</td><td>&nbsp;</td>
+            <td>CentriMo perform <i>local</i> motif enrichment analysis,
+                computing enrichment in every possible sequence region.</td>
+            <td>CentriMo will perform <i>central</i> motif enrichment analysis,
+                computing enrichment in centered regions only.</td>
+          <tr>
+            <td class="popt">-centrimo-score</td><td><span class="pdat">score</span></td>
+            <td>Set the minimum accepted score for a match.</td>
+            <td>A minimum score of 5 is used.</td>
+          </tr>
+          <tr>
+            <td class="popt">-centrimo-maxreg</td><td><span class="pdat">region</span></td>
+            <td>Set the size of the maximum region size tested.</td>
+            <td>CentriMo will test all valid region sizes.</td>
+          </tr>
+          <tr>
+            <td class="popt">-centrimo-ethresh</td><td><span class="pdat"><i>E</i>-value</span></td>
+              <td>Set the <i>E</i>-value threshold for reporting enriched central regions.</td>
+              <td>An <i>E</i>-value threshold of 10 will be used.</td>
+            </tr>
+            <tr>
+              <td class="popt">-centrimo-noseq</td><td>&nbsp;</td>
+              <td>Do not store sequence IDs in the output of CentriMo.</td>
+              <td>CentriMo stores a list of the sequence IDs with matches in the
+                best region for each motif.</td>
+            </tr>
+            <tr>
+              <td class="popt">-centrimo-flip</td><td>&nbsp;</td>
+              <td>Reflect the positions of matches on the reverse strand around the center.</td>
+              <td>Matches on the reverse strand are counted where they occur in the sequence.</td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <th colspan="4">SpaMo Specific Options</th>
+            </tr>
+            <tr>
+              <td class="popt">-spamo-skip</td><td>&nbsp;</td>
+            <td>Do not run SpaMo.  Can be combined with 
+               <span class="popt">-meme-nmotifs</span>
+               <span class="pdat">0</span>,
+               <span class="popt">-dreme-m</span>
+               <span class="pdat">0</span>, and
+               <span class="popt">-fimo-skip</span>
+               to use MEME-ChIP to run CentriMo and cluster
+	       the significant motifs.</td>
+               <td>Run SpaMo using most significant motif from each cluster as primary.</td>
+            </tr>
+          </tbody>
+          <tbody>
+            <tr>
+              <th colspan="4">FIMO Specific Options</th>
+            </tr>
+            <tr>
+              <td class="popt">-fimo-skip</td><td>&nbsp;</td>
+            <td>Do not run FIMO.  Can be combined with 
+               <span class="popt">-meme-nmotifs</span>
+               <span class="pdat">0</span>,
+               <span class="popt">-dreme-m</span>
+               <span class="pdat">0</span>, and
+               <span class="popt">-spamo-skip</span>
+               to use MEME-ChIP to run CentriMo and cluster
+	       the significant motifs.</td>
+               <td>Run FIMO using most significant motif from each cluster to scan
+               input sequences.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <h3>Citing</h3>
+    <div class="indent">
+      <p>
+        If you use MEME-ChIP in your research, please cite the following paper:<br />
+        <span class="citation">
+          Philip Machanick and Timothy L. Bailey, "MEME-ChIP: motif analysis of large DNA datasets",
+          <i>Bioinformatics</i>, <b>27</b>12, 1696-1697, 2011.
+          <a href="http://bioinformatics.oxfordjournals.org/content/27/12/1696.full">[full text]</a>
+        </span>
+      </p>
+    </div>
+
+    <script src="js/manual.js"></script>
+
+  </body>
+</html>

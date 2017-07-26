@@ -1,0 +1,51 @@
+#
+# mast.test 
+#
+my @datasets = ('crp0', 'INO_up800', 'farntrans5', 'lipocalin', 'adh');
+my @models = ('oops', 'zoops', 'tcm');
+my $mast_ignore = [
+  '^mast@(release|version)$',
+  '^mast:command_line:',
+  '^mast:runtime@(host|when|cycles|seconds)$',
+  '@last_mod_date$'
+];
+my $counter = 1;
+foreach my $dset (@datasets) {
+  my $database = catfile('common', $dset . '.s');
+  foreach my $mod (@models) {
+    my $meme_file = catfile('meme', 'meme.'.$dset.'.'.$mod.'.txt');
+    my $out_dir = catdir('results', 'mast'.$counter);
+    &test('mast'.$counter, '',
+      'mast', '',
+      [$meme_file, $database, 
+        '-oc', $out_dir, '-nostatus'],
+      [
+        {
+          output => catfile($out_dir, 'mast.xml'),
+          reference => catfile('mast', 'mast.'.$dset.'.'.$mod),
+          type => 'xml', ignore => $mast_ignore
+        }
+      ],
+      $out_dir
+    );
+    $counter++;
+    if ($dset eq 'adh') {
+      my $seq = 'mini-drosoph';
+      $out_dir = catdir('results', 'mast'.$counter);
+      &test('mast'.$counter, '',
+        'mast', catfile('common', $seq . '.s'),
+        [$meme_file, '-', '-oc', $out_dir, '-nostatus', 
+          '-df', 'stdin', '-dna', '-seqp'],
+        [
+          {
+            output => catfile($out_dir, 'mast.xml'),
+            reference => catfile('mast', 'mast.'.$dset.'.'.$mod.'.'.$seq),
+            type => 'xml', ignore => $mast_ignore
+          }
+        ],
+        $out_dir
+      );
+      $counter++;
+    }
+  }
+}

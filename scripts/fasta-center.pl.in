@@ -1,0 +1,181 @@
+#!@WHICHPERL@
+# AUTHOR: Philip Machanick
+# CREATE DATE: 20 October 2009
+#
+# centre sequences selected and trim the excess if they are
+# wider than a given threshold.  If string to be printed
+# contains only ambiguous characters, nothing is printed.
+
+use warnings;
+use strict;
+
+use lib qw(@PERLLIBDIR@);
+
+use Fcntl qw(O_CREAT O_TRUNC O_WRONLY);
+use Getopt::Long;
+use Pod::Usage;
+
+use Alphabet qw(dna protein rna);
+use ReadFastaFile;
+=head1 NAME
+
+fasta-center - Extracts the center of sequences.
+
+=head1 SYNOPSIS
+
+fasta-center [options]
+
+ Options:
+  -dna              the sequences use the DNA alphabet
+  -protein          the sequences use the protein alphabet
+  -rna              the sequences use the RNA alphabet
+  -alph <file>      file with the alphabet definition
+  -len <len>        length of sequences to output; default: 100
+  -flank <file>     output flanking sequences to <file>
+  -reject <file>    output rejected sequences to <file>
+  -h                print this help message and exit
+
+  Reads sequences in FASTA format.  For each sequence, it
+  outputs the length <len> portion of the sequence
+  centred on the original sequence. If any sequence is less
+  than <len> long, it is output in its entirety.
+  
+  Flanking sequences, if output, each have a FASTA name starting
+  with the name of the original sequence, with "-L" appended for
+  the left flanking sequence and "-R" for the right flanking
+  sequence.  
+  
+  When an alphabet is specified the sequences are validated and
+  sequences consisting of nothing but ambiguous symbols are rejected
+  and optionally written to the reject file.
+
+  Reads from standard input.
+  Writes to standard output.
+
+=cut
+
+# Set option defaults
+my $help = 0; # FALSE
+my $opt_dna = 0; # FALSE
+my $opt_protein = 0; # FALSE
+my $opt_rna = 0; # FALSE
+my $opt_alph_file = undef;
+my $center_size = 100;
+my $opt_flank_file = undef;
+my $opt_reject_file = undef;
+# read options
+GetOptions(
+  "help|?" => \$help,
+  "dna" => \$opt_dna,
+  "protein" => \$opt_protein,
+  "rna" => \$opt_rna,
+  "alph=s" => \$opt_alph_file,
+  "len=i" => \$center_size,
+  "flank=s" => \$opt_flank_file,
+  "reject=s" => \$opt_reject_file,
+) or pod2usage(2);
+# test for help message request
+pod2usage(1) if $help;
+# test that the alphabet is only set once
+if (($opt_dna and $opt_protein) or 
+    ($opt_dna and defined($opt_alph_file)) or 
+    ($opt_protein and defined($opt_alph_file))) {
+  pod2usage("Options -dna, -protein or -alph are mutually exclusive");
+}
+# test that the alphabet file is defined
+if (defined($opt_alph_file)) {
+  unless (-s $opt_alph_file) {
+    pod2usage("Option -alph requires an existing alphabet definition file");
+  }
+}
+# test that the length is positive
+if ($center_size <= 0) {
+  pod2usage("Option -len only allows positive lengths");
+}
+
+# load the alphabet
+my $alph = undef;
+if ($opt_dna) {
+  $alph = dna();
+} elsif ($opt_protein) {
+  $alph = protein();
+} elsif ($opt_rna) {
+  $alph = rna();
+} elsif (defined($opt_alph_file)) {
+  $alph = new Alphabet($opt_alph_file);
+}
+
+# open the flank file
+my $flank_fh = undef;
+if (defined($opt_flank_file)) {
+  sysopen($flank_fh, $opt_flank_file, O_CREAT | O_TRUNC | O_WRONLY) or die("Failed to open flank file \"$opt_flank_file\" for writing: $!");
+}
+# open the reject file
+my $reject_fh = undef;
+if (defined($opt_reject_file)) {
+  sysopen($reject_fh, $opt_reject_file, O_CREAT | O_TRUNC | O_WRONLY) or die("Failed to open reject file \"$opt_reject_file\" for writing: $!");
+}
+
+# read each sequence
+my $line;
+my $header = undef;
+my $name = undef;
+my $seq = undef;
+my $warned = 0; #FALSE
+while ($line = <STDIN>) {
+  chomp $line;
+  if ($line =~ m/^>(\S+)/) { # sequence start
+    &process_sequence($header, $name, $seq) if defined $name;
+    $header = $line;
+    $name = $1;
+    $seq = '';
+  } elsif (defined($seq)) { # sequence content
+    $line =~ s/\s//g; # remove space from sequence
+    # test sequence is valid in the alphabet
+    if (defined($alph)) {
+      my ($pos, $sym) = $alph->find_unknown($line);
+      die("Sequence $name contains unknown symbol $sym\n") if (defined($pos));
+    }
+    $seq .= $line unless $line eq "";
+  } else { # don't know what this is...
+    warn("Content preceeds the sequences!\n") unless $warned;
+    $warned = 1; #TRUE
+  }
+}
+&process_sequence($header, $name, $seq) if defined $name;
+
+# close files
+close($flank_fh) if defined $flank_fh;
+close($reject_fh) if defined $reject_fh;
+
+# process each sequence and output the central part
+sub process_sequence {
+  my ($header, $name, $seq) = @_;
+  # get the center of the sequence
+  my $seq_len = length($seq);
+  if ($seq_len <= $center_size) { # sequence is smaller than the central size
+    # check sequence contains some useful content and is not just ambiguity characters
+    unless (defined($alph) && $alph->is_ambig_seq($seq)) {
+      print $header, "\n", $seq, "\n";
+    } elsif (defined($reject_fh)) {
+      print $reject_fh $header, "\n", $seq, "\n";
+    }
+  } else { # sequence is larger than the central size
+    # calculate the offset of the central portion and extract it
+    my $offset = int(($seq_len - $center_size) / 2);
+    my $seq_center = substr($seq, $offset, $center_size);
+    # check central sequence contains some useful content and is not just ambiguity characters
+    unless (defined($alph) && $alph->is_ambig_seq($seq_center)) {
+      print $header, "\n", $seq_center, "\n";
+      if (defined($flank_fh)) {
+        # print the flanking regions
+        print $flank_fh ">", $name, "-L\n", substr($seq, 0, $offset), "\n";
+        print $flank_fh ">", $name, "-R\n", substr($seq, $offset + $center_size), "\n";
+      }
+    } elsif (defined($reject_fh)) {
+      print $reject_fh $header, "\n", $seq, "\n";
+    }
+  }
+}
+
+1;

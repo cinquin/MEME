@@ -1,0 +1,35 @@
+# Test mhmms with --maxseqs option (r1635)
+&test('mhmms1', 'test --maxseqs option',
+  'mhmms', '',
+  ['--maxseqs', 3, '--quiet', 'mhmm/crp0.linear.mhmm', 'common/crp0.s'],
+  [{output => '-', reference => 'mhmms/r1635.maxseqs.mhmms', type => 'text'}],
+  'results/mhmms1'
+);
+
+# Test mhmms with --global option (r1635)
+&test('mhmms2', 'test --global option',
+  'mhmms', '',
+  ['--global', '--quiet', 'mhmm/lipo.linear.mhmm', 'common/lipo.fasta'],
+  [{output => '-', reference => 'mhmms/r1635.global.mhmms', type => 'text'}],
+  'results/mhmms2'
+);
+
+# Test mhmms for bug where runs of 
+# spacer states are scored as matches (r1635).
+# With theses input files mhmms should find no matches.
+&test('mhmms3', 'test runs of spacer states scored as matches',
+  'mhmms', '', 
+  ['--quiet', '--motif-scoring', 'mhmm/lipo.linear.mhmm', 'mhmms/r1635.fasta'],
+  [{output => '-', reference => 'mhmms/r1635.mhmms', type => 'text'}],
+  'results/mhmms3'
+);
+
+# Test mhmms for segmentation fault when --motif-scoring option 
+# is used. (r1584)
+&test('mhmms4', 'test --motif-scoring option',
+  'mhmms', '',
+  ['--motif-scoring', '--quiet', 'mhmms/r1584.hmm', 'mhmms/r1584.fasta'],
+  [{output => '-', reference => 'mhmms/r1584.mhmms', type => 'text'}],
+  'results/mhmms4'
+);
+

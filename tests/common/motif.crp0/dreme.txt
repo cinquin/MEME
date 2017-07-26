@@ -1,0 +1,77 @@
+# DREME 4.10.2
+#     command: dreme -dna -oc motif.crp0 -e 100 -m 3 -p crp0.s
+#   positives: 18 from crp0.s (Fri May 02 13:01:55 AEST 2014)
+#   negatives: 18 from shuffled positives
+#        host: IMB12-010665
+#        when: Wed Oct 28 09:45:40 AEST 2015
+
+MEME version 4.10.2
+
+ALPHABET "DNA" DNA-LIKE
+A "Adenine" CC0000 ~ T "Thymine" 008000
+C "Cytosine" 0000CC ~ G "Guanine" FFB300
+N "Any base" = ACGT
+X = ACGT
+. = ACGT
+V "Not T" = ACG
+H "Not G" = ACT
+D "Not C" = AGT
+B "Not A" = CGT
+M "Amino" = AC
+R "Purine" = AG
+W "Weak" = AT
+S "Strong" = CG
+Y "Pyrimidine" = CT
+K "Keto" = GT
+U = T
+END ALPHABET
+
+strands: + -
+
+Background letter frequencies (from dataset):
+A 0.303 C 0.183 G 0.209 T 0.306
+
+
+MOTIF TCACA DREME
+
+#             Word    RC Word        Pos        Neg    P-value    E-value
+# BEST       TCACA      TGTGA         16          5   2.5e-004   1.2e+000
+#            TCACA      TGTGA         16          5   2.5e-004   1.2e+000
+
+letter-probability matrix: alength= 4 w= 5 nsites= 19 E= 1.2e+000
+0.000000 0.000000 0.000000 1.000000
+0.000000 1.000000 0.000000 0.000000
+1.000000 0.000000 0.000000 0.000000
+0.000000 1.000000 0.000000 0.000000
+1.000000 0.000000 0.000000 0.000000
+
+
+MOTIF GTAA DREME
+
+#             Word    RC Word        Pos        Neg    P-value    E-value
+# BEST        GTAA       TTAC         15          6   3.0e-003   1.3e+001
+#             GTAA       TTAC         15          6   3.0e-003   1.3e+001
+
+letter-probability matrix: alength= 4 w= 4 nsites= 20 E= 1.3e+001
+0.000000 0.000000 1.000000 0.000000
+0.000000 0.000000 0.000000 1.000000
+1.000000 0.000000 0.000000 0.000000
+1.000000 0.000000 0.000000 0.000000
+
+
+MOTIF GATGC DREME
+
+#             Word    RC Word        Pos        Neg    P-value    E-value
+# BEST       GATGC      GCATC          7          0   3.8e-003   1.5e+001
+#            GATGC      GCATC          7          0   3.8e-003   1.5e+001
+
+letter-probability matrix: alength= 4 w= 5 nsites= 9 E= 1.5e+001
+0.000000 0.000000 1.000000 0.000000
+1.000000 0.000000 0.000000 0.000000
+0.000000 0.000000 0.000000 1.000000
+0.000000 0.000000 1.000000 0.000000
+0.000000 1.000000 0.000000 0.000000
+
+
+# Stopping reason: target motif count reached
+#    Running time: 0.71 seconds

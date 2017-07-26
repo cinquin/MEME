@@ -1,0 +1,455 @@
+#!@WHICHPERL@
+=head1 NAME
+
+meme_xml_to_html - Make a MEME HTML output from a MEME XML output.
+
+=head1 SYNOPSIS
+
+meme_xml_to_html <MEME XML file> <MEME HTML file>
+=cut
+
+use strict;
+use warnings;
+
+use Cwd qw(abs_path);
+use Fcntl qw(O_RDONLY SEEK_SET);
+use File::Basename qw(fileparse);
+use File::Spec::Functions qw(tmpdir);
+use File::Temp qw(tempfile);
+use Getopt::Long;
+use Pod::Usage;
+
+use lib '@PERLLIBDIR@';
+
+my $etc_dir;
+my $temp_dir;
+my $scripts_dir;
+
+#
+# initialise the global constants
+# 
+sub initialise {
+  # setup etc dir
+  $etc_dir = defined($ENV{MEME_ETC_DIR}) ? $ENV{MEME_ETC_DIR} : '@APPCONFIGDIR@';
+  # setup temporary directory
+  $temp_dir = '@TMP_DIR@';
+  # use the perl default if none is supplied or the replace fails
+  $temp_dir = tmpdir() if ($temp_dir eq '' || $temp_dir =~ m/^\@TMP[_]DIR\@$/);
+
+  # find the location of the script
+  my $script_name;
+  ($script_name, $scripts_dir) = fileparse(__FILE__);
+  $scripts_dir = abs_path($scripts_dir);
+
+  # add script location to search path
+  unshift(@INC, $scripts_dir);
+
+  require HtmlMonolithWr;
+  require MemeSAX;
+}
+
+sub arguments {
+  # Set Option Defaults
+  my $options = {XML_PATH => undef, HTML_PATH => undef};
+  # General Options
+  my $help = 0; # FALSE
+  my @errors = ();
+  my @dbs = ();
+
+  # get the options from the arguments
+  my $options_success = 0; # FALSE
+  # redirect stderr to a temp file so we can get the error message from GetOptions
+  my $olderr;
+  my $tmperr = tempfile('GetOptions_XXXXXXXXXX', DIR => $temp_dir, UNLINK => 1);
+  open($olderr, ">&STDERR") or die("Can't dup STDERR: $!");
+  open(STDERR, '>&', $tmperr) or die("Can't redirect STDERR to temp file: $!");
+  # parse options
+  $options_success = GetOptions(
+    'help|?'          => \$help,
+  );
+  ($options->{XML_PATH}, $options->{HTML_PATH}) = @ARGV;
+  # display help
+  pod2usage(1) if $help;
+  # reset STDERR
+  open(STDERR, ">&", $olderr) or die("Can't reset STDERR: $!");
+  # read argument parsing errors
+  seek($tmperr, 0, SEEK_SET);
+  while (<$tmperr>) {chomp; push(@errors, $_);}
+  close($tmperr);
+  # check source XML file
+  unless (defined($options->{XML_PATH})) {
+    push(@errors, "No MEME XML file specified");
+  } elsif (not -e $options->{XML_PATH}) {
+    push(@errors, "The MEME XML file specified does not exist");
+  }
+  unless (defined($options->{HTML_PATH})) {
+    push(@errors, "No output file specified");
+  }
+  # print errors
+  foreach my $error (@errors) {
+    print STDERR $error, "\n";
+  }
+  pod2usage(2) if @errors;
+  # return options
+  return $options;
+}
+
+# start_meme
+sub start_meme {
+  my ($info, $major_ver, $minor_ver, $patch_ver, $release) = @_;
+  my $wr = $info->{wr};
+  $wr->str_prop('program', 'MEME');
+  $wr->str_prop('version', "$major_ver.$minor_ver.$patch_ver");
+  # meme doesn't include the revision information in the XML
+  $wr->str_prop('release', $release);
+}
+# end_meme
+sub end_meme {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+}
+# start_training_set
+sub start_training_set {
+  my ($info, $datafile, $length) = @_;
+  $info->{sequence_db} = {};
+  $info->{sequence_db}->{source} = $datafile;
+  $info->{sequence_db}->{temp} = tempfile("seq_db_info_XXXXXX", 
+    SUFFIX => '.tsv', DIR => $temp_dir, UNLINK => 1);
+  $info->{counter} = 0;
+}
+# end_training_set
+sub end_training_set {
+  my ($info) = @_;
+}
+# handle_alphabet
+sub handle_alphabet {
+  my ($info, $alphabet) = @_;
+  $info->{alph} = $alphabet;
+}
+# handle_sequence
+sub handle_sequence {
+  my ($info, $num, $name, $length, $weight) = @_;
+  # num is the number extracted out of the id
+  # sequence_x where x is from 0 to the number of sequences -1
+  # and where x increments with each sequence
+  die("Sequence id number is not expected") unless ($info->{counter} == $num);
+  # store the sequence information to a temporary file as we don't want to write
+  # it out yet.
+  my $fh = $info->{sequence_db}->{temp};
+  print $fh "$name\t$length\t$weight\n";
+  $info->{counter}++;
+}
+# handle_letter_frequencies
+sub handle_letter_frequencies {
+  my ($info, $freqs) = @_;
+  $info->{sequence_db}->{freqs} = $freqs;
+}
+# handle_background_frequencies
+sub handle_background_frequencies {
+  my ($info, $source, $freqs) = @_;
+  $info->{bg} = {source => $source, freqs => $freqs};
+}
+# end_model
+sub handle_settings {
+  my ($info, %settings) = @_;
+  my $wr = $info->{wr};
+  # determine stopping reason
+  my $reason = $settings{reason_for_stopping};
+  my $stop_type = "unknown";
+  my $num_re = qr/((?:[-+]?[0-9]*\.?[0-9]+(?:[eE][-+]?[0-9]+)?)|inf)/;
+  my $max_time;
+  if ($reason =~ m/Stopped because couldn't find any more starting points for EM\./) {
+    $stop_type = "em";
+  } elsif ($reason =~ m/Stopped because nmotifs = (\d+) reached\./) {
+    $stop_type = "motifs";
+  } elsif ($reason =~ m/Stopped because would probably run out of time \($num_re secs\)\./) {
+    $stop_type = "time";
+    $max_time = $1;
+  } elsif ($reason =~ m/Stopped because next motif has fewer than (\d+) sites\./) {
+    $stop_type = "sites";
+  } elsif ($reason =~ m/Stopped because motif E-value > $num_re\./) {
+    $stop_type = "evalue";
+  }
+  #$wr->str_prop("stop_reason", $stop_type);
+  $wr->str_prop("stop_reason", $reason);
+  # output command line
+  $wr->str_array_prop("cmd", split(/\s+/, $settings{command_line}));
+  # output options
+  $wr->property("options");
+  $wr->start_object_value();
+  # BEGIN OPTIONS (note that I am deliberately using the names of the command line options)
+  # site distribution
+  my %dtype = ('zoops' => 'zoops', 'oops' => 'oops', 'anr' => 'anr', 'tcm' => 'anr');
+  $wr->str_prop("mod", $dtype{$settings{type}});
+  # reverse complements
+  $wr->bool_prop("revcomp", $settings{strands} eq "both");
+  # stop conditions
+  $wr->num_prop("nmotifs", $settings{nmotifs});
+  $wr->num_prop("evt", $settings{evalue_threshold}) unless ($settings{evalue_threshold} =~ m/^inf(inity)?$/i);
+  $wr->num_prop("time", $max_time) if (defined($max_time)); # we only get this value when the stop reason is time
+  # motif width
+  $wr->num_prop("minw", $settings{min_width});
+  $wr->num_prop("maxw", $settings{max_width});
+  #sites
+  $wr->num_prop("minsites", $settings{minsites});
+  $wr->num_prop("maxsites", $settings{maxsites});
+  $wr->num_prop("wnsites", $settings{wnsites});
+  # selecting starts for EM
+  $wr->str_prop("spmap", $settings{spmap});
+  $wr->num_prop("spfuzz", $settings{spfuzz});
+  $wr->num_prop("maxwords", $settings{maxwords});
+  # EM algorithm
+  $wr->str_prop("prior", $settings{prior});
+  $wr->num_prop("b", $settings{beta});
+  $wr->num_prop("maxiter", $settings{maxiter});
+  $wr->num_prop("distance", $settings{distance});
+  # trimming alignment costs
+  $wr->num_prop("wg", $settings{wg});
+  $wr->num_prop("ws", $settings{ws});
+  $wr->bool_prop("noendgaps", !$settings{endgaps});
+  # EM starting point source
+  $wr->bool_prop("substring", $settings{substring});
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # These experimental options made it into the XML but
+  # are probably not interesting so I've commented them
+  # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Experimental random sampling (hidden option, default 0)
+  #$wr->num_prop("seed", $settings{seed});
+  # sampling probability for subsq. starts (removed option, normally 1 but 0 if mfile set)
+  # objective function (hidden option, default ev)
+  my %objfun = ('P-value of product of p-values' => 'pv',
+    'E-value of product of p-values' => 'ev');
+  #$wr->str_prop("objfun", $objfun{$settings{object_function}});
+  # fraction of sequences to use (hidden option, default 1)
+  #$wr->num_prop("seqfrac", $settings{seqfrac});
+  # END OPTIONS
+  $wr->end_object_value();
+  $wr->property("alphabet");
+  $info->{alph}->to_json($wr);
+  $wr->property("background");
+  $wr->start_object_value();
+  unless ($info->{bg}->{source} =~ m/^dataset with add-one prior applied$/) {
+    $wr->str_prop("source", $info->{bg}->{source});
+  }
+  $wr->num_array_prop("freqs", @{$info->{bg}->{freqs}});
+  $wr->end_object_value();
+  $wr->property("sequence_db");
+  $wr->start_object_value();
+  $wr->str_prop("source", $info->{sequence_db}->{source});
+  $wr->str_prop("psp_source", $settings{priors_file}) if ($settings{priors_file} =~ m/\S/);
+  $wr->num_array_prop("freqs", @{$info->{sequence_db}->{freqs}});
+  $wr->property("sequences");
+  $wr->start_array_value();
+  my $fh = $info->{sequence_db}->{temp};
+  seek($fh, 0, SEEK_SET);
+  while (<$fh>) {
+    chomp($_);
+    my ($name, $len, $weight) = split(/\t/, $_);
+    $wr->start_object_value();
+    $wr->str_prop("name", $name);
+    $wr->num_prop("length", $len);
+    $wr->num_prop("weight", $weight);
+    $wr->end_object_value();
+  }
+  $wr->end_array_value();
+  $wr->end_object_value();
+  $info->{sequence_db}->{temp} = undef;
+  close($fh);
+}
+# start_background_frequencies
+sub start_background_frequencies {
+  my ($info, $source) = @_;
+  $info->{background_source} = $source;
+}
+# end_background_frequencies
+sub end_background_frequencies {
+  my ($info) = @_;
+}
+# start_bf_alphabet_array
+sub start_bf_alphabet_array {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+}
+# end_bf_alphabet_array
+sub end_bf_alphabet_array {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+}
+# handle_bf_aa_value
+sub handle_bf_aa_value {
+  my ($info, $letter_id, $frequency) = @_;
+  my $wr = $info->{wr};
+  my $letter = $info->{id_to_symbol}->{$letter_id};
+  die("Expected non-ambiguous letter") if $letter->{ambig};
+  $info->{background}->{$letter->{symbol}} = $frequency;
+}
+# start_motifs
+sub start_motifs {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->property("motifs");
+  $wr->start_array_value();
+}
+# end_motifs
+sub end_motifs {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->end_array_value();
+}
+# start_motif
+sub start_motif {
+  my ($info, %motif) = @_;
+  my $wr = $info->{wr};
+  $wr->start_object_value();
+  $wr->num_prop("db", 0);
+  $wr->str_prop("id", $motif{NAME});
+  $wr->str_prop("alt", $motif{ALT});
+  $wr->num_prop("len", $motif{WIDTH});
+  $wr->num_prop("nsites", $motif{SITES});
+  $wr->str_prop("evalue", $motif{EVALUE});
+  $wr->num_prop("ic", $motif{IC}); #information content
+  $wr->num_prop("re", $motif{RE}); #relative entropy
+  $wr->num_prop("llr", $motif{LLR}); #log likelihood ratio
+  $wr->num_prop("bt", $motif{BAYES}); # bayes threshold
+  $wr->num_prop("time", $motif{ELAPSED});
+  $wr->str_prop("url", $motif{URL}) if $motif{URL};
+  my $psm = $motif{PSM};
+  $wr->property("psm");
+  $wr->start_array_value();
+  for (my $i = 0; $i < scalar(@{$psm}); $i++) {
+    $wr->num_array_value(@{$psm->[$i]});
+  }
+  $wr->end_array_value();
+  my $pwm = $motif{PWM};
+  $wr->property("pwm");
+  $wr->start_array_value();
+  for (my $i = 0; $i < scalar(@{$pwm}); $i++) {
+    $wr->num_array_value(@{$pwm->[$i]});
+  }
+  $wr->end_array_value();
+  $wr->property("sites");
+  $wr->start_array_value();
+}
+sub handle_site {
+  my ($info, $seq_num, $pos, $rc, $pvalue, $lflank, $match, $rflank) = @_;
+  my $wr = $info->{wr};
+  $wr->start_object_value();
+  $wr->num_prop("seq", $seq_num);
+  $wr->num_prop("pos", $pos);
+  $wr->bool_prop("rc", $rc);
+  $wr->num_prop("pvalue", $pvalue);
+  $wr->str_prop("lflank", $lflank); 
+  $wr->str_prop("match", $match);
+  $wr->str_prop("rflank", $rflank);
+  $wr->end_object_value();
+}
+# end_motif
+sub end_motif {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->end_array_value();
+  $wr->end_object_value();
+}
+# start_scanned_sites_summary
+sub start_scanned_sites_summary {
+  my ($info, $scan_threhold) = @_;
+  my $wr = $info->{wr};
+  $wr->property("scan");
+  $wr->start_array_value();
+  $info->{counter} = 0;
+}
+# end_scanned_sites_summary
+sub end_scanned_sites_summary {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->end_array_value();
+}
+# start_scanned_sites
+sub start_scanned_sites {
+  my ($info, $num, $pvalue, $num_sites) = @_;
+  my $wr = $info->{wr};
+  die("Sequence id number is not expected") unless ($info->{counter} == $num);
+  $wr->start_object_value();
+  $wr->num_prop("pvalue", $pvalue);
+  $wr->property("sites");
+  $wr->start_array_value();
+}
+# end_scanned_sites
+sub end_scanned_sites {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->end_array_value();
+  $wr->end_object_value();
+  $info->{counter}++;
+}
+# handle_scanned_site
+sub handle_scanned_site {
+  my ($info, $motif_num, $strand, $pos, $pvalue) = @_;
+  my $wr = $info->{wr};
+  $wr->start_object_value();
+  $wr->num_prop("motif", $motif_num - 1); # convert to index
+  $wr->num_prop("pos", $pos); # TODO check is zero based.
+  $wr->bool_prop("rc", $strand eq 'minus');
+  $wr->num_prop("pvalue", $pvalue);
+  $wr->end_object_value();
+}
+
+
+
+sub transform_data {
+  my ($opts, $jsonwr) = @_;
+  my $info = {wr => $jsonwr};
+
+  my $sax = new MemeSAX($info, 
+    start_meme => \&start_meme,
+    start_training_set => \&start_training_set,
+    handle_alphabet => \&handle_alphabet,
+    handle_sequence => \&handle_sequence,
+    end_training_set => \&end_training_set,
+    handle_letter_frequencies => \&handle_letter_frequencies,
+    handle_background_frequencies => \&handle_background_frequencies,
+    handle_settings => \&handle_settings,
+    start_motifs => \&start_motifs,
+    start_motif => \&start_motif,
+    handle_site => \&handle_site,
+    end_motif => \&end_motif,
+    end_motifs => \&end_motifs,
+    start_scanned_sites_summary => \&start_scanned_sites_summary,
+    start_scanned_sites => \&start_scanned_sites,
+    handle_scanned_site => \&handle_scanned_site,
+    end_scanned_sites => \&end_scanned_sites,
+    end_scanned_sites_summary => \&end_scanned_sites_summary,
+    end_meme => \&end_meme,
+  );
+  my $fh;
+  sysopen($fh, $opts->{XML_PATH}, O_RDONLY) or die("Failed to open file \"$opts->{XML_PATH}\"\n");
+  while (<$fh>) {
+    $sax->parse_more($_);
+    if ($sax->has_errors()) {
+      die("Failed to write HTML output due to errors processing the XML:\n" . join("\n", $sax->get_errors()));
+    }    
+  }
+  $sax->parse_done();
+  if ($sax->has_errors()) {
+    die("Failed to write HTML output due to errors processing the XML:\n" . join("\n", $sax->get_errors()));
+  }  
+  my @errors = $sax->get_errors();
+  foreach my $error (@errors) {
+    print $error, "\n";
+  }
+}
+
+sub main {
+  &initialise();
+  my $opts = &arguments();
+  # start writing HTML
+  my $htmlwr = new HtmlMonolithWr($etc_dir, 'meme_template.html', 
+    $opts->{HTML_PATH}, 'meme_data.js' => 'data');
+  # transform the XML into JSON
+  &transform_data($opts, $htmlwr->output());
+  # finish writing HTML
+  $htmlwr->output();
+}
+
+&main();
+1;

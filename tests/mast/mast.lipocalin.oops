@@ -1,0 +1,164 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<mast version="4.11.3" release="Fri Feb 19 13:23:06 2016 -0800">
+	<command_line><arg>mast</arg><arg>-oc</arg><arg>results/mast10</arg><arg>-nostatus</arg><arg>meme/meme.lipocalin.oops.txt</arg><arg>common/lipocalin.s</arg></command_line>
+	<settings strand_handling="unstranded" max_correlation="0.60" remove_correlated="n" max_seq_evalue="10" adjust_hit="n" max_hit_pvalue="0.0001" max_weak_pvalue="0.0001"/>
+	<alphabet name="Protein" like="protein">
+		<letter id="A" symbol="A" name="Alanine" colour="0000CC"/>
+		<letter id="C" symbol="C" name="Cysteine" colour="0000CC"/>
+		<letter id="D" symbol="D" name="Aspartic acid" colour="FF00FF"/>
+		<letter id="E" symbol="E" name="Glutamic acid" colour="FF00FF"/>
+		<letter id="F" symbol="F" name="Phenylalanine" colour="0000CC"/>
+		<letter id="G" symbol="G" name="Glycine" colour="FFB300"/>
+		<letter id="H" symbol="H" name="Histidine" colour="FFCCCC"/>
+		<letter id="I" symbol="I" name="Isoleucine" colour="0000CC"/>
+		<letter id="K" symbol="K" name="Lysine" colour="CC0000"/>
+		<letter id="L" symbol="L" name="Leucine" colour="0000CC"/>
+		<letter id="M" symbol="M" name="Methionine" colour="0000CC"/>
+		<letter id="N" symbol="N" name="Asparagine" colour="008000"/>
+		<letter id="P" symbol="P" name="Proline" colour="FFFF00"/>
+		<letter id="Q" symbol="Q" name="Glutamine" colour="008000"/>
+		<letter id="R" symbol="R" name="Arginine" colour="CC0000"/>
+		<letter id="S" symbol="S" name="Serine" colour="008000"/>
+		<letter id="T" symbol="T" name="Threonine" colour="008000"/>
+		<letter id="V" symbol="V" name="Valine" colour="0000CC"/>
+		<letter id="W" symbol="W" name="Tryptophan" colour="0000CC"/>
+		<letter id="Y" symbol="Y" name="Tyrosine" colour="33E6CC"/>
+		<letter id="X" symbol="X" aliases="*." equals="ACDEFGHIKLMNPQRSTVWY" name="Any amino acid"/>
+		<letter id="B" symbol="B" equals="DN" name="Asparagine or Aspartic acid"/>
+		<letter id="Z" symbol="Z" equals="EQ" name="Glutamine or Glutamic acid"/>
+		<letter id="J" symbol="J" equals="IL" name="Leucine or Isoleucine"/>
+	</alphabet>
+	<background source="--nrdb--" A="0.0730919" C="0.0181455" D="0.051688" E="0.0622785" F="0.0402434" G="0.0692596" H="0.0224055" I="0.056227" K="0.058435" L="0.0916218" M="0.0230443" N="0.0460321" P="0.0506238" Q="0.0407153" R="0.0518462" S="0.073729" T="0.0593523" V="0.0642985" W="0.0133282" Y="0.0326497"/>
+	<motif_dbs>
+		<motif_db source="meme/meme.lipocalin.oops.txt" last_mod_date="Wed Mar  1 17:39:29 2017">
+			<background A="0.0719998" C="0.0290002" D="0.0679998" E="0.0769997" F="0.0430001" G="0.0569999" H="0.0260002" I="0.048" K="0.0859996" L="0.0869996" M="0.0180003" N="0.053" P="0.0330002" Q="0.0290002" R="0.0310002" S="0.0589999" T="0.048" V="0.0689998" W="0.0170003" Y="0.05"/>
+		</motif_db>
+	</motif_dbs>
+	<motifs>
+		<motif db="0" id="GACPEVKPVENFDISKFAGTWYEIAK" alt="MEME-1" length="26" nsites="5" evalue="5.0e-006">
+			<pos A="-99" C="144" D="-149" E="-133" F="-258" G="269" H="220" I="-210" K="-126" L="-235" M="-128" N="-87" P="-179" Q="195" R="-34" S="-79" T="-105" V="-210" W="-298" Y="-234"/>
+			<pos A="289" C="-172" D="-248" E="-188" F="-180" G="-145" H="-158" I="-164" K="-148" L="-197" M="-97" N="-189" P="-221" Q="-78" R="150" S="-45" T="-105" V="-120" W="-261" Y="74"/>
+			<pos A="-84" C="312" D="-314" E="44" F="-111" G="-230" H="-180" I="36" K="-244" L="92" M="33" N="-225" P="-204" Q="-122" R="-125" S="-133" T="-66" V="134" W="-214" Y="-197"/>
+			<pos A="-92" C="-302" D="-187" E="36" F="-266" G="-208" H="-155" I="70" K="-160" L="-213" M="-130" N="-170" P="388" Q="-48" R="-75" S="72" T="-103" V="-192" W="-332" Y="-302"/>
+			<pos A="115" C="-282" D="98" E="109" F="-244" G="-150" H="-77" I="-177" K="-69" L="-197" M="-86" N="-77" P="-126" Q="44" R="3" S="111" T="-51" V="64" W="-285" Y="-236"/>
+			<pos A="-68" C="-167" D="-316" E="-260" F="114" G="-226" H="-183" I="30" K="-258" L="-72" M="12" N="-219" P="-200" Q="-135" R="-133" S="94" T="163" V="231" W="-223" Y="-188"/>
+			<pos A="-144" C="-348" D="-210" E="-121" F="-328" G="-216" H="-91" I="-243" K="200" L="-239" M="-133" N="-129" P="-194" Q="225" R="247" S="114" T="-111" V="-243" W="-308" Y="-284"/>
+			<pos A="-92" C="-241" D="-296" E="-256" F="-247" G="-224" H="-228" I="-114" K="-258" L="-190" M="-105" N="-229" P="361" Q="-140" R="-151" S="-72" T="242" V="70" W="-329" Y="-324"/>
+			<pos A="-63" C="-187" D="-232" E="-163" F="-140" G="75" H="-134" I="22" K="37" L="-77" M="241" N="-166" P="-172" Q="-50" R="-40" S="-100" T="-53" V="221" W="-226" Y="-208"/>
+			<pos A="-71" C="-310" D="103" E="103" F="-254" G="-142" H="-60" I="-205" K="81" L="-207" M="-94" N="124" P="-126" Q="52" R="201" S="-34" T="-50" V="-195" W="-285" Y="-234"/>
+			<pos A="-242" C="-375" D="91" E="-196" F="-382" G="91" H="-98" I="-352" K="-244" L="-408" M="-311" N="349" P="-242" Q="-122" R="-182" S="-80" T="-157" V="-389" W="-396" Y="-351"/>
+			<pos A="-318" C="-290" D="-467" E="-456" F="425" G="-424" H="-363" I="-172" K="-484" L="-47" M="-115" N="-430" P="-331" Q="-374" R="-362" S="-296" T="-352" V="-245" W="-202" Y="-103"/>
+			<pos A="-301" C="-418" D="363" E="-117" F="-408" G="-310" H="-244" I="-367" K="-403" L="-415" M="-323" N="-21" P="-370" Q="-260" R="-284" S="-260" T="-313" V="-381" W="-414" Y="-410"/>
+			<pos A="-107" C="-180" D="-350" E="-287" F="-106" G="-249" H="-200" I="252" K="-6" L="95" M="46" N="-249" P="-222" Q="-152" R="-148" S="-153" T="-77" V="137" W="216" Y="-191"/>
+			<pos A="96" C="-298" D="-79" E="114" F="-258" G="-152" H="-75" I="-202" K="-65" L="-209" M="-96" N="-73" P="-125" Q="216" R="7" S="200" T="-40" V="-190" W="-293" Y="-244"/>
+			<pos A="64" C="-339" D="-187" E="-115" F="-314" G="-207" H="-99" I="-238" K="223" L="-242" M="-134" N="100" P="-185" Q="18" R="221" S="-102" T="-106" V="-241" W="-310" Y="-282"/>
+			<pos A="-181" C="-226" D="-378" E="-340" F="342" G="-310" H="-122" I="98" K="-351" L="-88" M="-39" N="-304" P="-258" Q="-227" R="-212" S="-200" T="-176" V="42" W="-146" Y="170"/>
+			<pos A="273" C="-215" D="-127" E="-140" F="-272" G="-123" H="195" I="-223" K="-154" L="-247" M="-141" N="118" P="-194" Q="-56" R="-71" S="-37" T="-96" V="-174" W="-321" Y="-276"/>
+			<pos A="-199" C="-393" D="-301" E="-366" F="-446" G="397" H="-329" I="-419" K="-374" L="-473" M="-336" N="-252" P="-326" Q="-311" R="-240" S="-221" T="-320" V="-402" W="-399" Y="-453"/>
+			<pos A="89" C="-295" D="-91" E="104" F="-246" G="-153" H="-67" I="-184" K="77" L="-196" M="-82" N="-70" P="-123" Q="52" R="29" S="-26" T="223" V="-176" W="-280" Y="-234"/>
+			<pos A="-388" C="-388" D="-438" E="-441" F="-134" G="-384" H="-353" I="-366" K="-445" L="-245" M="-239" N="-397" P="-380" Q="-302" R="-275" S="-375" T="-361" V="-359" W="569" Y="-207"/>
+			<pos A="-290" C="-318" D="-383" E="-376" F="73" G="-361" H="354" I="-252" K="-386" L="-230" M="-173" N="-259" P="-307" Q="-176" R="-201" S="-252" T="-277" V="-283" W="286" Y="292"/>
+			<pos A="106" C="-271" D="-98" E="173" F="-260" G="-150" H="-94" I="-198" K="-87" L="-214" M="-101" N="-85" P="-134" Q="26" R="-13" S="137" T="156" V="-184" W="-300" Y="-255"/>
+			<pos A="-245" C="-306" D="-430" E="-410" F="-197" G="-384" H="-361" I="357" K="-396" L="52" M="172" N="-359" P="-346" Q="-288" R="-287" S="-287" T="-197" V="121" W="-336" Y="-320"/>
+			<pos A="328" C="-140" D="-375" E="-329" F="-260" G="-140" H="-310" I="72" K="-352" L="-199" M="-114" N="-318" P="-308" Q="-242" R="-222" S="-45" T="-138" V="-72" W="-331" Y="-364"/>
+			<pos A="-192" C="-313" D="-316" E="-228" F="-235" G="-288" H="-185" I="-128" K="276" L="36" M="217" N="-224" P="-256" Q="-77" R="45" S="-195" T="-163" V="-176" W="-307" Y="-304"/>
+		</motif>
+		<motif db="0" id="FWVLDTDYKNY" alt="MEME-2" length="11" nsites="5" evalue="1.1e-002">
+			<pos A="-125" C="-208" D="-290" E="-239" F="294" G="-248" H="179" I="-55" K="-244" L="-93" M="-23" N="-219" P="151" Q="-123" R="-126" S="-139" T="-115" V="66" W="-140" Y="111"/>
+			<pos A="-162" C="-256" D="-284" E="-238" F="-116" G="-257" H="-185" I="-103" K="-231" L="-1" M="-60" N="23" P="-238" Q="-121" R="-123" S="-152" T="71" V="-126" W="495" Y="-171"/>
+			<pos A="-187" C="-259" D="-460" E="-432" F="-253" G="-411" H="-393" I="294" K="-444" L="-100" M="-72" N="-409" P="-350" Q="-345" R="-317" S="-333" T="-179" V="284" W="-423" Y="-402"/>
+			<pos A="-241" C="-288" D="-462" E="-383" F="-126" G="-379" H="-302" I="114" K="-383" L="294" M="55" N="-375" P="97" Q="-218" R="-225" S="-287" T="-207" V="-90" W="-286" Y="-303"/>
+			<pos A="87" C="-310" D="199" E="-27" F="-267" G="-139" H="-74" I="-219" K="69" L="-226" M="-114" N="-38" P="-135" Q="29" R="-1" S="118" T="-60" V="-209" W="-301" Y="-248"/>
+			<pos A="-211" C="-289" D="-379" E="-410" F="-366" G="-321" H="-325" I="-239" K="-365" L="-355" M="-194" N="-226" P="-304" Q="-238" R="-240" S="-26" T="413" V="-240" W="-397" Y="-434"/>
+			<pos A="-314" C="-426" D="368" E="-127" F="-416" G="-332" H="-262" I="-376" K="-425" L="-423" M="-332" N="-102" P="-381" Q="-278" R="-298" S="-284" T="-334" V="-389" W="-420" Y="-421"/>
+			<pos A="-225" C="-294" D="-274" E="-298" F="78" G="-282" H="-38" I="-226" K="-307" L="-220" M="-157" N="120" P="-267" Q="-192" R="-179" S="-191" T="-229" V="-254" W="-84" Y="364"/>
+			<pos A="-140" C="-422" D="109" E="152" F="-378" G="-212" H="-152" I="-292" K="227" L="-299" M="-190" N="-123" P="-188" Q="10" R="-34" S="-125" T="-141" V="-275" W="-395" Y="-345"/>
+			<pos A="-219" C="-352" D="-147" E="-205" F="-340" G="-210" H="-87" I="-272" K="-9" L="-326" M="-217" N="360" P="-238" Q="-85" R="-82" S="-95" T="66" V="-308" W="-341" Y="-333"/>
+			<pos A="-252" C="-295" D="-377" E="-356" F="284" G="-344" H="-34" I="-222" K="-366" L="-206" M="-151" N="-294" P="-288" Q="-226" R="-210" S="-233" T="-263" V="-256" W="-56" Y="339"/>
+		</motif>
+	</motifs>
+	<correlations>
+		<correlation idx_a="0" idx_b="1" value="0.31"/>
+	</correlations>
+	<sequence_dbs>
+		<sequence_db source="common/lipocalin.s" last_mod_date="Wed Jan 20 14:03:15 2016" seq_count="5" residue_count="903"/>
+	</sequence_dbs>
+	<sequences>
+		<sequence db="0" name="ICYA_MANSE" comment="" length="189">
+			<score strand="both" combined_pvalue="1.06e-30" evalue="5.3e-30"/>
+			<seg start="1">
+				<data>
+GDIFYPGYCPDVKPVNDFDLSAFAGAWHEIAKLPLENENQGKCTIAEYKYDGKKASVYNSFVSNGVKEYMEGDLE
+				</data>
+				<hit pos="7" idx="0" pvalue="2.7e-24" match="++++++++++++++++++++++++++"/>
+			</seg>
+			<seg start="76">
+				<data>
+IAPDAKYTKQGKYVMTFKFGQRVVNLVPWVLATDYKNYAINYNCDYHPDKKAHSIHAWILSKSKVLEGNTKEVVD
+				</data>
+				<hit pos="103" idx="1" pvalue="1.8e-13" match="+++++++++++"/>
+			</seg>
+		</sequence>
+		<sequence db="0" name="BBP_PIEBR" comment="" length="173">
+			<score strand="both" combined_pvalue="1.39e-28" evalue="7e-28"/>
+			<seg start="1">
+				<data>
+NVYHDGACPEVKPVDNFDWSNYHGKWWEVAKYPNSVEKYGKCGWAEYTPEGKSVKVSNYHVIHGKEYFIEGTAYP
+				</data>
+				<hit pos="6" idx="0" pvalue="2.1e-24" match="++++++++++++++++++++++++++"/>
+			</seg>
+			<seg start="76">
+				<data>
+VGDSKIGKIYHKLTYGGVTKENVFNVLSTDNKNYIIGYYCKYDEDKKGHQDFVWVLSRSKVLTGEAKTAVENYLI
+				</data>
+				<hit pos="99" idx="1" pvalue="3.9e-11" match="+++++++++++"/>
+			</seg>
+		</sequence>
+		<sequence db="0" name="RETB_BOVIN" comment="" length="183">
+			<score strand="both" combined_pvalue="7.80e-24" evalue="3.9e-23"/>
+			<seg start="1">
+				<data>
+ERDCRVSSFRVKENFDKARFAGTWYAMAKKDPEGLFLQDNIVAEFSVDENGHMSATAKGRVRLLNNWDVCADMVG
+				</data>
+				<hit pos="4" idx="0" pvalue="2.3e-19" match="+++++++++++++ ++++++++++++"/>
+			</seg>
+			<seg start="76">
+				<data>
+TFTDTEDPAKFKMKYWGVASFLQKGNDDHWIIDTDYETFAVQYSCRLLNLDGTCADSYSFVFARDPSGFSPEVQK
+				</data>
+				<hit pos="104" idx="1" pvalue="2.1e-11" match="+++++++++++"/>
+			</seg>
+		</sequence>
+		<sequence db="0" name="LACB_BOVIN" comment="" length="178">
+			<score strand="both" combined_pvalue="2.85e-21" evalue="1.4e-20"/>
+			<seg start="1">
+				<data>
+MKCLLLALALTCGAQALIVTQTMKGLDIQKVAGTWYSLAMAASDISLLDAQSAPLRVYVEELKPTPEGDLEILLQ
+				</data>
+				<hit pos="15" idx="0" pvalue="3.5e-18" match="+++++++++++ ++++++++++++++"/>
+			</seg>
+			<seg start="76">
+				<data>
+KWENGECAQKKIIAEKTKIPAVFKIDALNENKVLVLDTDYKKYLLFCMENSAEPEQSLACQCLVRTPEVDDEALE
+				</data>
+				<hit pos="108" idx="1" pvalue="6.1e-10" match="+ +++++++ +"/>
+			</seg>
+		</sequence>
+		<sequence db="0" name="MUP2_MOUSE" comment="" length="180">
+			<score strand="both" combined_pvalue="1.38e-20" evalue="6.9e-20"/>
+			<seg start="1">
+				<data>
+MKMLLLLCLGLTLVCVHAEEASSTGRNFNVEKINGEWHTIILASDKREKIEDNGNFRLFLEQIHVLEKSLVLKFH
+				</data>
+				<hit pos="17" idx="0" pvalue="7.8e-17" match="++++++++++++ +++++++++++++"/>
+			</seg>
+			<seg start="76">
+				<data>
+TVRDEECSELSMVADKTEKAGEYSVTYDGFNTFTIPKTDYDNFLMAHLINEKDGETFQLMGLYGREPDLSSDIKE
+				</data>
+				<hit pos="108" idx="1" pvalue="1.3e-10" match="+++++++++++"/>
+			</seg>
+		</sequence>
+	</sequences>
+	<runtime host="Timothys-iMac.rd.unr.edu" when="Wed Mar  1 17:58:28 2017" cycles="11959" seconds="0.012"/>
+</mast>

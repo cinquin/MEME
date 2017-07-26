@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Begin document body -->
+<mcast version="4.12.0" release="Tue Jun 27 02:09:01 2017 -0700">
+<command-line>mcast -oc mcast_example_output_files -parse-genomic-coord Klf1.dreme Klf1.fna</command-line>
+<sequence-data num-sequences="904" num-residues="452000" />
+<alphabet>nucleotide</alphabet>
+<motif name="CCMCRCCC" width="8" best-possible-match="CCACACCC" best-possible-rc-match="GGGTGTGG"/>
+<motif name="BTTATCW" width="7" best-possible-match="CTTATCT" best-possible-rc-match="AGATAAG"/>
+<motif name="MCRCCCA" width="7" best-possible-match="CCACCCA" best-possible-rc-match="TGGGTGG"/>
+<motif name="RARGAAA" width="7" best-possible-match="AAAGAAA" best-possible-rc-match="TTTCTTT"/>
+<motif name="AKAAAM" width="6" best-possible-match="AGAAAA" best-possible-rc-match="TTTTCT"/>
+<motif name="CTGTSTS" width="7" best-possible-match="CTGTCTG" best-possible-rc-match="CAGACAG"/>
+<motif name="AGGGCGK" width="7" best-possible-match="AGGGCGG" best-possible-rc-match="CCGCCCT"/>
+<motif name="CCTKCCY" width="7" best-possible-match="CCTTCCT" best-possible-rc-match="AGGAAGG"/>
+<motif name="TTAAAAW" width="7" best-possible-match="TTAAAAA" best-possible-rc-match="TTTTTAA"/>
+<motif name="AAATAH" width="6" best-possible-match="AAATAT" best-possible-rc-match="ATATTT"/>
+<motif name="CATYTCC" width="7" best-possible-match="CATTTCC" best-possible-rc-match="GGAAATG"/>
+<motif name="CAGMCAC" width="7" best-possible-match="CAGCCAC" best-possible-rc-match="GTGGCTG"/>
+<motif name="CACAGY" width="6" best-possible-match="CACAGC" best-possible-rc-match="GCTGTG"/>
+<motif name="CTGGRGA" width="7" best-possible-match="CTGGGGA" best-possible-rc-match="TCCCCAG"/>
+<motif name="SACGTGA" width="7" best-possible-match="CACGTGA" best-possible-rc-match="TCACGTG"/>
+<background source="non-redundant database">
+<value letter="A">0.282</value>
+<value letter="C">0.222</value>
+<value letter="G">0.229</value>
+<value letter="T">0.267</value>
+</background>
+<cisml-file>cisml.xml</cisml-file>
+<mcast-parmaeters>
+<min-match-score>3.267</min-match-score>
+<e-thresh>10.000</e-thresh>
+<p-thresh>1.000</p-thresh>
+<q-thresh>1.000</q-thresh>
+<max-gap>50</max-gap>
+<cost-factor>1</cost-factor>
+<gap-open-cost>0.0653</gap-open-cost>
+<gap-extend-cost>0.0653</gap-extend-cost>
+</mcast-parmaeters>
+<e-value-parmaeters>
+<distribution>exponential</distribution>
+<status>Distribution estimated successfully.</status>
+<mu1>2.77</mu1>
+<mu2>17</mu2>
+<sigma2>1.44</sigma2>
+<c>0.996</c>
+<num-scores-used>1040</num-scores-used>
+<num-matches>1040</num-matches>
+<db-length>452000</db-length>
+</e-value-parmaeters>
+</mcast>

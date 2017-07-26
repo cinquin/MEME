@@ -1,0 +1,212 @@
+div.header {
+  position: relative;
+  overflow: hidden;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  margin-right: 3px;
+  margin-left: 3px;
+}
+div.header > h2 {
+  font-size: 1.5em;
+  font-style: normal;
+  margin: 0;
+  font-variant: small-caps; 
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+div.header > span {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+table.th_ul th {
+  white-space: nowrap;
+  font-size: 1.2em;
+  font-style: normal;
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
+
+table.th_ul th > span {
+  display: block;
+  border-bottom: 1px solid #CCCCCC;
+  margin-right: 3px;
+  padding-bottom: 1px; 
+}
+
+table.targets td {
+  padding: 0 10px;
+}
+table.preview td {
+  padding: 0 10px;
+}
+table.preview tbody td {
+  padding-bottom: 10px;
+}
+.ac {
+  text-align: center;
+}
+.downloadTd {
+  padding-left:20px;
+}
+div.logo_container {
+}
+table.match_summary tbody tr:first-child td, table.match_summary tbody tr:first-child th {
+  padding-top: 20px;
+}
+
+/* motif list link, first style */
+a.ml1 {
+}
+a.ml2 {
+}
+div.ml {
+  line-height: 1.8em;
+  height: 3.6em;
+  overflow-y: auto;
+}
+td.ml div {
+
+}
+
+table.match_summary {
+  width: 100%;
+}
+
+table.match_summary th {
+  min-width: 10em;
+}
+
+table.match_summary div.help, table.dl_opts div.help {
+  opacity: 0.0;
+    -moz-transition: opacity 0.5s;
+    -webkit-transition: opacity 0.5s;
+    -o-transition: opacity 0.5s;
+    transition: opacity 0.5s;
+}
+
+table.match_summary tr:hover div.help, table.dl_opts tr:hover div.help {
+  opacity: 1.0;
+}
+
+#download {
+  position:absolute;
+  display: inline-block;
+  z-index:9;
+  padding: 5px;
+  background-color: #FFF;
+  border-style: double;
+  border-width: 5px;
+  border-color: #00666a;
+}
+
+#download.hidden {
+  visibility: hidden;
+}
+
+div.custom_logo {
+  text-align: center;
+  margin-top: 20px;
+}
+
+div.logo_container {
+  position: relative;
+}
+
+div.logo_container canvas {
+  cursor: pointer;
+}
+
+a.download_text {
+  display: block;
+  margin-top: 5px;
+  margin-bottom: 20px;
+  color: #00c;
+  text-align: center;
+}
+a.download_text:hover { 
+  color: #00c;
+}
+a.download_text:active {
+  color: #c00;
+}
+
+a.prev_query, a.prev_target, a.next_target, a.next_query, a.download_btn {
+  font-family: arial;
+  font-size: xx-large;
+  text-decoration: none;
+  color: #000;
+}
+a.prev_query:hover, a.prev_target:hover, a.next_target:hover, a.next_query:hover, a.download_btn:hover {
+  background: #000;
+  color: #FFF;
+}
+
+a.prev_query {
+  position: absolute;
+  display: inline-block;
+  right:0;
+  top:0;
+}
+a.prev_target {
+  position: absolute;
+  display: inline-block;
+  right:0;
+  top: 30%;
+  transform: translateY(-50%);
+}
+a.download_btn {
+  position: absolute;
+  display: inline-block;
+  right:0;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+a.next_target {
+  position: absolute;
+  display: inline-block;
+  right:0;
+  top: 70%;
+  transform: translateY(-50%);
+}
+a.next_query {
+  position: absolute;
+  display: inline-block;
+  right:0;
+  bottom:0;
+}
+
+a.prev_target:not([href]), a.next_target:not([href]), a.prev_query:not([href]), a.next_query:not([href]) {
+  color: #BBB;
+  cursor: pointer;
+}
+a.prev_target:hover:not([href]), a.next_target:hover:not([href]), a.prev_query:hover:not([href]), a.next_query:hover:not([href]) {
+  color: #FFF;
+  background: #BBB;
+}
+
+table.inputs, table.alpha_bg_table {
+  margin-top: 20px;
+  border-collapse:collapse;
+}
+table.inputs * td, table.inputs * th, table.alpha_bg_table * td, table.alpha_bg_table * th {
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+span.strand_none, span.strand_given, span.strand_both, span.dist_allr,
+    span.dist_ed, span.dist_kullback, span.dist_pearson, span.dist_sandelin,
+    span.dist_blic1, span.dist_blic5, span.dist_llr1, span.dist_llr5,
+    span.ttype_evalue, span.ttype_qvalue {
+  display: none;
+}
+
+td.none span.strand_none, td.given span.strand_given, td.both span.strand_both,
+    td.allr span.dist_alr, td.ed span.dist_ed, td.kullback span.dist_kullback, 
+    td.pearson span.dist_pearson, td.sandelin span.dist_sandelin,
+    td.blic1 span.dist_blic1, td.blic5 span.dist_blic5, td.llr1 span.dist_llr1,
+    td.llr5 span.dist_llr5, td.evalue span.ttype_evalue, td.qvalue span.ttype_qvalue {
+  display: inline;
+}

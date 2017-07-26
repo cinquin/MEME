@@ -1,0 +1,129 @@
+# This smoke test is special because it doesn't use the convience method "test".
+# This test runs MEME and DREME to generate text, XML and HTML outputs and then
+# attempts to parse them. 
+# If for some reason this test fails to run MEME or DREME or they fail to
+# generate one of the outputs then the test for that output is skipped not failed.
+# However any motif outputs that seem to have been generated from a successful
+# run of MEME should parse without errors or this test will consider it a failure.
+
+my @inputs = (
+  {
+    prog => 'meme',
+    dset => 'crp0',
+    args => ['-dna', '-nmotifs', 3, catfile('common', 'crp0.s')]
+  }, {
+    prog => 'meme',
+    dset => 'lipocalin',
+    args => ['-protein', '-nmotifs', 3, catfile('common', 'lipocalin.s')]
+  }, {
+    prog => 'meme',
+    dset => 'puf3p',
+    args => ['-rna', '-nmotifs', 3, catfile('common', 'Puf3p-20.s')]
+  }, {
+    prog => 'meme',
+    dset => 'crp0.extdna',
+    args => ['-alph', catfile('common', 'extended_dna.alph'), '-nmotifs', 3, catfile('common', 'crp0.s')]
+  }, {
+    prog => 'dreme',
+    dset => 'klf1',
+    args => ['-dna', '-m', 3, '-p', catfile('common', 'Klf1.s')]
+  }, {
+    prog => 'dreme',
+    dset => 'klf1.extdna',
+    args => ['-alph', catfile('common', 'extended_dna.alph'), '-m', 3, '-p', catfile('common', 'Klf1.s')]
+  }, {
+    prog => 'dreme',
+    dset => 'puf3p',
+    args => ['-rna', '-m', 3, '-p', catfile('common', 'Puf3p.s')]
+  }
+);
+# ensure results directory exists
+mkpath('results');
+my $messages;
+foreach my $input (@inputs) {
+  my $all_ok = 1; # assume success initially
+  my $tlog_fh = &get_log_fh();
+  # create a clean working directory for the motifs
+  my $motif_work_dir = catdir('results', "motif.$input->{prog}.$input->{dset}");
+  # clean out existing files from previous run
+  rmtree($motif_work_dir) if (-e $test_work_dir);
+  # run the motif generating program
+  my %opts;
+  my @motifs;
+  if ($input->{prog} eq 'meme') {
+    %opts = (
+      PROG => 'meme',
+      BIN => catdir($ENV{'MEME_DIST_DIR'}, 'src'),
+      ARGS => ['-oc', $motif_work_dir, '-nostatus', @{$input->{args}}],
+      ALL_VAR => \$messages
+    );
+    @motifs = (
+      {type => 'text', file => 'meme.txt'},
+      {type => 'xml', file => 'meme.xml'},
+      {type => 'html', file => 'meme.html'});
+  } elsif ($input->{prog} eq 'dreme') {
+    %opts = (
+      PROG => 'dreme',
+      BIN => catdir($ENV{'MEME_DIST_DIR'}, 'scripts'),
+      ARGS => ['-oc', $motif_work_dir, @{$input->{args}}],
+      ALL_VAR => \$messages
+    );
+    @motifs = (
+      {type => 'text', file => 'dreme.txt'},
+      {type => 'xml', file => 'dreme.xml'},
+      {type => 'html', file => 'dreme.html'});
+  } else {
+    die("Unknown motif producer!");
+  }
+  print $tlog_fh '*' x 79 . "\n";
+  print $tlog_fh 'Generating ' . $input->{prog} . " motifs...\n";
+  print $tlog_fh &ExecUtils::stringify_args($opts{PROG}, @{$opts{ARGS}}), "\n";
+  my $status = &ExecUtils::invoke(%opts);
+  print $tlog_fh $messages;
+  # now try to parse each motif
+  foreach my $motif (@motifs) {
+    my $name = "motif-in.$input->{prog}.$input->{dset}.$motif->{type}";
+    my $description = '';
+    print $tlog_fh '*' x 79 . "\n";
+    print $tlog_fh "Test $name ...\n";
+    if (!$status && -e catfile($motif_work_dir, $motif->{file})) {
+      # create a clean working directory for the results
+      my $test_work_dir = catdir('results', $name);
+      # clean out existing files from previous run
+      rmtree($test_work_dir) if (-e $test_work_dir);
+      # setup options
+      %opts = (
+        PROG => 'meme2images',
+        BIN => catdir($ENV{'MEME_DIST_DIR'}, 'src'),
+        ARGS => ['-eps', catfile($motif_work_dir, $motif->{file}), $test_work_dir],
+        ALL_VAR => \$messages
+      );
+      # run the program
+      print $tlog_fh &ExecUtils::stringify_args($opts{PROG}, @{$opts{ARGS}}), "\n";
+      my $status2 = &ExecUtils::invoke(%opts);
+      print $tlog_fh $messages;
+      # count the number of generated EPS files
+      my $dirh;
+      opendir($dirh, $test_work_dir);
+      my @eps_files = grep(/\.eps$/, readdir($dirh));
+      closedir($dirh);
+      if (!$status2 && @eps_files) {
+        # success
+        &process_result('PASS', $name, $description);
+        print $tlog_fh "PASSED!\n";
+      } else {
+        # failure
+        &process_result('FAIL', $name, $description);
+        print $tlog_fh "FAILED!\n";
+        $all_ok = 0;
+      }
+      # clean up working files
+      rmtree($test_work_dir) unless $status2;
+    } else {
+      &process_result('SKIP', $name, $description, "$motif->{file} missing");
+      print $tlog_fh "SKIPPED!\n";
+    }
+  }
+  # clean up working files
+  rmtree($motif_work_dir) if (!$status && $all_ok);
+}

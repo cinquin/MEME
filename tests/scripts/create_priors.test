@@ -1,0 +1,25 @@
+&test('create-priors1', '',
+  'create-priors', '',
+  [ '-oc', 'results/create-priors1', 'create-priors/chrX.fa', 'create-priors/DNaseHS_gm12878.wig'],
+  [
+    {
+      output => 'results/create-priors1/priors.wig', 
+      reference => 'create-priors/priors.wig', 
+      type => 'text'
+    }
+  ],
+  'results/create-priors1'
+);
+
+&test('create-priors2', '',
+  'create-priors', '',
+  [ '-oc', 'results/create-priors2', 'create-priors/chrX.fa', 'create-priors/DNaseHS_gm12878.wig'],
+  [
+    {
+      output => 'results/create-priors2/priors.dist', 
+      reference => 'create-priors/priors.dist', 
+      type => 'text'
+    }
+  ],
+  'results/create-priors2'
+);

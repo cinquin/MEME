@@ -1,0 +1,103 @@
+div.btn h2, div.btn h3, div.btn h4 {
+  display: inline;
+  margin: 0;
+}
+div.btn {
+  /* make it behave like a link */
+  cursor: pointer;
+  /* padding */
+  margin: 0;
+  padding: 2px;
+}
+div.btn:hover {
+  color: #AA2244;
+}
+div.btn:active {
+  color: #884466;
+}
+div.btn > span {
+  /* heading font styling */
+  font-size: 0.8em; 
+  font-style: normal;
+  font-family: Arial, serif;
+  font-weight: bold;
+}
+div.btn > span.expanded {
+  display: none;
+}
+div.btn > span.collapsed {
+  display: inline-block;
+  border-style: solid;
+  border-width: 1px;
+}
+div.btn.expanded > span.expanded {
+  display:inline-block;
+}
+div.btn.expanded > span.collapsed {
+  display:none;
+}
+div.btn + div {
+  display:none;
+  margin-top: 0;
+  margin-left: 5px;
+  padding: 5px;
+}
+div.btn.expanded + div {
+  display: block;
+}
+div.category + div.category {
+  margin-top: 20px;
+}
+div.category > div.info {
+  border: 1px solid black;
+  padding: 5px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+div.listing + div.listing {
+  margin-top: 10px;
+}
+div.listing > div.info > p {
+  margin-top: 0;
+  margin-bottom: 2px;
+}
+div.listing > div.info > h5 {
+  display: inline;
+  margin-right: 5px;
+}
+div.listing > div.info > div.out {
+  margin-top: 5px;
+}
+div.button {
+  display: inline-block;
+  font-variant: small-caps;
+  font-weight: bold;
+  padding: 2px;
+  border: 1px solid green;
+  color: green;
+  vertical-align: middle;
+  cursor: pointer;
+  font-size: x-small;
+}
+div.button:hover {
+  color: DarkGreen;
+  border-color: DarkGreen;
+}
+div.button.active {
+  color: white;
+  background-color: DarkGreen;
+  border-color: black;
+}
+div.button.deactivated {
+  color: gray;
+  border-color: gray;
+}
+div.button + div.button {
+  margin-left: 5px;
+}
+div.priors_info {
+  margin-left: 10px;
+}
+div.filter_priors .no_priors {
+  display:none;
+}

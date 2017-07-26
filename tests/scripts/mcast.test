@@ -1,0 +1,39 @@
+# Test mcast (basic)
+&test('mcast1', '',
+  'mcast', '',
+  ['-oc', 'results/mcast1', 'meme/meme.lex0.zoops.txt', 'common/lex0.s'],
+  [
+    {
+      output => 'results/mcast1/mcast.txt', 
+      reference => 'mcast/lex0.zoops.txt', 
+      type => 'text', ignore => []
+    },
+    {
+      output => 'results/mcast1/mcast.gff', 
+      reference => 'mcast/lex0.zoops.gff', 
+      type => 'text', ignore => ['^#']
+    },
+    {
+      output => 'results/mcast1/mcast.xml', 
+      reference => 'mcast/lex0.zoops.xml', 
+      type => 'xml', ignore => [
+        '^mcast@(release|version)$',
+        '^mcast:command-line#value$'
+      ]
+    },
+    {
+      output => 'results/mcast1/cisml.xml', 
+      reference => 'mcast/lex0.zoops.cisml', 
+      type => 'xml', ignore => []
+    },
+    {
+      output => 'results/mcast1/mcast.html', 
+      reference => 'mcast/lex0.zoops.html', 
+      type => 'json', ignore => [
+        'data:(version|revision|release|cmd|runtime)',
+      ]
+    }
+  ],
+  'results/mcast1'
+);
+

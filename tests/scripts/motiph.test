@@ -1,0 +1,18 @@
+# Test motiph
+&test('motiph1', '',
+  'motiph', '',
+  ['--seed', 0, '--bg', 2.0, '--pseudocount', 0.01, '--oc', 'results/motiph1', 
+    'motiph/spiked.aln', 'motiph/yeast.tree', 'motiph/MCM1.meme.html'],
+  [{output => 'results/motiph1/motiph.txt', reference => 'motiph/motiph.gff', type => 'text'}],
+  'results/motiph1'
+);
+
+# Test motiph with --motif option
+&test('motiph2', '',
+  'motiph', '',
+  ['--seed', 0, '--bg', 2.0, '--pseudocount', 0.01, '--oc', 'results/motiph2',
+    '--output-pthresh', 1.0, '--motif', 'CGGYGGGG',  '--motif', 'GCATCRGRBSAGA', 'motiph/spiked.aln', 
+    'motiph/yeast.tree', 'common/crp0.meme.html'],
+  [{output => 'results/motiph2/motiph.txt', reference => 'motiph/motiph-motif23.gff', type => 'text'}],
+  'results/motiph2'
+);

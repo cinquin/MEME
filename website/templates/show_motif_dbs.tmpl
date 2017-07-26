@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Motif Databases - MEME Suite</title>
+    <link rel="shortcut icon" type="image/x-icon" href="../doc/images/memesuite_icon.ico">
+    <link rel="icon" type="image/png" href="../doc/images/memesuite_icon.png">
+    <link href="../doc/css/style.css?version=4.11.1" rel="stylesheet" type="text/css" />
+    <script src="../doc/js/menu-path.js?version=4.11.1"></script>
+    <script src="../doc/js/menu.js?version=4.11.1"></script>
+    <script src="../doc/js/utilities.js?version=4.11.1"></script>
+    <script src="../doc/js/motif_logo.js?version=4.11.1"></script>
+    <script src="../js/site.js?version=4.11.1"></script>
+    <style>
+      div.btn h2, div.btn h3, div.btn h4 {
+        display: inline;
+        margin: 0;
+      }
+      div.btn {
+        /* make it behave like a link */
+        cursor: pointer;
+        /* padding */
+        margin: 0;
+        padding: 2px;
+      }
+      div.btn:hover {
+        color: #AA2244;
+      }
+      div.btn:active {
+        color: #884466;
+      }
+      div.btn > span {
+        /* heading font styling */
+        font-size: 0.8em; 
+        font-style: normal;
+        font-family: Arial, serif;
+        font-weight: bold;
+      }
+      div.btn > span.expanded {
+        display: none;
+      }
+      div.btn > span.collapsed {
+        display: inline-block;
+        border-style: solid;
+        border-width: 1px;
+      }
+      div.btn.expanded > span.expanded {
+        display:inline-block;
+      }
+      div.btn.expanded > span.collapsed {
+        display:none;
+      }
+      div.btn + div {
+        display:none;
+        margin-top: 0;
+        margin-left: 5px;
+        padding: 5px;
+      }
+      div.btn.expanded + div {
+        display: block;
+      }
+      div.category + div.category {
+        margin-top: 20px;
+      }
+      div.category > div.info {
+        border: 1px solid black;
+        padding: 5px;
+        max-height: 600px;
+        overflow-y: auto;
+      }
+      div.listing + div.listing {
+        margin-top: 10px;
+      }
+
+      div.listing h4, div.listing p {
+        margin-top: 0;
+        margin-bottom: 2px;
+      }
+      div.listing h5 {
+        margin-top: 0;
+        margin-bottom: 0;
+      }
+      div.listing h5 + ul {
+        margin-top: 0;
+        padding-left: 20px;
+      }
+      div.listing li {
+        line-height: 1.5;
+      }
+      div.listing li + li {
+        margin-top: 5px;
+      }
+      span.file {
+        background-color: #E4ECEC;
+        font-family: monospace;
+        white-space: pre;
+        padding: 2px;
+        border: 1px solid black;
+      }
+
+    </style>
+    <script>
+
+      function load_listing_detail(container, listing_id) {
+        "use strict";
+        // now send the request
+        var url = "motifs?listing=" + listing_id;
+        var request = new XMLHttpRequest();
+        request.addEventListener("load", function(evt) {
+          container.innerHTML = "";
+          var xml = request.responseXML;
+          var description = document.createElement("p");
+          description.innerHTML = xml.getElementsByTagName("description")[0].textContent;
+          container.appendChild(description);
+          var files_header = document.createElement("h5");
+          files_header.appendChild(document.createTextNode("Files"));
+          container.appendChild(files_header);
+          var file_list = document.createElement("ul");
+          var xml_files = xml.getElementsByTagName("file");
+          var i;
+          for (i = 0; i < xml_files.length; i++) {
+            var xml_file = xml_files[i];
+            var file_item = document.createElement("li");
+            var file_name = document.createElement("span");
+            file_name.className = "file";
+            file_name.appendChild(document.createTextNode(xml_file.getAttribute("src")));
+            file_item.appendChild(file_name);
+            var count = parseInt(xml_file.getAttribute("count"), 10);
+            var min = parseInt(xml_file.getAttribute("min"), 10);
+            var max = parseInt(xml_file.getAttribute("max"), 10);
+            var cols = parseInt(xml_file.getAttribute("cols"), 10);
+            var avg = cols / count;
+            var text = " " + count + " motifs, between " + min + " and " + max +
+                " in width (average width " + avg.toFixed(1) + ").";
+            file_item.appendChild(document.createTextNode(text));
+            file_list.appendChild(file_item);
+          }
+          container.appendChild(file_list);
+        }, false);
+        request.open("GET", url, true);
+        request.send();
+      }
+
+      function toggle_listing(listing, button) {
+        toggle_class(button, 'expanded');
+        if (!/\bloading\b/.test(listing.className)) {
+          listing.className += " loading";
+          var container = listing.querySelector(".info");
+          var id = parseInt(listing.getAttribute("data-id"), 10);
+          load_listing_detail(container, id);
+        }
+      }
+
+      function create_listing(id, name) {
+        var listing = document.createElement("div");
+        listing.className = "listing";
+        listing.setAttribute("data-id", id);
+        var button = document.createElement("div");
+        button.className = "btn";
+        var heading = document.createElement("h4");
+        heading.appendChild(document.createTextNode(name));
+        button.appendChild(heading);
+        button.appendChild(document.createTextNode("\u2002"));
+        var more = document.createElement("span");
+        more.className = "collapsed";
+        more.appendChild(document.createTextNode("..."));
+        button.appendChild(more);
+        var less = document.createElement("span");
+        less.className = "expanded";
+        less.appendChild(document.createTextNode("\u25BC"));
+        button.appendChild(less);
+        listing.appendChild(button);
+        var info = document.createElement("div");
+        info.className = "info subcontent";
+        info.appendChild(document.createTextNode("loading..."));
+        listing.appendChild(info);
+        button.addEventListener("click", function (evt) {
+          toggle_listing(listing, button);
+        }, false);
+        button.addEventListener("keypress", function(evt) {
+          if (evt.which == 32 || evt.keyCode == 32) {
+            toggle_listing(listing, button);
+          }
+        }, false);
+        return listing;
+      }
+      
+      function load_listings(container, category_id) {
+        "use strict";
+        // now send the request
+        var url = "motifs?category=" + category_id;
+        var request = new XMLHttpRequest();
+        request.addEventListener("load", function(evt) {
+          var xml_doc, listings, all_l, listing, i, id, name;
+          xml_doc = request.responseXML;
+          listings = xml_doc.firstChild;
+          // clear the container
+          container.innerHTML = "";
+          // add the other options
+          all_l = listings.getElementsByTagName("l");
+          for (i = 0; i < all_l.length; i++) {
+            listing = all_l[i];
+            id = listing.getAttribute("i");
+            name = listing.getAttribute("n");
+            container.appendChild(create_listing(id, name));
+          }
+          // re-enable the list
+        }, false);
+        request.open("GET", url, true);
+        request.send();
+
+      }
+
+      function toggle_category(category, button) {
+        toggle_class(button, 'expanded');
+        if (!/\bloading\b/.test(category.className)) {
+          category.className += " loading";
+          var container = category.querySelector(".info");
+          var id = parseInt(category.getAttribute("data-id"), 10);
+          load_listings(container, id);
+        }
+      }
+
+    </script>
+  </head>
+  <body>
+    <div class="content_box">
+      <noscript>
+        <div class="no_script">
+          <div class="no_script_warning">
+          <h1>Javascript is disabled! &#9785;</h1>
+          <p>The MEME Suite web application requires the use of JavaScript but
+          Javascript doesn't seem to be available on your browser.</p>
+          <p>Please re-enable Javascript to use the MEME Suite.</p>
+          </div>
+        </div>
+      </noscript>
+      <div class="memesuitelogo">
+        <h1>The MEME Suite</h1>
+        <h2>Motif-based sequence analysis tools</h2>
+      </div>
+      <h1>Motif Databases</h1>
+      <div class="subcontent">
+        <p>[Click a category to show its available databases. Within a category click a database to see details.]</p>
+        <!--{category}-->
+        <div class="category" data-id="XXXXidXXXX">
+          <div class="btn" tabindex="0">
+            <h3><!--{name}-->A Category<!--{/name}--> (<!--{cnt}-->Number of Databases<!--{/cnt}--> Databases)</h3>
+            &ensp;
+            <span class="collapsed">...</span>
+            <span class="expanded">&#x25BC;</span>
+          </div>
+          <div class="info">Loading...</div>
+        </div>
+        <!--{/category}-->
+        <script>
+          (function() {
+            "use strict";
+            function activate_button(category) {
+              var button = category.querySelector(".btn");
+              button.addEventListener("click", function (evt) {
+                toggle_category(category, button);
+              }, false);
+              button.addEventListener("keypress", function(evt) {
+                if (evt.which == 32 || evt.keyCode == 32) {
+                  toggle_category(category, button);
+                }
+              }, false);
+            }
+            var i; var categories = document.querySelectorAll(".category");
+            for (i = 0; i < categories.length; i++) activate_button(categories[i]);
+          })();
+        </script>
+      </div>
+    </div>
+  </body>
+</html>
+
+

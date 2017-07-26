@@ -1,0 +1,143 @@
+#!@WHICHPERL@
+=head1 NAME
+
+mcast_webservice - Run mcast in a restricted mode and create an index webpage.
+
+=head1 SYNOPSIS
+
+mcast_webservice [options] <motifs> <sequence db>
+
+      Options:
+        -upseqs <file>        Uploaded sequences
+        -bfile <file>         background file (0-order)
+        -psp <db>             database containing priors
+        -prior-dist <db>      database containing priors
+        -motif_pvthresh <pv>  p-value threshold for motif hits
+        -max_gap  <gap>       Maximum allowed distance between adjacent hits
+        -output_evthresh <ev> Print matches with E-values less than E
+        -hardmask             Mask any lowercase sequence
+        -help                 brief help message
+
+=cut
+
+use strict;
+use warnings;
+# load standard perl libraries
+use File::Basename qw(fileparse);
+use File::Copy qw(copy);
+use Getopt::Long qw(:config permute auto_help);
+use Pod::Usage;
+# load custom perl libraries
+use lib qw(@PERLLIBDIR@);
+use StatusPage qw(arg_checks opt_uploaded opt_db opt_number opt_integer opt_evalue);
+# constants
+my $bin_dir = '@BINDIR@';
+my $fasta_db_dir = '@MEMEDB@/fasta_databases';
+# required parameters
+my ($motifs, $sequences);
+# option defaults
+my ($bfile, $hardmask, $psp, $pdist, $motif_pvthresh, $max_gap, $output_evthresh);
+#status page
+my $status = new StatusPage('MCAST', \@ARGV);
+$status->add_message('Parsing arguments');
+# parse options
+my @arg_errors = ();
+my $opts_ok = do {
+  local $SIG{__WARN__} = sub { my ($msg) = @_; chomp($msg); push(@arg_errors, $msg); };
+  GetOptions(
+  '<>' => arg_checks(opt_uploaded(\$motifs), opt_db(\$sequences, $fasta_db_dir, 'db')),
+  'upseqs=s' => opt_uploaded(\$sequences),
+  'bfile=s' => opt_uploaded(\$bfile),
+  'psp=s' => opt_db(\$psp, $fasta_db_dir, 'db'),
+  'prior-dist=s' => opt_db(\$pdist, $fasta_db_dir, 'db'),
+  'motif_pvthresh=f' => opt_number(\$motif_pvthresh, '>', 0, '<=', 1),
+  'max_gap=i' => opt_integer(\$max_gap, 0),
+  'output_evthresh=f' => opt_evalue(\$output_evthresh),
+  'hardmask' => \$hardmask
+  );
+};
+# add additional error messages for missing sequences and motifs
+push(@arg_errors, "No motifs provided.") unless $motifs;
+push(@arg_errors, "No sequences provided.") unless defined $sequences;
+# display the error messages both to the status page and stdout
+foreach my $arg_error (@arg_errors) {
+  print STDERR $arg_error, "\n";
+  $status->add_message($arg_error);
+}
+$opts_ok = 0 if (scalar(@arg_errors) > 0);
+# setup status page
+$status->add_file('html', 'mcast.html', 'MCAST HTML output');
+$status->add_file('text', 'mcast.txt', 'MCAST text output');
+$status->add_file('gff', 'mcast.gff', 'MCAST GFF output');
+$status->add_file('motif', $motifs, 'Input Motifs');
+$status->add_file('fasta', $sequences, 'Uploaded Sequences') if ($sequences !~ m/^db\//);
+$status->add_message($opts_ok ? 'Arguments ok' : "Error parsing arguments");
+$status->update($opts_ok ? 'Starting' : 'Error');
+# exit if there was an error reading the arguments
+unless ($opts_ok) {
+  $status->write_log();
+  pod2usage(2);
+}
+# create the symlink to the databases
+symlink($fasta_db_dir, 'db');
+# ensure it will be removed on completion (when the log is written)
+my @cleanup_files = ('db');
+$status->set_cleanup(
+  sub {
+    foreach my $file (@cleanup_files) {
+      unlink($file);
+    }
+  } 
+);
+if (($psp && $psp =~ m/\.gz$/) || ($pdist && $pdist =~ m/\.gz$/)) {
+  $status->add_message("Preparing priors for use");
+}
+# prepare psp if gziped
+if ($psp && $psp =~ m/\.gz$/) {
+  # make a local copy
+  my $local_psp = fileparse($psp);
+  copy($psp, $local_psp);
+  # unzip (note this removes the .gz extension from the file)
+  $status->run(PROG => 'gunzip', ARGS => [$local_psp]);
+  # remove gz extension from the stored file name
+  $local_psp =~ s/\.gz$//;
+  # update psp var
+  $psp = $local_psp;
+  # update the cleanup function to remove the psp
+  push(@cleanup_files, $local_psp);
+}
+# prepare pdist if gziped
+if ($pdist && $pdist =~ m/\.gz$/) {
+  # make a local copy
+  my $local_pdist = fileparse($pdist);
+  copy($pdist, $local_pdist);
+  # unzip (note this removes the .gz extension from the file)
+  $status->run(PROG => 'gunzip', ARGS => [$local_pdist]);
+  # remove gz extension from the stored file name
+  $local_pdist =~ s/\.gz$//;
+  # update pdist var
+  $pdist = $local_pdist;
+  # update the cleanup function to remove the pdist
+  push(@cleanup_files, $local_pdist);
+}
+# if it is a sequence database then get the computed background
+if ($sequences =~ m/^db\//) {
+  $bfile = $sequences . '.bfile' if (-e ($sequences . '.bfile') && !defined($bfile));
+  $hardmask = 1;
+}
+# Run MCAST
+my @mcast_args = ('--oc', '.', '--verbosity', 1);
+push(@mcast_args, '--hardmask') if ($hardmask);
+push(@mcast_args, '--bgfile', $bfile) if (defined($bfile));
+push(@mcast_args, '--psp', $psp) if (defined($psp));
+push(@mcast_args, '--prior-dist', $pdist) if (defined($pdist));
+push(@mcast_args, '--output-ethresh', $output_evthresh) if (defined($output_evthresh));
+push(@mcast_args, '--max-gap', $max_gap) if (defined($max_gap));
+push(@mcast_args, '--motif-pthresh', $motif_pvthresh) if (defined($motif_pvthresh));
+push(@mcast_args, $motifs, $sequences);
+$status->run(PROG => 'mcast', BIN => $bin_dir, ARGS => \@mcast_args);
+# done
+$status->add_message("Done");
+$status->update();
+$status->write_log();
+1;

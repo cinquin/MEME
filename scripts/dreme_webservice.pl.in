@@ -1,0 +1,96 @@
+#!@WHICHPERL@
+=head1 NAME
+
+dreme_webservice - Run dreme in a restricted mode and create an index webpage.
+
+=head1 SYNOPSIS
+
+dreme_webservice [options] <positive sequences file>
+
+  Options:
+    -n <file>         file containing negative sequences
+    -norc             use given strand only
+    -e <evalue>       maximum motif evalue
+    -m <count>        maximum motif count
+    -help             brief help message
+
+=cut
+
+use strict;
+use warnings;
+# load standard perl libraries
+use Getopt::Long qw(:config permute auto_help);
+use Pod::Usage;
+# load custom perl libraries
+use lib qw(@PERLLIBDIR@);
+use Alphabet qw(rna dna protein);
+use StatusPage qw(arg_checks arg_end opt_uploaded opt_choice opt_integer opt_evalue);
+use Globals;
+# constants
+my $bin_dir = '@BINDIR@';
+# required parameters
+my $positives;
+# option defaults
+my $alpha = 'DNA';
+my $alphf = undef;
+my $negatives = undef;
+my $norc = 0; # FALSE
+my $evalue_threshold = undef;
+my $count_threshold = undef;
+#status page
+my $status = new StatusPage('DREME', \@ARGV);
+$status->add_message('Parsing arguments');
+# parse options
+my @arg_errors = ();
+my $opts_ok = do {
+  local $SIG{__WARN__} = sub { my ($msg) = @_; chomp($msg); push(@arg_errors, $msg); };
+  GetOptions(
+  '<>' => arg_checks(opt_uploaded(\$positives), arg_end()),
+  'alpha=s' => opt_choice(\$alpha, 'DNA', 'RNA', 'PROTEIN'),
+  'alphf=s' => opt_uploaded(\$alphf),
+  'n=s' => opt_uploaded(\$negatives), 
+  'norc' => \$norc,
+  'e=f' => opt_evalue(\$evalue_threshold), 
+  'm=i' => opt_integer(\$count_threshold, 1),
+  );
+};
+# add additional error messages for missing sequences and motifs
+push(@arg_errors, "No sequences provided.") unless defined $positives;
+# display the error messages both to the status page and stdout
+foreach my $arg_error (@arg_errors) {
+  print STDERR $arg_error, "\n";
+  $status->add_message($arg_error);
+}
+$opts_ok = 0 if (scalar(@arg_errors) > 0);
+# setup status page
+$status->add_file('html', 'dreme.html', 'DREME HTML output');
+$status->add_file('xml', 'dreme.xml', 'DREME XML output');
+$status->add_file('text', 'dreme.txt', 'DREME text output');
+$status->add_file('pos_seqs', $positives, 'Input sequences');
+$status->add_file('neg_seqs', $negatives, 'Control sequences');
+$status->add_message($opts_ok ? 'Arguments ok' : "Error parsing arguments");
+$status->update($opts_ok ? 'Starting' : 'Error');
+# exit if there was an error reading the arguments
+unless ($opts_ok) {
+  $status->write_log();
+  pod2usage(2);
+}
+# load the alphabet
+my $alphabet = $status->load_alphabet($alpha, $alphf);
+my @alph_args = (defined($alphf) ? ('-alph', $alphf) : ('-' . lc($alpha)));
+# construct the arguments to dreme
+my @dreme_args = ('-v', 1, '-oc', '.', @alph_args);
+push(@dreme_args, '-p', $positives);
+push(@dreme_args, '-n', $negatives) if $negatives;
+push(@dreme_args, '-norc') if ($norc);
+push(@dreme_args, '-t', $status->remaining_time());
+push(@dreme_args, '-e', $evalue_threshold) if defined($evalue_threshold);
+push(@dreme_args, '-m', $count_threshold) if defined($count_threshold);
+push(@dreme_args, '-dfile', 'description') if (-e 'description');
+# run DREME (let DREME manage the timeout)
+$status->run(PROG => 'dreme', BIN => $bin_dir, ARGS => \@dreme_args, TIMEOUT => 0);
+# done
+$status->add_message("Done");
+$status->update();
+$status->write_log();
+1;

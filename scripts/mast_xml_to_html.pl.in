@@ -1,0 +1,493 @@
+#!@WHICHPERL@
+
+=head1 NAME
+
+mast_xml_to_html - Make a MAST HTML output from a MAST XML output.
+
+=head1 SYNOPSIS
+
+mast_xml_to_html <MAST XML file> <MAST HTML file>
+=cut
+
+use strict;
+use warnings;
+
+use Cwd qw(abs_path);
+use Fcntl qw(O_RDONLY SEEK_SET);
+use File::Basename qw(fileparse);
+use File::Spec::Functions qw(tmpdir);
+use File::Temp qw(tempfile);
+use Getopt::Long;
+use Pod::Usage;
+use XML::Parser::Expat;
+
+use lib '@PERLLIBDIR@';
+
+my $etc_dir;
+my $temp_dir;
+my $scripts_dir;
+
+#
+# initialise the global constants
+# 
+sub initialise {
+  # setup etc dir
+  $etc_dir = defined($ENV{MEME_ETC_DIR}) ? $ENV{MEME_ETC_DIR} : '@APPCONFIGDIR@';
+  # setup temporary directory
+  $temp_dir = '@TMP_DIR@';
+  # use the perl default if none is supplied or the replace fails
+  $temp_dir = tmpdir() if ($temp_dir eq '' || $temp_dir =~ m/^\@TMP[_]DIR\@$/);
+
+  # find the location of the script
+  my $script_name;
+  ($script_name, $scripts_dir) = fileparse(__FILE__);
+  $scripts_dir = abs_path($scripts_dir);
+
+  # add script location to search path
+  unshift(@INC, $scripts_dir);
+
+  require HtmlMonolithWr;
+  require MastSAX;
+}
+
+sub arguments {
+  # Set Option Defaults
+  my $options = {XML_PATH => undef, HTML_PATH => undef};
+  # General Options
+  my $help = 0; # FALSE
+  my @errors = ();
+  my @dbs = ();
+
+  # get the options from the arguments
+  my $options_success = 0; # FALSE
+  # redirect stderr to a temp file so we can get the error message from GetOptions
+  my $olderr;
+  my $tmperr = tempfile('GetOptions_XXXXXXXXXX', DIR => $temp_dir, UNLINK => 1);
+  open($olderr, ">&STDERR") or die("Can't dup STDERR: $!");
+  open(STDERR, '>&', $tmperr) or die("Can't redirect STDERR to temp file: $!");
+  # parse options
+  $options_success = GetOptions(
+    'help|?'          => \$help,
+  );
+  ($options->{XML_PATH}, $options->{HTML_PATH}) = @ARGV;
+  # display help
+  pod2usage(1) if $help;
+  # reset STDERR
+  open(STDERR, ">&", $olderr) or die("Can't reset STDERR: $!");
+  # read argument parsing errors
+  seek($tmperr, 0, SEEK_SET);
+  while (<$tmperr>) {chomp; push(@errors, $_);}
+  close($tmperr);
+  # check source XML file
+  unless (defined($options->{XML_PATH})) {
+    push(@errors, "No MAST XML file specified");
+  } elsif (not -e $options->{XML_PATH}) {
+    push(@errors, "The MAST XML file specified does not exist");
+  }
+  unless (defined($options->{HTML_PATH})) {
+    push(@errors, "No output file specified");
+  }
+  # print errors
+  foreach my $error (@errors) {
+    print STDERR $error, "\n";
+  }
+  pod2usage(2) if @errors;
+  # return options
+  return $options;
+}
+
+sub _start_mast {
+  my ($info, $version, $release) = @_;
+  my $wr = $info->{wr};
+  $wr->str_prop('program', 'MAST');
+  $wr->str_prop('version', $version);
+  $wr->str_prop('release', $release);
+}
+
+sub _handle_command_line {
+  my ($info, @args) = @_;
+  my $wr = $info->{wr};
+  $wr->str_array_prop("cmd", @args);
+}
+
+sub _handle_settings {
+  my ($info, $strand_handling, $max_correlation, $remove_correlated,
+    $max_seq_evalue, $adjust_hit, $max_hit_pvalue, $max_weak_pvalue) = @_;
+  my $wr = $info->{wr};
+  $wr->property("settings");
+  $wr->start_object_value();
+  $wr->str_prop("strand_handling", $strand_handling);
+  $wr->num_prop("max_correlation", $max_correlation);
+  $wr->bool_prop("remove_correlated", $remove_correlated);
+  $wr->num_prop("max_seq_evalue", $max_seq_evalue);
+  $wr->bool_prop("adjust_hit", $adjust_hit);
+  $wr->num_prop("max_hit_pvalue", $max_hit_pvalue);
+  $wr->num_prop("max_weak_pvalue", $max_weak_pvalue);
+  $wr->end_object_value();
+}
+
+sub _handle_alphabet {
+  my ($info, $alph) = @_;
+  my $wr = $info->{wr};
+  $wr->property("alphabet");
+  $alph->to_json($wr);
+}
+
+sub _handle_sequence_alphabet {
+  my ($info, $seq_alph) = @_;
+  my $wr = $info->{wr};
+  $wr->property("sequence_alphabet");
+  $seq_alph->to_json($wr);
+}
+
+sub _handle_translate {
+  my ($info, $num_seq, $num_mot) = @_;
+  my $wr = $info->{wr};
+  $wr->num_prop("xlate", $num_seq);
+}
+
+sub _handle_background {
+  my ($info, $from, @probs) = @_;
+  my $wr = $info->{wr};
+  $wr->property("background");
+  $wr->start_object_value();
+  $wr->str_prop("source", $from);
+  $wr->num_array_prop("freqs", @probs);
+  $wr->end_object_value();
+}
+
+sub _start_motif_dbs {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->property("motif_dbs");
+  $wr->start_array_value();
+}
+
+sub _handle_motif_db {
+  my ($info, $source, $name, $last_mod_date, $bg) = @_;
+  my $wr = $info->{wr};
+  $wr->start_object_value();
+  $wr->str_prop("source", $source);
+  $wr->str_prop("name", $name) if defined $name;
+  $wr->str_prop("last_mod_date", $last_mod_date);
+  $wr->num_array_prop("bg", @{$bg});
+  $wr->end_object_value();
+}
+
+sub _end_motif_dbs {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->end_array_value();
+}
+
+sub _start_motifs {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->property("motifs");
+  $wr->start_array_value();
+}
+
+sub _handle_motif {
+  my ($info, $db, $id, $alt, $len, $nsites, $evalue, $bad, $url, $psm) = @_;
+  $info->{nmotifs} += 1;
+  my $wr = $info->{wr};
+  $wr->start_object_value();
+  $wr->num_prop("db", $db);
+  $wr->str_prop("id", $id);
+  $wr->str_prop("alt", $alt) if (defined($alt));
+  $wr->num_prop("len", $len);
+  $wr->num_prop("nsites", $nsites) if (defined($nsites));
+  $wr->str_prop("evalue", $evalue) if (defined($evalue));
+  $wr->bool_prop("bad", $bad) if (defined($bad));
+  $wr->str_prop("url", $url) if $url;
+  $wr->property("psm");
+  $wr->start_array_value();
+  for (my $i = 0; $i < scalar(@{$psm}); $i++) {
+    $wr->num_array_value(@{$psm->[$i]});
+  }
+  $wr->end_array_value();
+  $wr->end_object_value();
+}
+
+sub _end_motifs {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->end_array_value();
+}
+
+sub _start_correlations {
+  my ($info) = @_;
+}
+
+sub _handle_correlation {
+  my ($info, $idx_a, $idx_b, $value) = @_;
+  my $set = $info->{correlations};
+  $set->{$idx_a} = {} unless defined $set->{$idx_a};
+  $set->{$idx_a}->{$idx_b} = $value;
+}
+
+sub _end_correlations {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  my $nmotifs = $info->{nmotifs};
+  my $set = $info->{correlations};
+  $wr->property("correlation");
+  $wr->start_array_value();
+  for (my $i = 0; $i < $nmotifs; $i++) {
+    $wr->start_array_value();
+    for (my $j = 0; $j < $nmotifs; $j++) {
+      if ($i == $j) {
+        $wr->null_value();
+      } else {
+        my $value = ($j < $i ? $set->{$j}->{$i} : $set->{$i}->{$j});
+        print "i: $i, j: $j\n" unless defined $value;
+        $wr->num_value($value);
+      }
+    }
+    $wr->end_array_value();
+  }
+  $wr->end_array_value();
+}
+
+sub _start_nos {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->property("nos");
+  $wr->start_array_value();
+}
+
+sub _handle_expect {
+  my ($info, $gap, $idx) = @_;
+  my $wr = $info->{wr};
+  $wr->start_object_value();
+  $wr->num_prop("gap", $gap) if defined $gap;
+  $wr->num_prop("idx", $idx);
+  $wr->end_object_value();
+}
+
+sub _end_nos {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->end_array_value();
+}
+
+sub _start_sequence_dbs {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->property("sequence_dbs");
+  $wr->start_array_value();
+}
+
+sub _handle_sequence_db {
+  my ($info, $source, $name, $last_mod_date, $sequence_count, $residue_count, $link) = @_;
+  my $wr = $info->{wr};
+  $wr->start_object_value();
+  $wr->str_prop("source", $source);
+  $wr->str_prop("name", $name) if defined $name;
+  $wr->str_prop("last_mod_date", $last_mod_date);
+  $wr->num_prop("sequence_count", $sequence_count);
+  $wr->num_prop("residue_count", $residue_count);
+  $wr->str_prop("link", $link) if defined $link;
+  $wr->end_object_value();
+}
+
+sub _end_sequence_dbs {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->end_array_value();
+}
+
+sub _start_sequences {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->property("sequences");
+  $wr->start_array_value();
+}
+
+sub _start_sequence {
+  my ($info, $db, $name, $comment, $length) = @_;
+  $info->{scores} = []; # False
+  $info->{first_seg} = 1; # True
+  my $wr = $info->{wr};
+  $wr->start_object_value();
+  $wr->num_prop("db", $db);
+  $wr->str_prop("name", $name);
+  $wr->str_prop("comment", $comment) if defined $comment;
+  $wr->num_prop("length", $length);
+}
+
+sub _handle_score {
+  my ($info, $strand, $combined_pvalue, $evalue, $frame) = @_;
+  my $pos = ($strand eq 'both' || $strand eq 'forward' ? 0 : 1);
+  while (scalar(@{$info->{scores}}) < $pos) {
+    push(@{$info->{scores}}, undef);
+  }
+  $info->{scores}->[$pos] = {
+    combined_pvalue => $combined_pvalue,
+    evalue => $evalue,
+    frame => $frame
+  };
+}
+
+sub _write_scores {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->property("score");
+  $wr->start_array_value();
+  for (my $i = 0; $i < scalar(@{$info->{scores}}); $i++) {
+    my $score = $info->{scores}->[$i];
+    if (defined($score)) {
+      $wr->start_object_value();
+      $wr->num_prop("combined_pvalue", $score->{combined_pvalue});
+      $wr->num_prop("evalue", $score->{evalue});
+      $wr->str_prop("frame", $score->{frame}) if (defined($score->{frame}));
+      $wr->end_object_value();
+    } else {
+      $wr->null_value();
+    }
+  }
+  $wr->end_array_value();
+}
+
+sub _start_seg {
+  my ($info, $start_pos) = @_;
+  my $wr = $info->{wr};
+  if ($info->{first_seg}) {
+    &_write_scores($info);
+    $wr->property("segs");
+    $wr->start_array_value();
+    $info->{first_seg} = 0; # False
+  }
+  $wr->start_object_value();
+  $wr->num_prop("pos", $start_pos - 1); # change to zero indexed
+}
+
+sub _handle_data {
+  my ($info, $sequence) = @_;
+  my $wr = $info->{wr};
+  $wr->str_prop("data", $sequence);
+  $wr->property("hits");
+  $wr->start_array_value();
+}
+
+sub _handle_hit {
+  my ($info, $pos, $idx, $rc, $pvalue, $match, $translation) = @_;
+  my $wr = $info->{wr};
+  $wr->start_object_value();
+  $wr->num_prop("pos", $pos  - 1); # change to zero indexed
+  $wr->num_prop("idx", $idx);
+  $wr->bool_prop("rc", $rc);
+  $wr->num_prop("pvalue", $pvalue);
+  $wr->str_prop("match", $match);
+  $wr->str_prop("translation", $translation) if defined $translation;
+  $wr->end_object_value();
+}
+
+sub _end_seg {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->end_array_value();
+  $wr->end_object_value();
+}
+
+sub _end_sequence {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  if ($info->{first_seg}) {
+    &_write_scores($info);
+  } else {
+    $wr->end_array_value();
+  }
+  $wr->end_object_value();
+}
+
+sub _end_sequences {
+  my ($info) = @_;
+  my $wr = $info->{wr};
+  $wr->end_array_value();
+}
+
+sub _handle_runtime {
+  my ($info, $host, $when, $cycles, $seconds) = @_;
+  my $wr = $info->{wr};
+  $wr->property("runtime");
+  $wr->start_object_value();
+  $wr->str_prop("host", $host);
+  $wr->str_prop("when", $when);
+  $wr->num_prop("cycles", $cycles);
+  $wr->num_prop("seconds", $seconds);
+  $wr->end_object_value();
+}
+
+sub _end_mast {
+  my ($info) = @_;
+
+}
+
+sub transform_data {
+  my ($opts, $jsonwr) = @_;
+  my $info = {wr => $jsonwr, correlations => {}, nmotifs => 0};
+
+  my $sax = new MastSAX($info,
+    start_mast => \&_start_mast,
+    handle_command_line => \&_handle_command_line,
+    handle_settings => \&_handle_settings,
+    handle_alphabet => \&_handle_alphabet,
+    handle_sequence_alphabet => \&_handle_sequence_alphabet,
+    handle_translate => \&_handle_translate,
+    handle_background => \&_handle_background,
+    start_motif_dbs => \&_start_motif_dbs,
+    handle_motif_db => \&_handle_motif_db,
+    end_motif_dbs => \&_end_motif_dbs,
+    start_motifs => \&_start_motifs,
+    handle_motif => \&_handle_motif,
+    end_motifs => \&_end_motifs,
+    start_correlations => \&_start_correlations,
+    handle_correlation => \&_handle_correlation,
+    end_correlations => \&_end_correlations,
+    start_nos => \&_start_nos,
+    handle_expect => \&_handle_expect,
+    end_nos => \&_end_nos,
+    start_sequence_dbs => \&_start_sequence_dbs,
+    handle_sequence_db => \&_handle_sequence_db,
+    end_sequence_dbs => \&_end_sequence_dbs,
+    start_sequences => \&_start_sequences,
+    start_sequence => \&_start_sequence,
+    handle_score => \&_handle_score,
+    start_seg => \&_start_seg,
+    handle_data => \&_handle_data,
+    handle_hit => \&_handle_hit,
+    end_seg => \&_end_seg,
+    end_sequence => \&_end_sequence,
+    end_sequences => \&_end_sequences,
+    handle_runtime => \&_handle_runtime,
+    end_mast => \&_end_mast
+  );
+  my $fh;
+  sysopen($fh, $opts->{XML_PATH}, O_RDONLY) or die("Failed to open file \"$opts->{XML_PATH}\"\n");
+  while (<$fh>) {
+    $sax->parse_more($_);
+    if ($sax->has_errors()) {
+      die("Failed to write HTML output due to errors processing the XML:\n" . join("\n", $sax->get_errors()));
+    }
+  }
+  $sax->parse_done();
+  if ($sax->has_errors()) {
+    die("Failed to write HTML output due to errors processing the XML:\n" . join("\n", $sax->get_errors()));
+  }  
+}
+
+sub main {
+  &initialise();
+  my $opts = &arguments();
+  # start writing HTML
+  my $htmlwr = new HtmlMonolithWr($etc_dir, 'mast_template.html',  $opts->{HTML_PATH}, 'mast_data.js' => 'data');
+  # transform the XML into JSON
+  &transform_data($opts, $htmlwr->output());
+  # finish writing HTML
+  $htmlwr->output();
+}
+
+&main();
+1;
+

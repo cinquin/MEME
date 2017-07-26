@@ -1,0 +1,8 @@
+# Test shadow 
+&test('shadow1', '',
+  'shadow', '',
+  ['--output-pthresh', 0.1, '--bg', 2.0, '--text', 'motiph/spiked.aln', 
+    'motiph/yeast.tree'],
+  [{output => '-', reference => 'motiph/shadow.gff', type => 'text'}],
+  'results/shadow1');
+

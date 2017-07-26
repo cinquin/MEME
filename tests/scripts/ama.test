@@ -1,0 +1,30 @@
+#
+# ama test
+#
+my $ama_ignore = [
+ 'cis-element-search:parameters:command-line#value'
+];
+
+&test(
+  'ama1', 'max-odds, no p-values',
+  'ama', '',
+  ['--verbosity', 1, '--scoring', 'max-odds', 'gomo/motif.meme.txt',
+    'gomo/seqs.fasta', 'gomo/seqs.bg'],
+  [
+    {output => '-', reference => 'gomo/ama.withMaxodds.xml', type => 'xml', ignore => $ama_ignore
+    }
+  ],
+  'results/ama1'
+);
+&test(
+  'ama2', 'avg-odds, combine sequences, calculate p-values',
+  'ama', '',
+  ['--pvalues', '--verbosity', 1, '--cs', 'gomo/motif.meme.txt', 
+    'gomo/seqs_red.fasta', 'gomo/seqs.norc.bg'],
+  [ 
+    {
+      output => '-', reference => 'gomo/ama.redundant.xml', type => 'xml', ignore => $ama_ignore
+    }
+  ],
+  'results/ama2'
+);

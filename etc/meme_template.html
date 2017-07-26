@@ -1,0 +1,765 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>MEME</title>
+    <script src="meme_data.js"></script>
+    <script src="constants.js"></script>
+    <script src="utilities.js"></script>
+    <script src="delay_draw.js"></script>
+    <script src="motif_logo.js"></script>
+    <script src="block_diagram.js"></script>
+    <script src="alphabet_utilities.js"></script>
+    <script src="meme_template.js"></script>
+    <link rel="stylesheet" type="text/css" href="meme.css">
+    <link rel="stylesheet" type="text/css" href="block_diagram.css">
+    <link rel="stylesheet" type="text/css" href="meme_template.css">
+  </head>
+  <body onload="page_loaded()" onpageshow="page_shown(event)" onresize="page_resized()">
+    <!--  -->
+    <div id="grey_out_page" class="grey_background" style="display:none;">
+    </div>
+    <!-- Help popups -->
+    <div class="pop_content" id="pop_">
+      <p>Help poup.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_ev">
+      <p>The statistical significance of the motif. MEME usually finds the most
+      statistically significant (low E-value) motifs first. It is unusual to
+      consider a motif with an E-value larger than 0.05 significant so, as an
+      additional indicator, MEME displays these partially transparent.</p> 
+      <p>The E-value of a motif is based on its log likelihood ratio, width,
+      sites, the background letter frequencies (given in the command line
+      summary), and the size of the training set.</p>
+      <p>The E-value is an estimate of the expected number of motifs with the
+      given log likelihood ratio (or higher), and with the same width and site
+      count, that one would find in a similarly sized set of random
+      sequences (sequences where each position is independent and letters are
+      chosen according to the background letter frequencies).</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_sites">
+      <p>The number of sites contributing to the construction of the motif.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_width">
+      <p>The width of the motif. Each motif describes a pattern of a fixed
+      width, as no gaps are allowed in MEME motifs.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_more">
+      <p>Click on the blue symbol below to reveal more information about this motif.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_submit_dl">
+      <p>Click on the blue symbol below to reveal options allowing you
+      to submit this motif to another MEME Suite motif analysis program, to download this
+      motif in various text formats, or to download a sequence "logo" of
+      this motif PNG or EPS format.</p>
+      <h5>Supported Programs</h5>
+      <dl>
+        <dt>Tomtom</dt>
+        <dd>Tomtom is a tool for searching for similar known motifs. 
+          [<a href="http://meme-suite.org/doc/tomtom.html?man_type=web">manual</a>]</dd>
+        <dt>MAST</dt>
+        <dd>MAST is a tool for searching biological sequence databases for 
+          sequences that contain one or more of a group of known motifs.
+          [<a href="http://meme-suite.org/doc/mast.html?man_type=web">manual</a>]</dd>
+        <dt>FIMO</dt>
+        <dd>FIMO is a tool for searching biological sequence databases for 
+          sequences that contain one or more known motifs.
+          [<a href="http://meme-suite.org/doc/fimo.html?man_type=web">manual</a>]</dd>
+        <dt>GOMO</dt>
+        <dd>GOMO is a tool for identifying possible roles (Gene Ontology 
+          terms) for DNA binding motifs.
+          [<a href="http://meme-suite.org/doc/gomo.html?man_type=web">manual</a>]</dd>
+        <dt>SpaMo</dt>
+        <dd>SpaMo is a tool for inferring possible transcription factor
+          complexes by finding motifs with enriched spacings.
+          [<a href="http://meme-suite.org/doc/spamo.html?man_type=web">manual</a>]</dd>
+      </dl>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_llr">
+      <p>The log likelihood ratio of the motif.The log likelihood ratio is the 
+      logarithm of the ratio of the probability of the occurrences of the motif
+      given the motif model (likelihood given the motif) versus their
+      probability given the background model (likelihood given the null model).
+      (Normally the background model is a 0-order Markov model using the
+      background letter frequencies, but higher order Markov models may be
+      specified via the -bfile option to MEME.).</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_ic">
+      <p>The information content of the motif in bits. It is equal to the sum
+      of the uncorrected information content, R(), in the columns of the pwm.
+      This is equal relative entropy of the motif relative to a uniform
+      background frequency model.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_re">
+      <p>The relative entropy of the motif.</p>
+
+      <p style="font-family: monospace;">re = llr / (sites * ln(2))</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_bt">
+      <p>The Bayes Threshold.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_site_strand">
+      <p>The strand used for the motif site.</p>
+      <dl>
+        <dt>+</dt>
+        <dd>The motif site was found in the sequence as it was supplied.</dd>
+        <dt>-</dt>
+        <dd>The motif site was found in the reverse complement of the supplied sequence.</dd>
+      </dl>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_site_start">
+      <p>The position in the sequence where the motif site starts. If a motif
+      started right at the begining of a sequence it would be described as
+      starting at position 1.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_site_pvalue">
+      <p>The probability that an equal or better site would be found in a
+      random sequence of the same length conforming to the background letter
+      frequencies.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_site_match">
+      <p>A motif site with the 10 flanking letters on either side.</p> 
+      <p>When the site is not on the given strand then the site
+      and both flanks are reverse complemented so they align.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_seq_name">
+      <p>The name of the sequences as given in the FASTA file.</p>
+      <p>The number to the left of the sequence name is the ordinal
+      of the sequence.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_motif_sites">
+      <p>These are the motif sites predicted by MEME and used to build the motif.</p>
+      <p>These sites are shown in solid color and hovering the cursor
+      over a site will reveal details about the site.  Only sequences
+      that contain a motif site are shown.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_scanned_sites">
+      <p>These are the motif sites predicted by MEME plus
+      any additional sites detected using a motif scanning
+      algorithm.</p>
+      <p>These MEME sites are shown in solid color and 
+      additional scanned sites are shown in transparent color.
+      Hovering the cursor over a site will reveal details about the site.
+      Only sequences containing a predicted or scanned motif site are shown.</p>
+      <p>The scanned sites are predicted using a
+      log-odds scoring matrix constructed from the MEME sites.
+      Only scanned sites with position <i>p</i>-values less
+      than 0.0001 are shown.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_all_sequences">
+      <p>These are the same sites as shown by selecting the
+      "Motif Sites + Scanned Sites" button except that all
+      sequences, including those with no sites, are included
+      in the diagram.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_seq_pvalue">
+      <p>This is the combined match <i>p</i>-value.</p>
+      <p>The combined match <i>p</i>-value is defined as the probability that a
+      random sequence (with the same length and conforming to the background) 
+      would have position <i>p</i>-values such that the product is smaller
+      or equal to the value calulated for the sequence under test.</p>
+      <p>The position <i>p</i>-value is defined as the probability that a
+      random sequence (with the same length and conforming to the background)
+      would have a match to the motif under test with a score greater or equal
+      to the largest found in the sequence under test.</p>
+      <p>Hovering your mouse over a motif site in the motif location 
+      block diagram will show its position <i>p</i>-value and other information
+      about the site.</p>
+       
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_motif_location">
+      <p>This diagram shows the location of motif sites.</p>
+      <p>Each block shows the position and strength of a motif
+      site.  The height of a block gives an indication of the 
+      significance of the site as taller blocks are more significant. 
+      The height is calculated to be proportional to the negative 
+      logarithm of the <i>p</i>-value of the site, truncated at 
+      the height for a <i>p</i>-value of 1e-10.</p>
+      <p>For complementable alphabets (like DNA), sites on the 
+      positive strand are shown above the line,
+      sites on the negative strand are shown below.</p>
+      <p>Placing the cursor
+      over a motif site will reveal more information about the site
+      including its position <i>p</i>-value.  (See the help
+      for the <i>p</i>-value column for an explanation of position 
+      <i>p</i>-values.)</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_seq_source">
+      <p>The name of the file of sequences input to MEME.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_psp_source">
+      <p>The position specific priors file used by MEME to find the motifs.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_seq_alph">
+      <p>The alphabet used by the sequences.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_seq_count">
+      <p>The number of sequences provided as input to MEME.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <div class="pop_content" id="pop_alph_name">
+      <p>The name of the alphabet symbol.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_alph_freq">
+      <p>The frequency of the alphabet symbol in the dataset with a pseudocount
+      so it is never zero.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+    <div class="pop_content" id="pop_alph_bg">
+      <p>The frequency of the alphabet symbol as defined by the background model.</p>
+      <div style="float:right; bottom:0px;">[ 
+        <a href="javascript:help_popup()">close</a> ]</div>
+    </div>
+
+    <!-- templates -->
+    <div id="measure_match" class="match"></div>
+    <div class="template pop_block" id="tmpl_block_info">
+      <div>
+        <span class="tvar_logo_pad lflank" style="visibility:hidden;"></span>
+        <span class="tvar_logo"></span>
+      </div>
+      <div class="block_sequence_fragment">
+        <span class="tvar_lflank lflank"></span>
+        <span class="tvar_match match"></span>
+        <span class="tvar_rflank rflank"></span>
+      </div>
+      <table class="block_information">
+        <tr><th>Motif</th><td class="tvar_motif">1</td></tr>
+        <tr><th><i>p</i>-value</th><td class="tvar_pvalue">8.23e-7</td></tr>
+        <tr><th>Start</th><td class="tvar_start">23</td></tr>
+        <tr><th>End</th><td class="tvar_end">33</td></tr>
+      </table>
+    </div>
+
+    <div class="template pop_block" id="tmpl_scan_info">
+      <h5>Scanned Site</h5>
+      <div class="tvar_logo"></div>
+      <table class="block_information">
+        <tr><th>Motif</th><td class="tvar_motif">1</td></tr>
+        <tr><th><i>p</i>-value</th><td class="tvar_pvalue">8.23e-7</td></tr>
+        <tr><th>Start</th><td class="tvar_start">23</td></tr>
+        <tr><th>End</th><td class="tvar_end">33</td></tr>
+      </table>
+    </div>
+
+    <div class="template box expanded_motif" id="tmpl_motif_expanded">
+      <div style="position: relative; min-height: 20px">
+        <div class="param_box">
+          <span class="param"><span class="tvar_ordinal"></span>.</span>
+        </div>
+        <div class="sym_btn positioned tvar_less" tabindex="0" 
+          title="Show less information.">&#8613;</div>
+        <div class="sym_btn positioned tvar_submit" tabindex="0"
+          title="Submit the motif to another MEME Suite program or download it.">&#8674;</div>
+      </div>
+      <div>
+        <div class="param_box">
+          <span class="param"><i>E</i>-value:</span>
+          <span class="tvar_evalue"></span>
+          <div class="help" data-topic="pop_ev"></div>
+        </div>
+        <div class="param_box">
+          <span class="param">Site Count:</span>
+          <span class="tvar_site_count"></span>
+          <div class="help" data-topic="pop_sites"></div>
+        </div>
+        <div class="param_box">
+          <span class="param">Width:</span>
+          <span class="tvar_width"></span>
+          <div class="help" data-topic="pop_width"></div>
+        </div>
+      </div>
+      <div class="tabMain base">
+        <div class="tabCenter tvar_logo"></div>
+      </div>
+      <div class="tabArea base">
+        <span class="tvar_tab tab" tabindex="0">Standard</span><span 
+          class="tvar_tab_rc tab middle" tabindex="0">Reverse 
+          Complement</span>
+      </div>
+      <div style="padding: 10px 0">
+        <div class="param_box">
+          <span class="param">Log Likelihood Ratio:</span>
+          <span class="tvar_llr"></span>
+          <div class="help" data-topic="pop_llr"></div>
+        </div>
+        <div class="param_box">
+          <span class="param">Information Content:</span>
+          <span class="tvar_ic"></span>
+          <div class="help" data-topic="pop_ic"></div>
+        </div>
+        <div class="param_box">
+          <span class="param">Relative Entropy:</span>
+          <span class="tvar_re"></span>
+          <div class="help" data-topic="pop_re"></div>
+        </div>
+        <div class="param_box">
+          <span class="param">Bayes Threshold:</span>
+          <span class="tvar_bt"></span>
+          <div class="help" data-topic="pop_bt"></div>
+        </div>
+      </div>
+      <div class="tvar_sites"></div>
+    </div>
+
+
+    <div class="popup_wrapper">
+      <div class="popup" style="display:none; top: -150px;" id="download">
+        <div>
+          <div style="float:right; ">
+            <div id="outpop_close" class="close" tabindex="0">x</div>
+          </div>
+          <h2 class="mainh" style="margin:0; padding:0;">Submit or Download</h2>
+          <div style="clear:both"></div>
+        </div>
+          <div style="height:100px">
+            <div style="float:right; width: 30px;">
+              <div id="outpop_prev" class="navarrow" tabindex="0">
+                <span class="inactive">&#8679;</span><span class="active">&#11014;</span>
+              </div>
+              <div id="outpop_num" class="navnum"></div>
+              <div id="outpop_next" class="navarrow" tabindex="0">
+                <span class="inactive">&#8681;</span><span class="active">&#11015;</span>
+              </div>
+            </div>
+            <div id="logo_box" style="height: 100px; margin-right: 40px;">
+              <canvas id="outpop_logo" height="100" width="580"></canvas>
+              <canvas id="outpop_logo_rc" class="logo_rc" height="100" width="580"></canvas>
+            </div>
+          </div>
+          <div>
+            <!-- tabs start -->
+            <div class="tabArea top">
+              <span id="outpop_tab_1" class="tab">Submit Motif</span><span
+                id="outpop_tab_2" class="tab middle">Download Motif</span><span 
+                id="outpop_tab_3" class="tab middle">Download Logo</span>
+            </div>
+            <div class="tabMain top">
+              <!-- Submit to another program -->
+              <div id="outpop_pnl_1">
+                <h4 class="compact">Submit to program</h4>
+                <table id="programs" class="programs">
+                  <tr class="dna_only">
+                    <td><input type="radio" name="program" value="tomtom" id="submit_tomtom"></td>
+                    <td><label for="submit_tomtom">Tomtom</label></td>
+                    <td><label for="submit_tomtom">Find similar motifs in
+                        published libraries or a library you supply.</label></td>
+                  </tr>
+                  <tr>
+                    <td><input type="radio" name="program" value="fimo" id="submit_fimo"></td>
+                    <td><label for="submit_fimo">FIMO</label></td>
+                    <td><label for="submit_fimo">Find motif occurrences in
+                        sequence data.</label></td>
+                  </tr>
+                  <tr>
+                    <td><input type="radio" name="program" value="mast" id="submit_mast"></td>
+                    <td><label for="submit_mast">MAST</label></td>
+                    <td><label for="submit_mast">Rank sequences by affinity to
+                        groups of motifs.</label></td>
+                  </tr>
+                  <tr class="dna_only">
+                    <td><input type="radio" name="program" value="gomo" id="submit_gomo"></td>
+                    <td><label for="submit_gomo">GOMo</label></td>
+                    <td><label for="submit_gomo">Identify possible roles (Gene
+                        Ontology terms) for motifs.</label></td>
+                  </tr>
+                  <tr class="dna_only">
+                    <td><input type="radio" name="program" value="spamo" id="submit_spamo"></td>
+                    <td><label for="submit_spamo">SpaMo</label></td>
+                    <td><label for="submit_spamo">Find other motifs that are
+                        enriched at specific close spacings which might imply the existance of a complex.</label></td>
+                  </tr>
+                </table>
+              </div>
+              <!-- download text format  -->
+              <div id="outpop_pnl_2">
+                <div>
+                  <label for="text_format">Format:</label>
+                  <select id="text_format">
+                    <option value="0">Count Matrix</option>
+                    <option value="1">Probability Matrix</option>
+                    <option value="2">Minimal MEME</option>
+                    <option value="3">FASTA</option>
+                    <option value="4">Raw</option>
+                  </select>
+                </div>
+                <form id="text_form" method="post" action="">
+                  <script>$("text_form").action = site_url + "/utilities/save_generated_file";</script>
+                  <input type="hidden" id="text_name" name="name" value="motif.txt">
+                  <input type="hidden" name="mime_type" value="text/plain">
+                  <textarea id="outpop_text" name="content"
+                    style="width:99%; white-space: pre; word-wrap: normal; overflow-x: scroll;" 
+                    rows="8" readonly="readonly" wrap="off"></textarea>
+                </form>
+              </div>
+              <!-- download logo format -->
+              <div id="outpop_pnl_3">
+                <form id="logo_form" method="post" action="">
+                  <script>$("logo_form").action = site_url + "/utilities/generate_logo";</script>
+                  <input type="hidden" name="program" value="MEME"/>
+                  <input type="hidden" id="logo_motifs" name="motifs" value=""/>
+                  <table>
+                    <tr>
+                      <td><label for="logo_format">Format:</label></td>
+                      <td>
+                        <select id="logo_format" name="png">
+                          <option value="1">PNG (for web)</option>
+                          <option value="0">EPS (for publication)</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><label for="logo_rc">Orientation:</label></td>
+                      <td>
+                        <select id="logo_rc" name="rc1">
+                          <option value="0">Normal</option>
+                          <option value="1" id="logo_rc_option">Reverse Complement</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><label for="logo_ssc">Small Sample Correction:</label></td>
+                      <td>
+                        <input type="hidden" id="logo_err" name="errbars" value="0"/>
+                        <select id="logo_ssc" name="ssc">
+                          <option value="0">Off</option>
+                          <option value="1">On</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><label for="logo_width">Width:</label></td>
+                      <td>
+                        <input type="text" id="logo_width" size="4" placeholder="default" name="width"/>&nbsp;cm
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><label for="logo_height">Height:</label></td>
+                      <td>
+                        <input type="text" id="logo_height" size="4" placeholder="default" name="height"/>&nbsp;cm
+                      </td>
+                    </tr>
+                  </table>
+                </form>
+              </div>
+              <!-- Buttons -->
+              <div>
+                <div style="float:left;">
+                  <input type="button" id="outpop_do" value="Submit" />
+                </div>
+                <div style="float:right;">
+                  <input id="outpop_cancel" type="button" value="Cancel" />
+                </div>
+                <div style="clear:both;"></div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- Page starts here -->
+    <div id="top" class="pad1">
+      <div class="prog_logo big">
+        <img src="meme_icon.png" alt="MEME Logo">
+        <h1>MEME</h1>
+        <h2>Multiple Em for Motif Elicitation</h2>
+      </div>
+      <p>
+        For further information on how to interpret these results or to get a 
+        copy of the MEME software please access 
+        <a href="http://meme-suite.org/">http://meme-suite.org</a>. 
+      </p>
+      <p>If you use MEME in your research, please cite the following paper:<br />
+        <span class="citation">
+          Timothy L. Bailey and Charles Elkan, 
+          "Fitting a mixture model by expectation maximization to discover motifs in biopolymers", 
+          <em>Proceedings of the Second International Conference on Intelligent Systems 
+          for Molecular Biology</em>, pp. 28-36, AAAI Press, Menlo Park, California, 1994. 
+          <a href="http://meme-suite.org/doc/ismb94.pdf">[pdf]</a> 
+        </span>
+      </p>
+    </div>
+    <!-- navigation -->
+    <div class="pad2">
+      <a class="jump" href="#motifs_sec">Discovered Motifs</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a class="jump" href="#sites_sec">Motif Locations</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a class="jump" href="#inputs_sec">Inputs &amp; Settings</a>
+      &nbsp;&nbsp;|&nbsp;&nbsp;
+      <a class="jump" href="#info_sec">Program information</a>
+    </div>
+    <!-- alert the user when their browser is not up to the task -->
+    <noscript><h1 style="color:red">Javascript is required to view these results!</h1></noscript>
+    <h1 id="html5_warning" style="color:red; display:none;">Your browser does not support canvas!</h1>
+    <script>
+      if (!window.HTMLCanvasElement) $("html5_warning").style.display = "block";
+    </script>
+    <h2 class="mainh pad2" id="motifs_sec">Discovered Motifs</h2>
+    <div id="motifs" class="box">
+      <p>Please wait... Loading...</p>
+      <p>If the page has fully loaded and this message does not disappear then an error may have occurred.</p>
+    </div>
+    <h2 class="mainh pad2" id="sites_sec">Motif Locations</h2>
+    <div id="blocks" class="box">
+      <p>Please wait... Loading...</p>
+      <p>If the page has fully loaded and this message does not disappear then an error may have occurred.</p>
+    </div>
+    <h2 class="mainh pad2" id="inputs_sec">Inputs &amp; Settings</h2>
+    <div class="box">
+      <h4>Sequences</h4>
+      <table id="seq_info" class="inputs">
+        <tr><th>Source <div class="help" data-topic="pop_seq_source"></div></th>
+          <th class="col_psp">PSP Source <div class="help" data-topic="pop_psp_source"></div></th>
+          <th>Alphabet <div class="help" data-topic="pop_seq_alph"></div></th>
+          <th>Sequence Count <div class="help" data-topic="pop_seq_count"></div></th>
+        </tr>
+        <tr>
+          <td id="ins_seq_source"></td>
+          <td id="ins_seq_psp" class="col_psp"></td>
+          <td id="ins_seq_alphabet"></td>
+          <td id="ins_seq_count"></td>
+        </tr>
+      </table>
+      <script>
+      {
+        var db = data.sequence_db;
+        $("ins_seq_source").innerHTML = db.source;
+        $("ins_seq_alphabet").innerHTML = meme_alphabet.get_alphabet_name();
+        $("ins_seq_count").innerHTML = db.sequences.length;
+        if (db.psp) {
+          $("ins_seq_psp").innerHTML = db.psp;
+        }
+        toggle_class($("seq_info"), "hide_psp", !(db.psp));
+      }
+      </script>
+      <h4>Background</h4>
+      <span id="alpha_bg"></span>
+      <script>
+      {
+        $("alpha_bg").appendChild(make_alpha_bg_table(meme_alphabet, data.sequence_db.freqs));
+      }
+      </script>
+      <h4>Other Settings</h4>
+      <table id="tbl_settings" class="inputs hide_advanced">
+        <tr>
+          <th>Motif Site Distribution</th>
+          <td id="opt_mod">
+            <span class="mod_zoops">ZOOPS: Zero or one site per sequence</span>
+            <span class="mod_oops">OOPS: Exactly one site per sequence</span>
+            <span class="mod_anr">ANR: Any number of sites per sequence</span>
+          </td>
+        </tr>
+        <tr>
+          <th>Site Strand Handling</th>
+          <td id="opt_strand">
+            <span class="strand_none">This alphabet only has one strand</span>
+            <span class="strand_given">Sites must be on the given strand</span>
+            <span class="strand_both">Sites may be on either strand</span>
+          </td>
+        </tr>
+        <tr>
+          <th>Maximum Number of Motifs</th>
+          <td id="opt_nmotifs"></td>
+        </tr>
+        <tr>
+          <th>Motif E-value Threshold</th>
+          <td id="opt_evt"></td>
+        </tr>
+        <tr>
+          <th>Minimum Motif Width</th>
+          <td id="opt_minw"></td>
+        </tr>
+        <tr>
+          <th>Maximum Motif Width</th>
+          <td id="opt_maxw"></td>
+        </tr>
+        <tr>
+          <th>Minimum Sites per Motif</th>
+          <td id="opt_minsites"></td>
+        </tr>
+        <tr>
+          <th>Maximum Sites per Motif</th>
+          <td id="opt_maxsites"></td>
+        </tr>
+        <tr class="advanced">
+          <th>Bias on Number of Sites</th>
+          <td id="opt_wnsites"></td>
+        </tr>
+        <tr class="advanced">
+          <th>Sequence Prior</th>
+          <td id="opt_prior">
+            <span class="prior_dirichlet">Simple Dirichlet</span>
+            <span class="prior_dmix">Dirichlets Mix</span>
+            <span class="prior_mega">Mega-weight Dirichlets Mix</span>
+            <span class="prior_megap">Mega-weight Dirichlets Mix Plus</span>
+            <span class="prior_addone">Add One</span>
+          </td>
+        </tr>
+        <tr class="advanced">
+          <th>Sequence Prior Strength</th>
+          <td id="opt_b"></td>
+        </tr>
+        <tr class="advanced">
+          <th>EM Starting Point Source</th>
+          <td id="opt_substring">
+            <span class="substring_on">From substrings in input sequences</span>
+            <span class="substring_off">From strings on command line (-cons)</span>
+          </td>
+        </tr>
+        <tr class="advanced">
+          <th>EM Starting Point Map Type</th>
+          <td id="opt_spmap">
+            <span class="spmap_uni">Uniform</span>
+            <span class="spmap_pam">Point Accepted Mutation</span>
+          </td>
+        </tr>
+        <tr class="advanced">
+          <th>EM Starting Point Fuzz</th>
+          <td id="opt_spfuzz"></td>
+        </tr>
+        <tr class="advanced">
+          <th>EM Maximum Iterations</th>
+          <td id="opt_maxiter"></td>
+        </tr>
+        <tr class="advanced">
+          <th>EM Improvement Threshold</th>
+          <td id="opt_distance"></td>
+        </tr>
+        <tr class="advanced">
+          <th>Trim Gap Open Cost</th>
+          <td id="opt_wg"></td>
+        </tr>
+        <tr class="advanced">
+          <th>Trim Gap Extend Cost</th>
+          <td id="opt_ws"></td>
+        </tr>
+        <tr class="advanced">
+          <th>End Gap Treatment</th>
+          <td id="opt_noendgaps">
+            <span class="noendgaps_on">No cost</span>
+            <span class="noendgaps_off">Same cost as other gaps</span>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="text-align: center">
+            <a href="javascript:toggle_class(document.getElementById('tbl_settings'), 'hide_advanced')">
+              <span class="show_more">Show Advanced Settings</span>
+              <span class="show_less">Hide Advanced Settings</span>
+            </a>
+          </td>
+        </tr>
+      </table>
+      <script>
+      {
+        $("opt_mod").className = data.options.mod;
+        $("opt_strand").className = (meme_alphabet.has_complement() ? (data.options.revcomp ? "both" : "given") : "none");
+        $("opt_nmotifs").textContent = data.options.nmotifs;
+        $("opt_evt").textContent = (typeof data.options.evt === "number" ? data.options.evt : "no limit");
+        $("opt_minw").textContent = data.options.minw;
+        $("opt_maxw").textContent = data.options.maxw;
+        $("opt_minsites").textContent = data.options.minsites;
+        $("opt_maxsites").textContent = data.options.maxsites;
+        $("opt_wnsites").textContent = data.options.wnsites;
+        $("opt_spmap").className = data.options.spmap;
+        $("opt_spfuzz").textContent = data.options.spfuzz;
+        $("opt_prior").className = data.options.prior;
+        $("opt_b").textContent = data.options.b;
+        $("opt_maxiter").textContent = data.options.maxiter;
+        $("opt_distance").textContent = data.options.distance;
+        $("opt_wg").textContent = data.options.wg;
+        $("opt_ws").textContent = data.options.ws;
+        $("opt_noendgaps").className = (data.options.noendgaps ? "on" : "off");
+        $("opt_substring").className = (data.options.substring ? "on" : "off");
+      }
+      </script>
+    </div>
+    <!-- list information on this program -->
+    <div id="info_sec" class="bar">
+      <div class="subsection">
+        <h5 id="version">MEME version</h5>
+        <span id="ins_version"></span> 
+        (Release date: <span id="ins_release"></span>)<br>
+      </div>
+      <script>
+        $("ins_version").innerHTML = data["version"];
+        $("ins_release").innerHTML = data["release"];
+      </script>
+      <div class="subsection">
+        <h5 id="reference">Reference</h5>
+        <span class="citation">
+          Timothy L. Bailey and Charles Elkan, 
+          "Fitting a mixture model by expectation maximization to discover motifs in biopolymers", 
+          <em>Proceedings of the Second International Conference on Intelligent Systems 
+          for Molecular Biology</em>, pp. 28-36, AAAI Press, Menlo Park, California, 1994. 
+        </span>
+      </div>
+      <div class="subsection">
+        <h5 id="command">Command line</h5>
+        <textarea id="cmd" rows="5" style="width:100%;" readonly="readonly">
+        </textarea>
+        <script>$("cmd").value = data["cmd"].join(" ");</script>
+      </div>
+    </div>
+    
+  </body>
+</html>

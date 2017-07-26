@@ -1,0 +1,455 @@
+#!@WHICHPERL@
+# AUTHOR: Philip Machanick
+# CREATE DATE: 23 July 2009
+
+
+################################################################################
+#
+# Calculate discriminative prior based on Hartemink idea
+# in format for use with MEME
+# options (currently inactive) for other prior formats
+# FIXME: only corrected count of ambigous letters for D_prior calculation
+# -- if activating any of the others check this plus in general check they\
+# -- are up to date with the D_priors approach
+#
+# input: positive set (X) and negative set (Y) as FASTA file
+# outout: stdout
+#
+#################################################################################
+
+use strict;
+use warnings;
+
+# Note: so that interrupts work, always use for system calls:
+#   if ($status = system("$command")) {&cleanup($status)}
+$SIG{'INT'} = \&cleanup;  # interrupt handler
+$| = 1; # flush after all prints
+
+use Cwd qw(abs_path);
+use File::Basename qw(fileparse);
+use Getopt::Long;
+use Pod::Usage;
+
+use lib ('@PERLLIBDIR@');
+
+use Alphabet qw(dna protein rna);
+use PriorUtils qw(normalize_size normalized_classifier_scores printScoreAsPrior
+    print_scores scale_scores D_prior class_prior_norm hamming_prior
+    extend_w_mer check_numeric read_seq_file);
+
+=head1 NAME
+
+psp-gen - Creates position specific priors for use by MEME.
+
+=head1 SYNOPSIS
+
+USAGE: psp-gen [options] -pos <filename> -neg <filename>
+
+  Options:
+     -minw W        minimum width of motif to consider
+                    default: 4
+     -maxw W        maximum width of motif to consider
+                    default: 20
+     -dna           use DNA alphabet; this is the default
+     -protein       use protein alphabet
+     -rna           use RNA alphabet
+     -alph <file>   use the alphabet defined in the file
+     -triples       use spaced triples for matches
+                    default: do exact matches of w-mers
+     -fixedstart    for triples, anchor the start when scoring
+                    triples of width < w
+                    default: allow start to move
+     -equiv <sets>  specifiy sets of symbols that should be considered
+                     equalivent; sets should be separated with a '-',
+                     unless the alphabet contains a dash in which case
+                     the option may be specified multiple times;
+                     eg. for protein -equiv "IVL-HKR" means treat all
+                     occurrences of I, V or L (or any of their aliases
+                     in the alphabet) as the same and all occurrences of
+                     H, K, R as the same
+     -revcomp       count reverse complements in computing scores
+                    default: only count forward matches
+     -scalemin <number>
+                    scale scores to mimumum <number>
+                    default: 0.1 or 1-scalemax if set
+     -scalemax <number>
+                    scale scores to maximum of <number>
+                    default: 0.9 or 1-scalemin if set
+     -maxrange      instead of choosing W with maximum score choose W with
+                    maximum difference between maximum and minimum scores
+     -raw           output scores instead of priors
+     -reportscores  report pos and neg file names, min and max scores,
+                    min and max w : tab-separated to STDERR
+     -verbose       send stats to stderr reporting frequency of each
+                    score
+                    default: do not report statistics
+               
+  Compulsory:
+     -pos filename  sequences likely to contain binding sites
+     -neg filename  sequences unlikely to contain binding sites
+
+  Calculates a positional prior by classifying each position of width W
+  as to how strongly it fits the positive set versus the negative set.
+  For each sequence:
+  >name scaledmin = 0.1 scaledmax = 0.9
+  prior probability for each position in the sequence
+  
+  The prior probabilities are each a single number, one per letter of the
+  sequence data. The actual values of the scaled minimum and maximum may
+  vary if either or both -scalemin and -scalemax are set.
+  
+  Each input file should be in FASTA format. Anything after the name on
+  the name line is echoed to output. The name has appended to it width
+  W chosen for the sequences' prior.
+    
+  Reads -pos FASTA file and -neg FASTA file.
+  Writes stdout. If -verbose is used, writes stderr.
+
+        Copyright
+        (2009) The University of Queensland
+        All Rights Reserved.
+        Author: Philip Machanick
+
+=cut
+
+# set constants
+my $scale = 1; # turn off to stop scaling (DEBUG)
+my $min_triple = 3; # for fixed endpoint triples, start counting loop uses this instead of min_w
+# if allowing a -type flag, set these based on command line
+my $priortype = "D";
+my $d_prior = 1; # TRUE
+my $d_hyper_prior = 0; # FALSE
+my $hypergeomtric_prior = 0; # FALSE
+my $ham_prior = 0; # FALSE
+my $absolute = 0; # FALSE
+
+# set option defaults
+my $pos_filename;
+my $neg_filename;
+my $min_w = 4;
+my $max_w = 20;
+my $scale_max; # used to scale if -scale set to min..max
+my $scale_min;
+my $alph;
+my @equiv_groups = ();
+my $revcomp = 0; # FALSE
+my $triples = 0; # FALSE
+my $fixed_start = 0; # FALSE
+my $maxrange = 0; # FALSE
+my $raw = 0; # FALSE
+my $report = 0; # FALSE
+my $verbose = 0; # FALSE
+my $help = 0; # FALSE
+
+
+# parse command line arguments
+GetOptions(
+  "pos=s" => sub {
+    my ($opt_name, $opt_value) = @_;
+    die("Option -pos did not specify an existing file") unless (-f $opt_value);
+    $pos_filename = $opt_value;
+  },
+  "neg=s" => sub {
+    my ($opt_name, $opt_value) = @_;
+    die("Option -neg did not specify an existing file") unless (-f $opt_value);
+    $neg_filename = $opt_value;
+  },
+  "minw=i" => sub {
+    my ($opt_name, $opt_value) = @_;
+    die("Option -minw must be larger than 0.") unless ($opt_value > 0);
+    $min_w = $opt_value;
+  },
+  "maxw=i" => sub {
+    my ($opt_name, $opt_value) = @_;
+    die("Option -maxw must be larger than 0.") unless ($opt_value > 0);
+    $max_w = $opt_value;
+  },
+  "scalemin=f" => sub {
+    my ($opt_name, $opt_value) = @_;
+    die("Option -scalemin must be in the range 0 to 1.") unless ($opt_value > 0 && $opt_value < 1);
+    $scale_min = $opt_value;
+  },
+  "scalemax=f" => sub {
+    my ($opt_name, $opt_value) = @_;
+    die("Option -scalemax must be in the range 0 to 1.") unless ($opt_value > 0 && $opt_value < 1);
+    $scale_max = $opt_value;
+  },
+  "rna" => sub {
+    die("Alphabet specified multple times.") if (defined($alph));
+    $alph = rna(); 
+  },
+  "dna" => sub {
+    die("Alphabet specified multple times.") if (defined($alph));
+    $alph = dna();
+  },
+  "protein" => sub {
+    die("Alphabet specified multple times.") if (defined($alph));
+    $alph = protein();
+  },
+  "alph=s" => sub {
+    die("Alphabet specified multple times.") if (defined($alph));
+    my ($opt_name, $opt_value) = @_;
+    if (-f $opt_value) {
+      $alph = new Alphabet($opt_value);
+    } else {
+      die('Option -alph must be the path to an alphabet definition file.');
+    }
+  },
+  "alpha=s" => sub {
+    # kept for backwards compatibility
+    die("Alphabet specified multple times.") if (defined($alph));
+    my ($opt_name, $opt_value) = @_;
+    if (-f $opt_value) {
+      $alph = new Alphabet($opt_value);
+    } elsif (lc($opt_value) eq 'rna') {
+      $alph = rna();
+    } elsif (lc($opt_value) eq 'dna') {
+      $alph = dna();
+    } elsif (lc($opt_value) eq 'protein' || lc($opt_value) eq 'prot') {
+      $alph = protein();
+    } else {
+      die('Option -alpha must be "dna", "protein", "rna" or the path to an alphabet definition file.');
+    }
+  },
+  "equiv=s" => \@equiv_groups,
+  "revcomp" => \$revcomp,
+  "triples" => \$triples,
+  "fixedstart" => \$fixed_start,
+  "maxrange" => \$maxrange,
+  "raw" => \$raw,
+  "reportscores" => \$report,
+  "verbose" => \$verbose,
+  "help|?" => \$help
+) or pod2usage(2);
+
+pod2usage(0) if $help;
+
+# ensure default value for alphabet
+$alph = dna() unless defined $alph;
+
+# check that compulsory command line arguments were given
+pod2usage('Options -pos <filename> and -neg <filename> must be specified') unless (defined($pos_filename) && defined($neg_filename));
+# check that W values make sense
+pod2usage('Minimum width (-minw) must be smaller than or equal to maximum width (-maxw).') unless ($min_w <= $max_w);
+# check that the alphabet can be complemented if requested
+pod2usage('Option -revcomp requires a complementable alphabet') if ($revcomp && !$alph->has_complement());
+# fixed start only makes sense for tripples
+pod2usage('Option -fixedstart requires option -triples') if ($fixed_start && !$triples);
+# check that scale_min and scale_max are correct and try
+# to give them values when they are unspecified.
+# Defaults for scaling: if one not set but other is, set by
+# scale_max = 1 - scale_min, otherwise default to [0.1..0.9]
+if (defined($scale_min) && defined($scale_max)) {
+  if ($scale_min >= $scale_max) {
+    pod2usage('Value specified for option -scalemin must be smaller than the value specified for option -scalemax.');
+  }
+} elsif (defined($scale_min)) {
+  if ($scale_min < 0.5) {
+    $scale_max = 1 - $scale_min;
+  } else {
+    pod2usage('Option -scalemax must be set when option -scalemin has value >= 0.5.');
+  }
+} elsif (defined($scale_max)) {
+  if ($scale_max > 0.5) {
+    $scale_min = 1 - $scale_max;
+  } else {
+    pod2usage('Option -scalemin must be set when option -scalemax has value <= 0.5.');
+  }
+} else {
+  $scale_min = 0.1;
+  $scale_max = 0.9;
+}
+
+# process the equalivence groups
+# first check if '-' is in the alphabet
+unless ($alph->is_known('-')) {
+  # '-' is not in the alphabet so we can use it to split groups
+  my @groups = ();
+  foreach my $joined_groups (@equiv_groups) {
+    push(@groups, split('-', $joined_groups));
+  }
+  @equiv_groups = @groups;
+}
+# convert each group into the primary symbols it represents,
+# check for cross-group contamination
+{
+  my @groups = ();
+  my %all_sym_idx = ();
+  foreach my $group (@equiv_groups) {
+    my %sym_idx = ();
+    foreach my $sym (split //, $group) {
+      $sym_idx{$alph->index($sym)} = 1;
+    }
+    foreach my $idx (keys %sym_idx) {
+      die("Symbol " . $alph->char($idx) . " in multiple equalivence groups.") if ($all_sym_idx{$idx});
+      $all_sym_idx{$idx} = 1;
+    }
+    push(@groups, join('', (map { $alph->char($_) } (keys %sym_idx))));
+  }
+  @equiv_groups = @groups;
+}
+
+#FIXME -- non-DNA not handled for all types yet
+die("only class and D priors implemented for protein") if (!$alph->is_dna() && ($d_hyper_prior || $hypergeomtric_prior));
+
+# FIXME: to do this properly will blow up the number of options###############
+# for a word exponentially so easiest if we treat ambigs as if they###########
+# don't count, score them as if they occur once
+# FIXME: ############# NOT IMPLEMENTED YET
+# FIXME: actual matches score 0 for any word or triple containing an ambig
+# if you find one of the keys, check also if the stored value matches
+
+my @pos_sequences;
+my @neg_sequences;
+my ($L_pos, $L_neg);
+
+# when file is read, if equivalent sets specified, the returned sequences are translated to
+# render all the alternatives as one of the equivalent letters
+# read positive file storing names and FASTA comments and returning total sequence length
+&read_seq_file ($pos_filename, \@pos_sequences, \$L_pos, $verbose, $alph, \@equiv_groups);
+# read negative file the same way
+&read_seq_file ($neg_filename, \@neg_sequences, \$L_neg, $verbose, $alph, \@equiv_groups);
+
+my $N_pos  = @pos_sequences;
+my $N_neg  = @neg_sequences;
+my $L_mean = ($L_neg + $L_pos) / ($N_neg + $N_pos);
+
+# count of number of positive, negative sequences that contain each w-mer
+# indexed by w-mer, each entry is {"score", "last"} where "last" is the
+# last position a w-mer was seen, to avoid counting twice for same sequence
+# results returned in dictionaries
+
+my $bestscores;
+
+my ($last_min_score, $last_max_score, $max_score_w);
+
+# need this to calculate number of sequences containing a w-mer or not,
+# normalized for weighted count; if all sequences of same length
+# each adds up to N_neg, N_pos
+# absolute is an option for C priors, not settable from the command
+# line in this version
+my ($N_neg_normalized, $N_pos_normalized) = 
+    ($absolute || $d_prior) ? 
+        ($N_neg, $N_pos) : 
+        &normalize_size(\@neg_sequences, \@pos_sequences, $L_mean);
+
+# fixed endpoint triples must score every width from 3 up
+my $start = ($triples)?$min_triple:$min_w;
+my $lastscores;    # remember scores for previous w
+
+#foreach (1,2) {
+#    (%pos_dictionary, %neg_dictionary) = ((), ());  # FIXME reset dictionaries before new prior type
+for (my $width = $start; $width <= $max_w; $width++) {
+    # new dictionaries each width for scoring: protein implicitly uses the old
+    # values by reusing previous scores
+    my (%pos_dictionary, %neg_dictionary);
+    my $allscores;
+    my ($min_score, $max_score) = (1, 0);
+    if ($d_prior || $d_hyper_prior) {
+        &D_prior(\@pos_sequences, \@neg_sequences, $alph, $revcomp, $width,
+            \%pos_dictionary, \%neg_dictionary, $triples);
+    } elsif ($hypergeomtric_prior) {    # don't normalize for seq length
+        &class_prior_norm(\@pos_sequences, \@neg_sequences, $alph, $revcomp, $width, undef,
+            \%pos_dictionary, \%neg_dictionary);
+    } elsif ($ham_prior) {
+        $allscores = &hamming_prior(\@pos_sequences, \@neg_sequences, $revcomp, $width, $L_mean,
+            \%pos_dictionary, \%neg_dictionary, $triples, \$min_score, \$max_score);
+    } else {
+        &class_prior_norm(\@pos_sequences, \@neg_sequences, $alph, $revcomp, $width, $L_mean,
+            \%pos_dictionary, \%neg_dictionary, $triples);
+    }
+    # do the classifier scores using the previously computed counts. Also O(LN)
+    # normalized Ns = unnormalized for D-prior
+    my ($N_X, $N_Y, $p_type);
+    if (defined($priortype) && $priortype eq "D-hyper") {
+        $N_X = $L_pos - $N_pos * ($width - 1);
+        $N_Y = $L_neg - $N_neg * ($width - 1);
+        $p_type = "hyper";
+    } else {
+        $N_X = $N_pos;
+        $N_Y = $N_neg;
+        $p_type = $priortype;
+    }
+    # hamming prior does its own thing
+    $allscores = &normalized_classifier_scores (\@pos_sequences, \%pos_dictionary,
+            \%neg_dictionary, $width, $N_X, $N_Y, $N_pos_normalized, $N_neg_normalized,
+            \$min_score, \$max_score, $scale, $absolute, $p_type, $triples, $fixed_start,
+            $lastscores)
+    unless ($ham_prior);
+    # remember the last scores for the next iteration
+    $lastscores = $allscores;
+    # min_score, max_score now known for this w
+    # record the maximum sequence set and its w
+    # use >= so we get the widest motif achieving the max score
+    # exception: for triples, this will always give us maxw so stop at first
+    # width that finds the max score
+    # if $maxrange defined (or != 0) then use $max_score-$min_score to choose best
+    # w, otherwise use $maxscore
+    if ($width >= $min_w) { # for triples, we may start at < minw
+        my $newmax;
+        if (!$last_max_score) {
+            $newmax = 1;
+        } elsif ($maxrange) {
+            $newmax = $max_score?($max_score-$min_score) - ($last_max_score - $last_min_score):0;
+        } else {
+            $newmax = $max_score - $last_max_score;
+        }
+        # if not using triples, update scores if <= last maximum
+        # for triples only update scores of beat last maximum
+        if ((!$triples && $newmax >= 0) || ($newmax > 0)) {
+            $bestscores = $allscores;
+            $last_max_score = $max_score;
+            $last_min_score = $min_score;
+            $max_score_w = $width;
+        }
+        if ($report) {
+            print STDERR $pos_filename."\t".$neg_filename."\t".$min_score."\t".$max_score."\t".
+                $width."\t".$max_score_w."\n";
+        }
+    }
+#    print STDERR "pos dictionary++++++++++: ".Dumper(\%pos_dictionary);
+#    print STDERR "neg dictionary----------: ".Dumper(\%neg_dictionary);
+}
+#$d_prior = 1; # FIXME -- crude hack to force doing D prior second time
+#$priortype = "D";
+#}
+
+#extend_w_mer ("", \%pos_dictionary);
+#extend_w_mer ("", \%neg_dictionary);
+
+
+#print STDERR "max score at width $max_score_w\n";
+die "error finding best W" unless defined ($bestscores);
+#print STDERR "best scores: ".Dumper($bestscores);
+
+#rescale the scores linearly to standard range if required
+if ($scale) {
+    &scale_scores ($bestscores, $scale_min, $scale_max, $last_min_score, $last_max_score, $verbose);
+}
+# FIXME: model should be a variable; FIXME epsilon should be variable
+if ($raw) {
+    &print_scores($bestscores, $scale_min, $scale_max, $last_min_score,
+        $last_max_score, $max_score_w, $scale);
+} else {
+    &printScoreAsPrior ($bestscores, 'zoops', $max_score_w, $scale_min, $scale_max);
+}
+
+#&print_scores($allscores, $scale, $scale_min, $scale_max, $min_score,
+#    $max_score, $min_w, $verbose);
+
+
+################################################################################
+#                       Subroutines                                            #
+################################################################################
+ 
+################################################################################
+#       cleanup
+#
+#       cleanup stuff
+#
+################################################################################
+sub cleanup {
+  my($status, $msg) = @_;
+  if ($status && "$msg") {print STDERR "$msg: $status\n";}
+  exit($status);
+}

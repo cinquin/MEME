@@ -1,0 +1,32 @@
+my @datasets = ('crp0', 'lipo');
+my %darg_set = ('crp0' => ['--dna'], 'lipo' => []);
+my $counter = 1;
+foreach my $dset (@datasets) {
+  my @dargs = @{$darg_set{$dset}};
+  my $train_file = catfile('common', $dset.'.fasta');
+  my $file2 = catfile('scaffold', $dset.'.fasta');
+  # test 1
+  &test('fasta-io'.$counter, '',
+    'fasta-io', '', ['--verbosity', 1, @dargs, $train_file],
+    [{output => '-', reference => $train_file, type => 'text'}],
+    catfile('results', 'fasta_io'.$counter)
+  );
+  $counter++;
+  # test 2
+  &test('fasta-io'.$counter, '',
+    'fasta-io', '', ['--verbosity', 1, '--many', @dargs, $train_file],
+    [{output => '-', reference => $train_file, type => 'text'}],
+    catfile('results', 'fasta_io'.$counter)
+  );
+  $counter++;
+  # test 3
+  # this test looks odd to me, but this should implement 
+  # the same thing as the original
+  &test('fasta-io'.$counter, '',
+    'fasta-io', '', ['--verbosity', 1, '--blocksize', 100, $train_file],
+    [{output => '-', reference => $file2, type => 'text'}],
+    catfile('results', 'fasta_io'.$counter)
+  );
+  $counter++;
+}
+

@@ -1,0 +1,35 @@
+# parts to ignore in SpaMo output
+my $spamo_json_ignore = [
+    '^data:(version|revision|release|host|when|cmd)',
+    ':last_modified',
+    '^data:run_time:(cpu|real)'
+  ];
+# test spamo with data at the limits of the scan
+&test('spamo1', 'limits test',
+  'spamo', '',
+  ['-oc', 'results/spamo1', '-verbosity', 1, '-margin', 20, '-shared', 1, 
+    'spamo/limits.fasta', 'spamo/primary.meme', 'spamo/secondary.meme'],
+  [
+    {
+      output => 'results/spamo1/spamo.html',
+      reference => 'spamo/limits.html',
+      type => 'json', ignore => $spamo_json_ignore
+    }
+  ],
+  'results/spamo1'
+);
+# test spamo with a random (but unambiguous test)
+&test('spamo2', 'random distributed unambiguous',
+  'spamo', '',
+  ['-oc', 'results/spamo2', '-verbosity', 1, '-margin', 20, '-shared', 1, 
+    'spamo/random.fasta', 'spamo/primary.meme', 'spamo/secondary.meme'],
+  [
+    {
+      output => 'results/spamo2/spamo.html',
+      reference => 'spamo/random.html',
+      type => 'json', ignore => $spamo_json_ignore
+    }
+  ],
+  'results/spamo2'
+);
+

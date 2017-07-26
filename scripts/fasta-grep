@@ -1,0 +1,473 @@
+#!/usr/bin/perl -w
+# AUTHOR: Timothy L. Bailey
+# CREATE DATE: 19/10/06
+
+$PGM = $0;			# name of program
+$PGM =~ s#.*/##;                # remove part up to last slash
+#@args = @ARGV;			# arguments to program
+$| = 1;				# flush after all prints
+$SIG{'INT'} = 'cleanup';	# interrupt handler
+# Note: so that interrupts work, always use for system calls:
+# 	if ($status = system($command)) {cleanup($status)}
+
+# requires
+push(@INC, split(":", $ENV{'PATH'}));	# look in entire path
+
+# defaults
+$WID = 50;			# printing width
+
+# globals
+$_fasta_first_time = 1;		# no FASTA sequences read yet
+$_fasta_done = 0;		# not done reading FASTA
+$print_non_matches = 0;		# print sequence names not matching only
+$print_matches = 0;		# print sequence names matching only
+$print_occ = 0;			# print occurrences raw if true
+$print_fasta = 0;		# print occurrences fasta if true
+$print_overlapping = 0;		# print all overlapping matches if true
+$print_rc = 1;			# print matches on either strand by default
+$print_seq = 0;			# print (whole) matching sequences
+
+my $dna_alphabet = "ACGT";
+my %dna_codes = (
+  'U' => 'T',
+  'R' => '[AG]',
+  'Y' => '[CT]',
+  'M' => '[AC]',
+  'K' => '[GT]',
+  'W' => '[AT]',
+  'S' => '[CG]',
+  'B' => '[CGT]',
+  'D' => '[AGT]',
+  'H' => '[ACT]',
+  'V' => '[ACG]',
+  'N' => '[ACGT]'
+);
+my $protein_alphabet = "ACDEFGHIKLMNPQRSTVWY";
+my %protein_codes = (
+  'B' => '[DN]',
+  'Z' => '[EQ]',
+  'X' => '[ACDEFGHIKLMNPQRSTVWY]'
+);
+
+
+$usage = <<USAGE;		# usage message
+  USAGE:
+	$PGM <re> (-dna | -prot) [options]
+
+	<re>		PERL regular expression; may include IUPAC
+			symbols for given sequence type
+	(-dna | -prot | -norc)	type of sequence
+	[-s]		print whole matching sequences only
+	[-p]		print positions only, not sequence; 1-based
+			(relative to input strand if DNA; see below)
+	[-m]		just print IDs of *matching* sequences
+	[-x]		just print IDs of *non-matching* sequences
+	[-o]		print occurrences only in "raw" format
+	[-f]		print occurrences only in FASTA format;
+			1-based positions (relative to the *strand* of the
+			match if DNA) are appended to the sequence ID
+	[-a]		print all occurrences (even overlapping ones);
+			ignored unless -o or -f given
+	[-norc]		only print matches to given strand; default:
+			print matches on both DNA strands
+	[-prosite]	<re> is in PROSITE format
+	[-erase]	replace occurrences with 'N's; DNA only
+	[-h]		show this message
+
+	Display the non-overlapping occurrences of a PERL regular expression
+	in FASTA sequences.
+
+	Prints the FASTA sequence ID line followed by
+		number of matches
+		[line 1 of sequence]
+		[match line 1]
+		[line 2 of sequence]
+		[match line 2]
+		...
+		[last line of sequence]
+		[last match line]
+
+	For proteins, occurences are marked on the match lines as:
+		>		start of occurrence
+		<		end of occurrence
+
+	For DNA, occurrences are marked on the match line as:
+		>		start of occurrence
+		<		end of occurrence
+		*		start and end of two occurrences
+
+	When -p is given, only the positions of the matches are output
+	one match per line:
+		[<FASTA_NAME <match_start_pos> <match_end_pos>]+
+	Positions are 1-based relative to input sequence.  Negative
+	postions indicate that the match is to the reverse-complement
+	of the sequence, and their absolute values are the positions of the
+	match in the input sequence.
+
+	Reads standard input.
+	Writes standard output.
+
+        Copyright
+        (2014) The Regents of the University of California.
+        All Rights Reserved.
+        Author: Timothy L. Bailey
+USAGE
+
+$nargs = 1;			# number of required args
+if ($#ARGV+1 < $nargs) { print_usage("$usage", 1); }
+
+# get input arguments
+$re = shift;
+if ($re eq "-h") { print_usage("$usage", 0); exit(0); }
+while ($#ARGV >= 0) {
+  $_ = shift;
+  if ($_ eq "-h") {				# help
+    print_usage("$usage", 0); exit(0);
+  } elsif ($_ eq "-dna") {			# DNA
+    $stype = "DNA";
+  } elsif ($_ eq "-norc") {			# DNA, given strand only
+    $stype = "NORC";
+  } elsif ($_ eq "-prot") {			# protein
+    $stype = "PROTEIN";
+  } elsif ($_ eq "-m") {			# print matching names
+    $print_matches = 1;
+  } elsif ($_ eq "-x") {			# print non-matching IDs names
+    $print_non_matches = 1;
+  } elsif ($_ eq "-o") {			# print occurrences only
+    $print_occ = 1;
+  } elsif ($_ eq "-f") {			# print occurrences only
+    $print_fasta = 1;
+  } elsif ($_ eq "-s") {			# print matching sequences
+    $print_seq = 1;
+  } elsif ($_ eq "-p") {			# print positions only
+    $print_p = 1;
+  } elsif ($_ eq "-a") {			# print overlapping positions
+    $print_overlapping = 1;
+  } elsif ($_ eq "-norc") {			# no reverse strand matches
+    $print_rc = 0;
+  } elsif ($_ eq "-prosite") {			# prosite RE
+    $prosite = 1;
+  } elsif ($_ eq "-erase") {			# prosite RE
+    $erase = 1;
+  }
+}
+die("You must specify the type of sequences.") unless (defined($stype));
+
+# remove any space around RE
+$re =~ s/^\s+//;				# remove leading space
+$re =~ s/\s+$//;				# remove trailing space
+
+# convert PROSITE pattern to a PERL regular expression
+if ($prosite) { 
+  # replace {list} with [^list]
+  $re =~ s/\{/\[\^/g;  
+  $re =~ s/\}/\]/g;
+  # replace (n) multipliers with {n} multipliers
+  $re =~ s/\(\s*(\d+)\s*(,\s*\d+)?\s*\)/{$1$2}/g;
+  # remove "-" dashes
+  $re =~ s/-//g;
+  # replace ">" with "$"
+  $re =~ s/>/\$/g;
+  # replace "<" with "^"
+  $re =~ s/</\^/g;
+}
+
+# convert RE to upper case
+$re =~ y/a-z/A-Z/;
+
+# replace IUPAC symbols with RE character class
+my %codes = $stype eq ("DNA" || "NORC") ? %dna_codes : %protein_codes;
+foreach my $key (keys %codes) {
+  my $class = $codes{$key};
+  #print "key $key class $class\n";
+  $re =~ s/$key/$class/g;
+}
+
+#print STDERR "RE is \'$re\'\n";
+
+# Put the RE in a string so we can use "eval":
+# For some reason each match is getting set twice, hence the check below.
+# The key was the parens inside the ?= assertion to capture the matched
+# lookahead words start and end in $-[1] and $+1[1].
+my $code;
+if ($print_overlapping) {
+  # find all overlapping matches
+  $code = 'my @dummy = (/(?=(' . $re . '))(?{ if (!@starts || $-[1] != $starts[-1]) { push(@starts, $-[1]); push(@ends, $+[1]); } })/go);';
+} else {
+  # find non-overlapping sites
+  $code = 'my @dummy = (/(' . $re . ')(?{ push(@starts, $-[1]); push(@ends, $+[1]); })/gi);';
+}
+
+$tot = 0;
+$nseqs = 0;
+my $isite = 0;
+while (read_fasta_next(\$seq_name, \$seq_descr, \$seq)) {
+  #print "seq $seq\n";
+  $nseqs++;
+  $matches = 0;				# number of matches
+  $len = length($seq);
+  undef @s1;
+  undef @s2;
+
+  #study($seq);
+
+  #
+  # search sequence for matches
+  #
+  my (@starts, @ends, $start, $end);
+  # apply the RE to the sequence
+  $_ = $seq;
+  eval $code;
+
+  for $start (@starts) {
+    $end = shift @ends;
+    $end--;
+    my $match_len = $end - $start + 1;
+
+    #printf "pos %d end %d length %d start %d\n", pos $seq, $end, length($&), $start;
+    if (! $print_non_matches) {
+      if ($erase) { 
+        substr($seq, $start, $match_len, "N" x $match_len); 
+      } elsif ($print_occ || $print_fasta) {
+        printf(">$seq_name:%d-%d(+)$seq_descr site_$isite\n", $start+1, $end+1) if ($print_fasta);
+        printf("%s\n", substr($seq, $start, $match_len));
+        $isite++;
+      } elsif ($print_seq) {
+        #noop
+      } elsif ($print_p) {
+	$start++;			# make positions 1-relative
+	if ($stype eq "DNA") {
+	  $s2[$matches] = "+$start";
+	} else {
+	  $s2[$matches] = "$start";
+	}
+        $end++; 			# make positions 1-relative
+        $e2[$matches] = "+$end";
+      } else {
+	$s2[$start] = ">";
+	$s2[$end] = "<"; 
+      }
+    }
+    $matches++;
+  }
+
+  #
+  # Scan reverse complement if DNA and requested
+  #
+  if ($stype eq "DNA" && $print_rc) {
+
+    # search reverse complement
+    $rcseq = get_rc($seq);
+
+    # apply the RE to the sequence
+    my (@starts, @ends, $start, $end);
+    $_ = $rcseq;
+    eval $code;
+
+    # while ($rcseq =~ /$re/gio) {
+    my ($pos1, $pos2);
+    for $pos1 (@starts) {
+      $pos2 = shift @ends;
+      my $match_len = $pos2 - $pos1;
+      $pos2--;
+      # pos1 and pos2 are now start and end in the RC sequence
+
+      # Get start and end in original sequence
+      my $start = $len - $pos2 - 1;
+      my $end = $start + $match_len - 1;
+      #print STDERR "start $start end $end pos1 $pos1 pos2 $pos2\n";
+
+      if (! $print_non_matches) {
+        if ($erase) { 
+          substr($seq, $end, $match_len, "N" x $match_len);
+	} elsif ($print_occ || $print_fasta) {
+	  # print location in original sequence in ID
+          printf(">$seq_name:%d-%d(-)$seq_descr site_$isite\n", $start+1, $end+1) if ($print_fasta);
+	  # print match in reverse complement of sequence
+	  printf("%s\n", substr($rcseq, $pos1, $match_len));
+          $isite++;
+	} elsif ($print_seq) {
+	  #noop
+	} elsif ($print_p) {
+          $s2[$matches] = '-' . ($start+1);
+          $e2[$matches] = '-' . ($end+1);
+	} else {
+	  $s2[$start] = $s2[$start] ? "*" : ">";
+	  $s2[$end] = $s2[$end] ? "*" : "<"; 
+	}
+      }
+      $matches++;
+    }
+  } # dna
+
+  # insert newlines
+  unless ($print_p || $print_occ || $print_fasta) {
+    @s1 = split(//, $seq);
+    $s1 = $s2 = "";
+    for ($i=0; $i<$len; $i++) {
+      #if (($i+1) % $WID == 0) { $s1 .= "\n"; $s2 .= "\n"; }	# newlines
+      if (($i) % $WID == 0) { $s1 .= "\n"; $s2 .= "\n"; }	# newlines
+      $s1 .= $s1[$i];
+      $s2 .= $s2[$i] ? $s2[$i] : " ";
+    }
+    @s1 = split(/\n/, $s1);
+    @s2 = split(/\n/, $s2);
+  }
+
+  # print results for sequence
+  if ($print_matches) {
+    print ">$seq_name\n" if ($matches > 0);
+  } elsif ($print_non_matches) {
+    print ">$seq_name\n" if ($matches == 0);
+  } elsif ($print_seq && $matches > 0) {
+    print ">$seq_name $matches matches";
+    for ($i=0; $i<=$#s1; $i++) { print "$s1[$i]\n"; }
+  } else {
+    if ($print_p) {
+      $_ = $seq_name;
+      @words = split; 
+      $seq_id = $words[0];
+      for ($i=0; $i<$matches; $i++) { 
+	print "$seq_id $s2[$i] $e2[$i]\n"; 
+      }
+    } elsif ($print_occ || $print_fasta) {
+      # NOOP
+    } elsif ($matches > 0 || $erase) {
+      print ">$seq_name $matches matches\n";
+      for ($i=0; $i<=$#s1; $i++) { print "$s1[$i]\n$s2[$i]\n"; }
+    }
+  }
+  $tot += $matches;
+} # seq
+
+print(STDERR "Total of $tot matches in $nseqs sequences\n") unless $print_non_matches;
+
+# cleanup files
+cleanup(0, "");
+ 
+################################################################################
+#                       Subroutines                                            #
+################################################################################
+
+################################################################################
+#
+#	read_fasta_next(\$seq_id, \$seq_descr, \$seq)
+#
+#	Read the next sequence in a FASTA file.
+#
+#	Returns 0 on EOF, 1 otherwise.
+#
+#	Sets $seq_id and $seq.
+#
+#	Sets globals:
+#		$_previous_id			# id read previously
+#		$_previous_descr		# descr read previously
+#
+################################################################################
+
+sub read_fasta_next {
+  my($seq_id_p, $seq_descr_p, $seq_p) = @_;
+
+  #local($done);					# global variable
+
+  $$seq_id_p = $$seq_descr_p = $$seq_p = "";
+
+  return(0) if $_fasta_done;
+
+  unless ($_fasta_first_time) {				# name of sequence in last line
+    $$seq_id_p = $_previous_id;
+    $$seq_descr_p = $_previous_descr;
+  }
+
+  $$seq_p = "";
+  while (<STDIN>) {
+    chop;
+    if (/^>(\S+)(.*)/) {			# new sequence
+      if ($_fasta_first_time) {
+        #$$seq_id_p = $';
+        $$seq_id_p = $1;
+        if ($2) { $$seq_descr_p = $2;}
+        $_fasta_first_time = 0;
+      } else {
+        #$_previous_id = $';			# save new sequence id
+        $_previous_id = $1;			# save new sequence id
+	if ($2) { 
+          $_previous_descr = $2;	# save new sequence descr
+	} else {
+          $_previous_descr = "";	# save new sequence descr
+        }
+        return(1)
+      }
+    } else {
+      s/\s*//g; 				# remove whitespace from string
+      $$seq_p .= $_;
+    }
+  }
+  if ($$seq_p eq "") {
+    return(0);
+  } else {
+    $_fasta_done = 1;
+    return(1);
+  }
+} # sub read_fasta_next
+
+################################################################################
+#
+#	rc
+#
+# 	Get reverse complement of DNA string
+#
+################################################################################
+sub get_rc {
+  local($string) = @_;
+  local($w, $i, $seq, $first);
+
+  $first = 0;
+  if ($string =~ /^\*/) {			# handle Hamming-1 strings
+    $first = 1;
+    $seq = "*";			
+  }
+  $w = length($string);
+  for ($i=$w-1; $i>=$first; $i--) {
+    $a = uc(substr($string, $i, 1));
+    $a = ($a eq "A") ? "T" : ($a eq "C") ? "G" : ($a eq "G") ? "C" : 
+      ($a eq "T") ? "A" : $a;
+    $seq .= $a;
+  }
+  $seq;
+} # get_rc
+
+################################################################################
+#
+#       print_usage
+#
+#	Print the usage message and exit.
+#
+################################################################################
+sub print_usage {
+  local ($usage, $status) = @_;
+ 
+  if (-c STDOUT) {			# standard output is a terminal
+    open(C, "| more");
+    print C $usage;
+    close C;
+  } else {				# standard output not a terminal
+    print STDERR $usage;
+  }
+
+  exit $status;
+}
+ 
+################################################################################
+#       cleanup
+#
+#       cleanup stuff
+#
+################################################################################
+sub cleanup {
+  local($status, $msg) = @_;
+  if ($status && "$msg") {print STDERR "$msg: $status\n";}
+  exit($status);
+}
+
+1;

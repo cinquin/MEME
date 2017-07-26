@@ -1,0 +1,116 @@
+#!@WHICHPERL@
+=head1 NAME
+
+mast_webservice - Run mast in a restricted mode and create an index webpage.
+
+=head1 SYNOPSIS
+
+mast_webservice [options] <motifs file> [<sequence database>]
+
+  Options:
+    -dna              search nucleotide database with protein motifs
+    -remcorr          Remove highly correlated motifs from query
+    -seqp             Scale motif display threshold by sequence length
+    -comp             Use individual sequence composition in E-value and p-value calculation
+    -sep              treat the rc strand as a seperate sequence; not compatible with -norc
+    -norc             don't process the rc strand; not compatible with -sep
+    -ev <thresh>      display sequences with evalue below this threshold
+    -mev <thresh>     Ignore motifs with evalue above this threshold
+    -nseqs <count>    Set the minimum sequence count for quick E-value calculation.
+    -upload_db <file> uploaded sequence database
+    -df <name>        Name to show for sequence database; encoded with modified URL encoding
+    -dl <dl>          in results use <dl> as link to search sequence 
+		      names; ignored when -dblist specified
+    -help             brief help message
+
+=cut
+
+use strict;
+use warnings;
+# load standard perl libraries
+use Getopt::Long qw(:config permute auto_help);
+use Pod::Usage;
+# load custom perl libraries
+use lib qw(@PERLLIBDIR@);
+use StatusPage qw(arg_checks opt_uploaded opt_db opt_integer opt_evalue opt_encoded);
+# constants
+my $bin_dir = '@BINDIR@';
+my $fasta_db_dir = '@MEMEDB@/fasta_databases';
+# required parameters
+my $motifs;
+my $sequences;
+# option defaults
+my ($sequence_evalue_threshold, $motif_evalue_threshold, $database_name, $dblink, $nseqs);
+my ($translate, $remcorr, $seqp, $comp, $sep, $norc) = (0, 0, 0, 0, 0, 0); #FALSE
+#status page
+my $status = new StatusPage('MAST', \@ARGV);
+$status->add_message('Parsing arguments');
+# parse options
+my @arg_errors = ();
+my $opts_ok = do {
+  local $SIG{__WARN__} = sub { my ($msg) = @_; chomp($msg); push(@arg_errors, $msg); };
+  GetOptions(
+  '<>' => arg_checks(opt_uploaded(\$motifs), opt_db(\$sequences, $fasta_db_dir, 'db')),
+  'upload_db=s' => opt_uploaded(\$sequences),
+  'ev=f' => opt_evalue(\$sequence_evalue_threshold),
+  'mev=f' => opt_evalue(\$motif_evalue_threshold),
+  'nseqs=i' => opt_integer(\$nseqs, 1),
+  'df=s' => opt_encoded(\$database_name),
+  'dl=s' => opt_encoded(\$dblink),
+  'dna' => \$translate,
+  'remcorr' => \$remcorr,
+  'seqp' => \$seqp,
+  'comp' => \$comp,
+  'sep' => \$sep,
+  'norc' => \$norc
+  );
+};
+# add additional error messages for missing sequences and motifs
+push(@arg_errors, "No motifs provided.") unless $motifs;
+push(@arg_errors, "No sequences provided.") unless defined $sequences;
+# display the error messages both to the status page and stdout
+foreach my $arg_error (@arg_errors) {
+  print STDERR $arg_error, "\n";
+  $status->add_message($arg_error);
+}
+$opts_ok = 0 if (scalar(@arg_errors) > 0);
+# setup status page
+$status->add_file('html', 'mast.html', 'MAST HTML output');
+$status->add_file('xml', 'mast.xml', 'MAST XML output');
+$status->add_file('text', 'mast.txt', 'MAST text output');
+$status->add_file('motif', $motifs, 'Input Motifs');
+$status->add_file('fasta', $sequences, 'Uploaded Sequences') if ($sequences !~ m/^db\//);
+$status->add_message($opts_ok ? 'Arguments ok' : "Error parsing arguments");
+$status->update($opts_ok ? 'Starting' : 'Error');
+# exit if there was an error reading the arguments
+unless ($opts_ok) {
+  $status->write_log();
+  pod2usage(2);
+}
+# create the symlink to the databases
+symlink($fasta_db_dir, 'db');
+# ensure it will be removed on completion (when the log is written)
+$status->set_cleanup( sub { unlink('db'); } );
+# get the background file if it exists
+my $bfile = $sequences. '.bfile' if ($sequences =~ m/^db\// && -e ($sequences . '.bfile'));
+# Run MAST
+my @mast_args = ('-oc', '.', '-nostatus');
+push(@mast_args, '-bfile', $bfile) if (defined($bfile) && not $translate);
+push(@mast_args, '-minseqs', $nseqs) if defined($nseqs);
+push(@mast_args, '-dna') if $translate;
+push(@mast_args, '-remcorr') if $remcorr;
+push(@mast_args, '-seqp', '-mt', 0.01) if $seqp;
+push(@mast_args, '-comp') if $comp;
+push(@mast_args, '-sep') if $sep;
+push(@mast_args, '-norc') if $norc;
+push(@mast_args, '-ev', $sequence_evalue_threshold) if defined($sequence_evalue_threshold);
+push(@mast_args, '-mev', $motif_evalue_threshold) if defined($motif_evalue_threshold);
+push(@mast_args, '-df', $database_name) if defined($database_name);
+push(@mast_args, '-dl', $dblink) if defined($dblink);
+push(@mast_args, $motifs, $sequences);
+$status->run(PROG => 'mast', BIN => $bin_dir, ARGS => \@mast_args);
+# done
+$status->add_message("Done");
+$status->update();
+$status->write_log();
+1;

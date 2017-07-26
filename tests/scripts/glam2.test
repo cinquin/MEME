@@ -1,0 +1,10 @@
+# Test glam2
+&test('glam2_1', '',
+  'glam2', '',
+  ['-M', '-r', 3, '-n', 100, '-O', 'results/glam2_1', 'p', 'common/At.s'],
+  [
+  {output => 'results/glam2_1/glam2.txt', reference => 'glam2/glam2.txt', type => 'text', ignore => ['glam2']}
+  ],
+  'results/glam2_1'
+);
+

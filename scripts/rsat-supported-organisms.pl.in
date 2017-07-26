@@ -1,0 +1,83 @@
+#!@WHICHPERL@
+
+use strict;
+use warnings;
+
+=head1 NAME
+
+rsat-supported-organisms - Downloads the list of supported organisms.
+
+=head1 SYNOPSIS
+
+rsat-supported-organisms [options]
+
+ Options: 
+  -help               Display this help message
+  -server <WSDL URL>  Select the server.
+ 
+ Downloads the list of supported organisms and writes it to standard output.
+
+=cut
+
+use Getopt::Long;
+use Pod::Usage;
+use XML::Compile::SOAP11;
+use XML::Compile::WSDL11;
+use XML::Compile::Transport::SOAPHTTP;
+
+use Data::Dumper;
+
+sub main {
+  my $help = 0; # FALSE
+  my $server = 'http://pedagogix-tagc.univ-mrs.fr/rsat/web_services/RSATWS.wsdl';
+  GetOptions("help|?" => \$help, "server=s" => \$server) or pod2usage(2);
+  pod2usage(0) if $help;
+
+  #
+  # output
+  #     Return type.
+  #     Accepted values: 
+  #     'server' (result is stored on a file on the server),
+  #     'client' (result is directly transferred to the client),
+  #     'both' (result is stored on the server and transferred to the client),
+  #     and ticket (an identifier, allowing to monitor the job status and
+  #     retrieve the result when it is done, is returned to the client).
+  #     Default is 'both'.
+  # return
+  #     Return fields. Supported: ID,name,data,last_update,taxonomy,up_from,up_to,genome,seq_format,source,nb,selected_taxon,taxon_depth,org_per_taxon
+  # format
+  #     Output format. Supported: tab, tree, html_tree, newick (note this is incorrect in WSDL annotation)
+  # taxon
+  #     Root taxon.
+  # source
+  #     Only returns organisms from a user-selected source. Example: supported-organisms -source ensembl
+  # depth
+  #     Traversal depth for the taxononmic tree. If several organisms are supported in a max-dept taxon, only one is reported.
+  #
+  my %args = (
+    'output' => 'client',
+    'return' => 'ID,taxonomy',
+    'format' => 'tab'
+  );
+
+  my $wsdl = XML::LibXML->new->parse_file($server);
+  my $proxy = XML::Compile::WSDL11->new($wsdl);
+  # Generating a request message based on the WSDL
+  my $client = $proxy->compileClient('supported_organisms');
+
+  my $answer = $client->( request => {%args});
+
+  if ( defined $answer ) {
+    if ($answer->{output}->{response}->{client}) {
+      print $answer->{output}->{response}->{client};
+      exit 0;
+    } else {
+      print STDERR Dumper($answer);
+      exit 1;
+    }
+  } else {
+    die("No answer?!");
+  }
+  
+}
+main(); 1;

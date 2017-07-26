@@ -1,0 +1,11 @@
+MOTIF_INDEX	MOTIF_SOURCE	MOTIF_ID	ALT_ID	CONSENSUS	WIDTH	SITES	E-VALUE	E-VALUE_SOURCE	MOST_SIMILAR_MOTIF_SOURCE	MOST_SIMILAR_MOTIF	URL
+1	MEME	WGGGYGTGGY	MEME-1	WGGGYGTGGY	10	29	1.6e-012	MEME	meme-chip/JASPAR_CORE_2014_vertebrates.meme	MA0493.1 (Klf1)	http://jaspar2014.genereg.net?ID=MA0493.1&rm=present&collection=CORE
+2	meme-chip/JASPAR_CORE_2014_vertebrates.meme	MA0039.2	Klf4	DGGGYGKGGC	10	81	1.9e-006	CENTRIMO	 	 	http://jaspar2014.genereg.net?ID=MA0039.2&rm=present&collection=CORE
+3	DREME	CACRCCC	DREME-1	CACRCCC	7	27	1.9e-006	DREME	meme-chip/JASPAR_CORE_2014_vertebrates.meme	MA0493.1 (Klf1)	http://jaspar2014.genereg.net?ID=MA0493.1&rm=present&collection=CORE
+4	meme-chip/JASPAR_CORE_2014_vertebrates.meme	MA0493.1	Klf1	RRCCACACCCW	11	70	6.7e-006	CENTRIMO	 	 	http://jaspar2014.genereg.net?ID=MA0493.1&rm=present&collection=CORE
+5	meme-chip/JASPAR_CORE_2014_vertebrates.meme	MA0599.1	KLF5	GCCCCDCCCH	10	74	6.9e-005	CENTRIMO	 	 	http://jaspar2014.genereg.net?ID=MA0599.1&rm=present&collection=CORE
+6	MEME	WGCYYCHBCCCTCYC	MEME-2	WGCYYCHBCCCTCYC	15	30	6.4e-003	MEME	meme-chip/JASPAR_CORE_2014_vertebrates.meme	MA0471.1 (E2F6)	http://jaspar2014.genereg.net?ID=MA0471.1&rm=present&collection=CORE
+7	meme-chip/JASPAR_CORE_2014_vertebrates.meme	MA0140.2	TAL1::GATA1	MTTATCWSNNNNNHVCAG	18	50	1.9e-002	CENTRIMO	 	 	http://jaspar2014.genereg.net?ID=MA0140.2&rm=present&collection=CORE
+8	meme-chip/JASPAR_CORE_2014_vertebrates.meme	MA0079.3	SP1	GCCCCKCCCCC	11	56	2.1e-002	CENTRIMO	 	 	http://jaspar2014.genereg.net?ID=MA0079.3&rm=present&collection=CORE
+9	meme-chip/JASPAR_CORE_2014_vertebrates.meme	MA0035.3	Gata1	TYCTTATCTSY	11	56	2.9e-002	CENTRIMO	 	 	http://jaspar2014.genereg.net?ID=MA0035.3&rm=present&collection=CORE
+10	meme-chip/JASPAR_CORE_2014_vertebrates.meme	MA0036.2	GATA2	WRDTTCTTATCTSH	14	58	3.3e-002	CENTRIMO	 	 	http://jaspar2014.genereg.net?ID=MA0036.2&rm=present&collection=CORE

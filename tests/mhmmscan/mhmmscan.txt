@@ -1,0 +1,79 @@
+# The MEME Suite of motif-based sequence analysis tools.
+# 
+# version 4.11.3 (Release date: Fri Feb 19 13:23:06 2016 -0800)
+# 
+# Program: mhmmscan
+# File contents: Database search results
+# Motif file: common/crp0.meme.html
+# HMM file: mhmm/crp0.linear.mhmm
+# Sequence file: common/crp0.fasta
+# Create date: Wed Mar  8 18:23:03 2017
+# 
+# For further information on how to interpret these results or to get a copy
+# of the MEME Suite software, please access http://meme-suite.org .
+# 
+# If you use MCAST in your research, please cite
+# 
+#  Timothy Bailey and William Stafford Noble,
+#  "Searching for statistically significant regulatory modules",
+#  Bioinformatics (Proceedings of the European Conference on Computational Biology),
+#  19(Suppl. 2):ii16-ii25, 2003.
+# 
+# *****************************************************************************
+ID         E-value   Score      Start        End Description
+ -----------------------------------------------------------------------------------------------------------------------------------
+ce1cg          nan   31.26         24         84 17 61                                                                              
+ara            nan   20.39         10         77 17 55                                                                              
+pbr322         nan   19.54         93        102 53                                                                                 
+ompa           nan   18.98         53         78 48                                                                                 
+gale           nan   17.91         45         65 42                                                                                 
+bglr1          nan   17.35         79        101 76                                                                                 
+tnaa           nan   16.14         24        101 71                                                                                 
+deop2          nan   16.11         10         28 7 60                                                                               
+crp            nan   16.08         66         84 63                                                                                 
+ilv            nan   15.89          6         62 39                                                                                 
+male           nan   15.48         17         36 14                                                                                 
+lac            nan   15.11         12         32 9 80                                                                               
+tdc            nan   13.53         79         99 78                                                                                 
+gale           nan   13.28          1         41 42                                                                                 
+pbr322         nan   13.14         17         23 53                                                                                 
+uxu1           nan   12.93         20         46 17                                                                                 
+malk           nan   11.66         88        104 29 61                                                                              
+malk           nan   11.52          6         40 29 61                                                                              
+lac            nan   11.21         95        105 9 80                                                                               
+malk           nan   11.02         52         64 29 61                                                                              
+deop2          nan   10.89         63         75 7 60                                                                               
+gale           nan   10.19         67         71 42                                                                                 
+cya            nan   10.19         24         28 50                                                                                 
+ -----------------------------------------------------------------------------------------------------------------------------------
+
+
+Derived parameters for E-value calculations
+ type of distribution: Extreme Value
+ source of distribution: Actual sequence scores
+ status: Too few (23 < 200) scores to estimate E-values.
+ number of matches: 23
+ db length: 1890
+
+Program parameters for mhmmscan
+  HMM file: mhmm/crp0.linear.mhmm
+  Sequence file: common/crp0.fasta
+  Paths: single
+  Minimum match score: 10
+  Partial motif matches are: allowed
+  E-value threshold for scores: 10
+  Background: nrdb
+  Score matrix for pseudocount frequencies: PAM 1
+  Beta (weight on pseudocount frequencies):   1.00
+  Zero spacer emission log-odds: false
+  Fancy output format: false
+
+Actual command line:
+  mhmmscan --pseudo-weight 1 --text mhmm/crp0.linear.mhmm common/crp0.fasta 
+
+CPU: Timothys-iMac.rd.unr.edu
+Total time 0.00 secs.
+Overhead 0.00 secs.
+18 sequences
+0.0 millisec/seq
+0.4 microsec/character
